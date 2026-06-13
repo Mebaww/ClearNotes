@@ -1,8 +1,11 @@
 "use client";
 
-import { FileText } from "lucide-react";
+import { FileText, Moon, Sun } from "lucide-react";
+import { useTheme } from "next-themes";
 
 const Navbar = () => {
+  const { resolvedTheme, setTheme } = useTheme();
+
   const scrollToWaitlist = () => {
     document.getElementById("waitlist")?.scrollIntoView({ behavior: "smooth" });
   };
@@ -32,13 +35,21 @@ const Navbar = () => {
             >
               Waitlist
             </a>
+            {/* <button
+              type="button"
+              onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
+              aria-label="Toggle dark mode"
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-black/5 bg-white/60 text-[#6E6E73] shadow-sm transition duration-200 hover:-translate-y-0.5 hover:text-[#1D1D1F] active:translate-y-0 active:scale-[0.98] dark:border-white/10 dark:bg-white/5 dark:text-zinc-400 dark:hover:text-zinc-50"
+            >
+              <Moon className="h-4.5 w-4.5 dark:hidden" strokeWidth={2.25} />
+              <Sun className="hidden h-4.5 w-4.5 dark:block" strokeWidth={2.25} />
+            </button> */}
             <button
               onClick={scrollToWaitlist}
               className="rounded-full bg-[#1D1D1F] px-4 py-2 text-sm font-medium text-white shadow-sm transition duration-200 hover:-translate-y-0.5 hover:bg-[#2C2C2E] active:translate-y-0 active:scale-[0.98] dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200"
             >
               Join waitlist
             </button>
-            
           </div>
         </nav>
       </div>
