@@ -42,15 +42,21 @@ export default function Hero() {
             <div className="mt-10 grid max-w-lg grid-cols-3 gap-3 text-sm">
               <div className="rounded-xl border border-border bg-card/60 px-3.5 py-3 backdrop-blur-xl dark:bg-card/40">
                 <p className="font-semibold text-foreground">PDFs</p>
-                <p className="mt-0.5 text-xs text-muted-foreground">Reports & studies</p>
+                <p className="mt-0.5 text-xs text-muted-foreground">
+                  Reports & studies
+                </p>
               </div>
               <div className="rounded-xl border border-border bg-card/60 px-3.5 py-3 backdrop-blur-xl dark:bg-card/40">
                 <p className="font-semibold text-foreground">Slides</p>
-                <p className="mt-0.5 text-xs text-muted-foreground">Decks & pitchbooks</p>
+                <p className="mt-0.5 text-xs text-muted-foreground">
+                  Decks & pitchbooks
+                </p>
               </div>
               <div className="rounded-xl border border-border bg-card/60 px-3.5 py-3 backdrop-blur-xl dark:bg-card/40">
                 <p className="font-semibold text-foreground">Docs</p>
-                <p className="mt-0.5 text-xs text-muted-foreground">Briefs & manuals</p>
+                <p className="mt-0.5 text-xs text-muted-foreground">
+                  Briefs & manuals
+                </p>
               </div>
             </div>
           </div>
@@ -143,7 +149,8 @@ export default function Hero() {
             Simple from upload to notes
           </h2>
           <p className="mt-4 text-base leading-relaxed text-muted-foreground">
-            A focused workflow that helps you get to the important parts without the noise.
+            A focused workflow that helps you get to the important parts without
+            the noise.
           </p>
         </div>
 
@@ -152,7 +159,9 @@ export default function Hero() {
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-foreground/5 text-muted-foreground">
               <Upload className="h-6 w-6" strokeWidth={2.25} />
             </div>
-            <h3 className="mt-5 text-lg font-semibold text-foreground">Upload</h3>
+            <h3 className="mt-5 text-lg font-semibold text-foreground">
+              Upload
+            </h3>
             <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
               Drop in a PDF, slide deck, or Word doc.
             </p>
@@ -161,7 +170,9 @@ export default function Hero() {
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/12 text-primary">
               <Sparkles className="h-6 w-6" strokeWidth={2.25} />
             </div>
-            <h3 className="mt-5 text-lg font-semibold text-foreground">Extract</h3>
+            <h3 className="mt-5 text-lg font-semibold text-foreground">
+              Extract
+            </h3>
             <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
               Pull out the key ideas and important details.
             </p>
@@ -170,7 +181,9 @@ export default function Hero() {
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-foreground/5 text-muted-foreground">
               <BookOpen className="h-6 w-6" strokeWidth={2.25} />
             </div>
-            <h3 className="mt-5 text-lg font-semibold text-foreground">Review</h3>
+            <h3 className="mt-5 text-lg font-semibold text-foreground">
+              Review
+            </h3>
             <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
               Get structured notes you can skim and reuse.
             </p>
@@ -190,7 +203,8 @@ export default function Hero() {
             Designed to feel effortless
           </h2>
           <p className="mt-4 text-base leading-relaxed text-muted-foreground">
-            ClearNotes helps you move from a long file to something useful in a few steps.
+            ClearNotes helps you move from a long file to something useful in a
+            few steps.
           </p>
         </div>
 
@@ -200,7 +214,9 @@ export default function Hero() {
               <Zap className="h-5.5 w-5.5" strokeWidth={2.25} />
             </div>
             <div>
-              <h3 className="text-base font-semibold text-foreground">Less noise</h3>
+              <h3 className="text-base font-semibold text-foreground">
+                Less noise
+              </h3>
               <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
                 Strip away filler so the important points stand out.
               </p>
@@ -211,7 +227,9 @@ export default function Hero() {
               <GraduationCap className="h-5.5 w-5.5" strokeWidth={2.25} />
             </div>
             <div>
-              <h3 className="text-base font-semibold text-foreground">Built for real work</h3>
+              <h3 className="text-base font-semibold text-foreground">
+                Built for real work
+              </h3>
               <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
                 Useful for study, research, and team review.
               </p>
@@ -222,7 +240,9 @@ export default function Hero() {
               <Clock3 className="h-5.5 w-5.5" strokeWidth={2.25} />
             </div>
             <div>
-              <h3 className="text-base font-semibold text-foreground">Fast to scan</h3>
+              <h3 className="text-base font-semibold text-foreground">
+                Fast to scan
+              </h3>
               <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
                 Readable notes that make long documents easier to revisit.
               </p>
@@ -233,7 +253,9 @@ export default function Hero() {
               <ShieldCheck className="h-5.5 w-5.5" strokeWidth={2.25} />
             </div>
             <div>
-              <h3 className="text-base font-semibold text-foreground">Simple by design</h3>
+              <h3 className="text-base font-semibold text-foreground">
+                Simple by design
+              </h3>
               <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
                 No clutter, no learning curve, just clear output.
               </p>
