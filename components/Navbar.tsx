@@ -16,7 +16,7 @@ const Navbar = () => {
       <div className="mx-auto max-w-6xl">
         <nav className="flex w-full items-center justify-between rounded-full border border-border bg-card/70 px-5 py-3 shadow-[0_8px_30px_rgba(0,0,0,0.04)] backdrop-blur-xl dark:bg-card/5 dark:shadow-black/20">
           <a href="#" className="flex items-center gap-2">
-            <Image src="/logo.PNG" alt="Logo" width={28} height={28} />
+            <Image src="/logo.png" alt="Logo" width={28} height={28} />
             <span className="text-lg font-semibold tracking-tight text-foreground">
               ClearNotes
             </span>

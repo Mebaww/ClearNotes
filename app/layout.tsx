@@ -31,7 +31,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "ClearNotes — Turn documents into structured notes",
   icons: {
-    icon: "/logo.PNG",
+    icon: "/logo.png",
   },
   description:
     "ClearNotes transforms PDFs, PPTs, and DOCX files into clear, structured notes for studying and work. Join the waitlist for early access.",
