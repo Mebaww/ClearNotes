@@ -9,7 +9,7 @@ import "./globals.css";
 
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/theme-provider";
-
+import {GoogleAnalytics} from "@next/third-parties/google"
 const instrumentSerifHeading = Instrument_Serif({
   subsets: ["latin"],
   weight: ["400"],
@@ -60,6 +60,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
+          <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID!} />
           {children}
         </ThemeProvider>
       </body>
