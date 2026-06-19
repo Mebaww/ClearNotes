@@ -1,0 +1,26 @@
+generator client {
+  provider = "prisma-client"
+  output   = "./generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum WaitListStatus {
+  PENDING
+  INVITED
+  JOINED
+}
+
+model Waitlist {
+  id        String         @id @default(cuid())
+  email     String         @unique
+  source    String?
+  status    WaitListStatus @default(PENDING)
+  joinedAt  DateTime?
+  createdAt DateTime       @default(now())
+
+  @@index([email])
+  @@index([status])
+}
