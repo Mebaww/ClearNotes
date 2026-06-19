@@ -1,15 +1,12 @@
 import type { Metadata } from "next";
-import {
-  Geist,
-  Geist_Mono,
-  Noto_Sans,
-  Instrument_Serif,
-} from "next/font/google";
+import { Noto_Sans, Instrument_Serif } from "next/font/google";
 import "./globals.css";
 
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/theme-provider";
-import {GoogleAnalytics} from "@next/third-parties/google"
+import { GoogleAnalytics } from "@next/third-parties/google";
+
+
 const instrumentSerifHeading = Instrument_Serif({
   subsets: ["latin"],
   weight: ["400"],
@@ -18,24 +15,46 @@ const instrumentSerifHeading = Instrument_Serif({
 
 const notoSans = Noto_Sans({ subsets: ["latin"], variable: "--font-sans" });
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
 export const metadata: Metadata = {
-  title: "ClearNotes — Turn documents into structured notes",
+  title: "ClearNotes — Read less, Understand more",
   icons: {
     icon: "/logo.png",
-  },
+  } ,
   description:
-    "ClearNotes transforms PDFs, PPTs, and DOCX files into clear, structured notes for studying and work. Join the waitlist for early access.",
+    "ClearNotes turns PDFs, slide decks, and Word documents into clear, structured notes for work and study.",
+  applicationName: "ClearNotes",
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    type: "website",
+    title: "ClearNotes — Read less, Understand more",
+    description:
+      "Turn PDFs, slide decks, and Word documents into clear, structured notes.",
+    url: "/",
+    siteName: "ClearNotes",
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "ClearNotes social preview",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "ClearNotes — Read less, Understand more",
+    description:
+      "Turn PDFs, slide decks, and Word documents into clear, structured notes.",
+    images: ["/opengraph-image"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
+
 
 export default function RootLayout({
   children,
