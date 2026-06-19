@@ -44,23 +44,21 @@ export default function WaitlistForm({
         onSubmit={submit}
         className={`group flex flex-col gap-2 rounded-[1.75rem] border p-2 transition duration-200 sm:flex-row sm:items-center sm:rounded-full ${
           hasError
-            ? "border-red-300 bg-red-50/80 ring-4 ring-red-100"
+            ? "border-destructive/30 bg-destructive/10 ring-4 ring-destructive/10"
             : focused
-              ? "border-[#B8863B]/50 bg-white/80 ring-4 ring-[#B8863B]/15 dark:border-[#E0B568]/50 dark:bg-white/[0.06] dark:ring-[#E0B568]/15"
-              : isLight
-                ? "border-black/5 bg-white/80 shadow-[0_16px_45px_rgba(0,0,0,0.08)] backdrop-blur-xl dark:border-white/10 dark:bg-white/[0.05] dark:shadow-black/30"
-                : "border-black/5 bg-white/70 shadow-[0_12px_30px_rgba(0,0,0,0.06)] backdrop-blur-xl dark:border-white/10 dark:bg-white/[0.05] dark:shadow-black/30"
+              ? "border-primary/50 bg-card/85 ring-4 ring-primary/15"
+              : "border-border bg-card/75 shadow-[0_12px_30px_rgba(0,0,0,0.06)] backdrop-blur-xl dark:shadow-black/30"
         } ${isLarge ? "sm:p-2" : "sm:p-1.5"}`}
         noValidate
       >
-        <div className="flex min-w-0 flex-1 items-center gap-2 rounded-full bg-transparent px-3 text-[#1D1D1F] dark:text-zinc-50">
+        <div className="flex min-w-0 flex-1 items-center gap-2 rounded-full bg-transparent px-3 text-foreground">
           <Mail
             className={`h-4.5 w-4.5 shrink-0 transition ${
               focused
-                ? "text-[#B8863B] dark:text-[#E0B568]"
+                ? "text-primary"
                 : hasError
-                  ? "text-red-500"
-                  : "text-[#86868B] dark:text-zinc-500"
+                  ? "text-destructive"
+                  : "text-muted-foreground"
             }`}
             strokeWidth={2}
           />
@@ -72,19 +70,19 @@ export default function WaitlistForm({
             placeholder="you@example.com"
             value={email}
             onChange={(e) => {
-              setEmail(e.target.value);
-              if (status) setStatus("");
+               setEmail(e.target.value);
+               if (status) setStatus("");
             }}
             onFocus={() => setFocused(true)}
             onBlur={() => setFocused(false)}
-            className={`min-w-0 flex-1 bg-transparent outline-none placeholder:text-[#86868B] dark:placeholder:text-zinc-500 ${
+            className={`min-w-0 flex-1 bg-transparent outline-none placeholder:text-muted-foreground ${
               isLarge ? "py-2.5 text-base" : "py-2 text-sm"
             }`}
           />
         </div>
         <button
           type="submit"
-          className={`flex w-full shrink-0 items-center justify-center gap-2 rounded-full bg-[#B8863B] font-semibold text-white shadow-sm shadow-[#B8863B]/15 transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#A67832] hover:shadow-md hover:shadow-[#B8863B]/25 active:translate-y-0 active:scale-[0.98] sm:w-auto dark:bg-[#E0B568] dark:text-[#1D1D1F] dark:shadow-[#E0B568]/10 dark:hover:bg-[#D3A24E] dark:hover:shadow-[#E0B568]/20 ${
+          className={`flex w-full shrink-0 items-center justify-center gap-2 rounded-full bg-primary font-semibold text-primary-foreground shadow-sm shadow-primary/15 transition-all duration-200 hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-md hover:shadow-primary/25 active:translate-y-0 active:scale-[0.98] sm:w-auto ${
             isLarge ? "px-6 py-3 text-base" : "px-5 py-2.5 text-sm"
           }`}
         >
@@ -94,14 +92,14 @@ export default function WaitlistForm({
       </form>
 
       {hasSuccess && (
-        <p id={messageId} className="mt-3 flex items-center gap-2 text-sm font-medium text-[#B8863B] dark:text-[#E0B568]">
+        <p id={messageId} className="mt-3 flex items-center gap-2 text-sm font-medium text-primary">
           <Check className="h-4 w-4" strokeWidth={2.5} />
           You&apos;re on the list.
         </p>
       )}
       {hasError && (
-        <p id={messageId} className="mt-3 flex items-center gap-2 text-sm font-medium text-red-700">
-          <AlertCircle className="h-4 w-4 text-red-600" strokeWidth={2.5} />
+        <p id={messageId} className="mt-3 flex items-center gap-2 text-sm font-medium text-destructive">
+          <AlertCircle className="h-4 w-4 text-destructive" strokeWidth={2.5} />
           Enter a valid email address.
         </p>
       )}
