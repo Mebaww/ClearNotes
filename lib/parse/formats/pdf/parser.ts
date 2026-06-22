@@ -24,7 +24,7 @@ async function extractTokens(pdfDocument: PDFDocumentProxy) {
   return extractPdfTokens(pdfDocument);
 }
 
-export async function parsePdf(fileBuffer: ArrayBuffer): Promise<ParsedDocument> {
+export async function parsePDFDocument(fileBuffer: ArrayBuffer): Promise<ParsedDocument> {
   const loadingTask = getDocument({ data: fileBuffer });
   const pdfDocument = await loadingTask.promise;
 
@@ -40,6 +40,7 @@ export async function parsePdf(fileBuffer: ArrayBuffer): Promise<ParsedDocument>
 
   const pages = buildPages(pdfTokens);
 
+  console.log(`Parsed PDF document with ${pdfDocument.numPages} pages and ${pdfTokens.length} tokens.`);
   return {
     pageCount: pdfDocument.numPages,
     pages,

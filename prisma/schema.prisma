@@ -12,6 +12,11 @@ enum WaitListStatus {
   INVITED
   JOINED
 }
+enum  NoteStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+}
 
 model Waitlist {
   id        String         @id @default(cuid())
@@ -23,4 +28,16 @@ model Waitlist {
 
   @@index([email])
   @@index([status])
+}
+
+model Note {
+  id         String     @id @default(cuid())
+  title      String?
+  sourceText String?    @db.Text
+  generated  String?    @db.Text
+
+  status     NoteStatus @default(PROCESSING)
+
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
 }

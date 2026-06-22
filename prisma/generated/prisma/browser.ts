@@ -22,3 +22,8 @@ export * from './enums';
  * 
  */
 export type Waitlist = Prisma.WaitlistModel
+/**
+ * Model Note
+ * 
+ */
+export type Note = Prisma.NoteModel

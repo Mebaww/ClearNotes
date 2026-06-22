@@ -1,6 +1,39 @@
-import { NotebookPen } from "lucide-react"
+import { Metadata } from "next";
+import NotesList from "@/components/workspace/notes/Notes-List";
+import {Note} from "@/types/note";
 
-export default function NotesPage() {
+export const metadata: Metadata = {
+  title: "Notes | CleanNotes",
+  description: "All your generated notes in one place.",
+};
+
+export const revalidate = 0;
+
+async function getNotes(): Promise<Note[]> {
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+  
+  try {
+    const res = await fetch(`${baseUrl}/api/notes`, { 
+      cache: "no-store" 
+    });
+
+    if (!res.ok) {
+      throw new Error(`Failed to fetch notes: ${res.statusText}`);
+    }
+
+    const data = await res.json();
+    
+    // Check if your API nests data inside an envelope (e.g., { success: true, notes: [...] })
+    return Array.isArray(data) ? data : data.notes || [];
+  } catch (error) {
+    console.error("Error fetching notes inside Server Component:", error);
+    return [];
+  }
+}
+
+export default async function NotesPage() {
+  const notes = await getNotes();
+
   return (
     <main className="flex-1 overflow-auto">
       <div className="mx-auto max-w-5xl px-4 py-8 md:px-8 md:py-10">
@@ -13,16 +46,9 @@ export default function NotesPage() {
           </p>
         </div>
 
-        <div className="mt-12 flex flex-col items-center justify-center rounded-xl border border-dashed border-border/80 bg-card px-6 py-16 text-center">
-          <div className="flex size-10 items-center justify-center rounded-full bg-muted text-muted-foreground">
-            <NotebookPen className="size-4" />
-          </div>
-          <p className="mt-4 text-sm font-medium text-foreground">No notes yet</p>
-          <p className="mt-1 max-w-sm text-xs text-muted-foreground">
-            Upload a document from Home to generate your first set of notes.
-          </p>
-        </div>
+        {/* Dynamic Client Interactive View Layer */}
+        <NotesList initialNotes={notes} />
       </div>
     </main>
-  )
+  );
 }

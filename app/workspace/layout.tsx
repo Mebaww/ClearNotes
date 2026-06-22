@@ -1,12 +1,12 @@
-import { AppSidebar } from "@/components/app-sidebar"
-import { SiteHeader } from "@/components/site-header"
-import {  SidebarProvider } from "@/components/ui/sidebar"
-import { TooltipProvider } from "@/components/ui/tooltip"
+import { AppSidebar } from "@/components/app-sidebar";
+import { SiteHeader } from "@/components/site-header";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 export default function WorkspaceLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <div className="min-h-svh [--header-height:calc(--spacing(12))]">
@@ -15,12 +15,10 @@ export default function WorkspaceLayout({
           <SiteHeader />
           <div className="flex flex-1">
             <AppSidebar />
-           
-              {children}
-            
+            {children}
           </div>
         </SidebarProvider>
       </TooltipProvider>
     </div>
-  )
+  );
 }

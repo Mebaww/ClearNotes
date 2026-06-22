@@ -1,31 +1,31 @@
-// Runs before parsePdf — validates the file and checks page count from raw bytes,
-// so we never spin up pdf.js on a bad or oversized file.
-
 export interface PrecheckResult {
   valid: boolean;
   pageCount: number | null;
   error?: { code: "INVALID_FILE" | "PAGE_LIMIT_EXCEEDED"; message: string };
 }
 
-export function precheckPdf(buffer: ArrayBuffer, pageLimit: number): PrecheckResult {
-  const bytes = new Uint8Array(buffer);
+export class ParseError extends Error {
+  code: string;
+  constructor(code: string, message: string) {
+    super(message);
+    this.code = code;
+  }
+}
 
-  // Real-world PDFs sometimes have a BOM or stray bytes before the signature.
-  // Scan the first chunk instead of requiring %PDF- at byte 0.
+export function ValidateFile(buffer: ArrayBuffer, pageLimit: number): PrecheckResult {
+  const bytes = new Uint8Array(buffer);
   const signature = "%PDF-";
   const scanLimit = Math.min(bytes.length - signature.length + 1, 1024);
   let hasPdfSignature = false;
 
   for (let offset = 0; offset < scanLimit; offset++) {
     let matches = true;
-
     for (let i = 0; i < signature.length; i++) {
       if (String.fromCharCode(bytes[offset + i]) !== signature[i]) {
         matches = false;
         break;
       }
     }
-
     if (matches) {
       hasPdfSignature = true;
       break;
@@ -40,13 +40,10 @@ export function precheckPdf(buffer: ArrayBuffer, pageLimit: number): PrecheckRes
     };
   }
 
-  // PDFs store page count in /Count entries inside the Pages dictionary.
-  // A page tree can have multiple nested /Count values — the largest is always the total.
   const text = Buffer.from(bytes).toString("binary");
   const matches = [...text.matchAll(/\/Count\s+(\d+)/g)];
 
   if (matches.length === 0) {
-    // Valid PDF but couldn't read count from bytes — parsePdf will handle it
     return { valid: true, pageCount: null };
   }
 
@@ -64,4 +61,13 @@ export function precheckPdf(buffer: ArrayBuffer, pageLimit: number): PrecheckRes
   }
 
   return { valid: true, pageCount };
+}
+
+// Stub for your actual pdf parser implementation
+export interface ParsedDocument {
+  pages: { content: string }[];
+}
+export async function parsePDFDocument(buffer: ArrayBuffer): Promise<ParsedDocument> {
+  // Your pdf.js logic here
+  return { pages: [] }; 
 }

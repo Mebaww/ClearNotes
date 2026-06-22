@@ -1,11 +1,12 @@
 import Hero from "@/components/Hero";
 import Navbar from "@/components/Navbar";
 
-export default function Home() {
+export default async function Home() {
+
   return (
     <>
       <Navbar />
-      <Hero />
+      <Hero  />
     </>
   );
 }

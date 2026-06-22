@@ -46,3 +46,8 @@ export { Prisma }
  * 
  */
 export type Waitlist = Prisma.WaitlistModel
+/**
+ * Model Note
+ * 
+ */
+export type Note = Prisma.NoteModel

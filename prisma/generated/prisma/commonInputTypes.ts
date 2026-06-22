@@ -152,6 +152,23 @@ export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedDateTimeFilter<$PrismaModel>
 }
 
+export type EnumNoteStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.NoteStatus | Prisma.EnumNoteStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.NoteStatus[] | Prisma.ListEnumNoteStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.NoteStatus[] | Prisma.ListEnumNoteStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumNoteStatusFilter<$PrismaModel> | $Enums.NoteStatus
+}
+
+export type EnumNoteStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.NoteStatus | Prisma.EnumNoteStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.NoteStatus[] | Prisma.ListEnumNoteStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.NoteStatus[] | Prisma.ListEnumNoteStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumNoteStatusWithAggregatesFilter<$PrismaModel> | $Enums.NoteStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumNoteStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumNoteStatusFilter<$PrismaModel>
+}
+
 export type NestedStringFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -301,6 +318,23 @@ export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedDateTimeFilter<$PrismaModel>
   _max?: Prisma.NestedDateTimeFilter<$PrismaModel>
+}
+
+export type NestedEnumNoteStatusFilter<$PrismaModel = never> = {
+  equals?: $Enums.NoteStatus | Prisma.EnumNoteStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.NoteStatus[] | Prisma.ListEnumNoteStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.NoteStatus[] | Prisma.ListEnumNoteStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumNoteStatusFilter<$PrismaModel> | $Enums.NoteStatus
+}
+
+export type NestedEnumNoteStatusWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.NoteStatus | Prisma.EnumNoteStatusFieldRefInput<$PrismaModel>
+  in?: $Enums.NoteStatus[] | Prisma.ListEnumNoteStatusFieldRefInput<$PrismaModel>
+  notIn?: $Enums.NoteStatus[] | Prisma.ListEnumNoteStatusFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumNoteStatusWithAggregatesFilter<$PrismaModel> | $Enums.NoteStatus
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumNoteStatusFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumNoteStatusFilter<$PrismaModel>
 }
 
 

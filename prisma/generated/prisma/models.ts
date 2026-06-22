@@ -9,4 +9,5 @@
  * 🟢 You can import this file directly.
  */
 export type * from './models/Waitlist'
+export type * from './models/Note'
 export type * from './commonInputTypes'

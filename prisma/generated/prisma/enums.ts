@@ -16,3 +16,12 @@ export const WaitListStatus = {
 } as const
 
 export type WaitListStatus = (typeof WaitListStatus)[keyof typeof WaitListStatus]
+
+
+export const NoteStatus = {
+  PENDING: 'PENDING',
+  PROCESSING: 'PROCESSING',
+  COMPLETED: 'COMPLETED'
+} as const
+
+export type NoteStatus = (typeof NoteStatus)[keyof typeof NoteStatus]
