@@ -1,19 +1,16 @@
 import type { Metadata } from "next";
-import { Noto_Sans, Instrument_Serif } from "next/font/google";
+import { Poppins } from "next/font/google";
 import "./globals.css";
 
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/theme-provider";
 import { GoogleAnalytics } from "@next/third-parties/google";
 
-
-const instrumentSerifHeading = Instrument_Serif({
+const poppins = Poppins({
   subsets: ["latin"],
-  weight: ["400"],
-  variable: "--font-heading",
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-poppins",
 });
-
-const notoSans = Noto_Sans({ subsets: ["latin"], variable: "--font-sans" });
 
 export const metadata: Metadata = {
   title: "ClearNotes — Read less, Understand more",
@@ -56,6 +53,7 @@ export const metadata: Metadata = {
 };
 
 
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -67,8 +65,7 @@ export default function RootLayout({
       suppressHydrationWarning
       className={cn(
         "font-sans",
-        notoSans.variable,
-        instrumentSerifHeading.variable,
+        poppins.variable,
       )}
     >
       <head />
@@ -79,10 +76,13 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID!} />
-          {children}
+        
+            <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID!} />
+            {children}
+      
         </ThemeProvider>
       </body>
+      
     </html>
   );
 }

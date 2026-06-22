@@ -69,7 +69,7 @@ export default function WaitlistForm({
             ? "border-destructive/30 bg-destructive/10 ring-4 ring-destructive/10"
             : focused
               ? "border-primary/50 bg-card/85 ring-4 ring-primary/15"
-              : "border-border bg-card/75 shadow-[0_12px_30px_rgba(0,0,0,0.06)] backdrop-blur-xl dark:shadow-black/30"
+              : "border-border bg-card/75 shadow-[0_12px_30px_rgba(0,0,0,0.06)] backdrop-blur-xl dark:shadow-[0_12px_30px_rgba(0,0,0,0.3)]"
         } ${isLarge ? "sm:p-2" : "sm:p-1.5"}`}
         noValidate
       >

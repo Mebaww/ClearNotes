@@ -10,9 +10,29 @@ export interface PrecheckResult {
 export function precheckPdf(buffer: ArrayBuffer, pageLimit: number): PrecheckResult {
   const bytes = new Uint8Array(buffer);
 
-  // Every valid PDF starts with %PDF-
-  const header = String.fromCharCode(bytes[0], bytes[1], bytes[2], bytes[3], bytes[4]);
-  if (header !== "%PDF-") {
+  // Real-world PDFs sometimes have a BOM or stray bytes before the signature.
+  // Scan the first chunk instead of requiring %PDF- at byte 0.
+  const signature = "%PDF-";
+  const scanLimit = Math.min(bytes.length - signature.length + 1, 1024);
+  let hasPdfSignature = false;
+
+  for (let offset = 0; offset < scanLimit; offset++) {
+    let matches = true;
+
+    for (let i = 0; i < signature.length; i++) {
+      if (String.fromCharCode(bytes[offset + i]) !== signature[i]) {
+        matches = false;
+        break;
+      }
+    }
+
+    if (matches) {
+      hasPdfSignature = true;
+      break;
+    }
+  }
+
+  if (!hasPdfSignature) {
     return {
       valid: false,
       pageCount: null,

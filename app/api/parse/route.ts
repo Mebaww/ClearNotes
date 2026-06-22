@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
-import { precheckPdf } from "@/lib/parse/pdfPrecheck";
-import { parsePdf, ParseError } from "@/lib/parse/pdfParser";
+import { precheckPdf, parsePdf, ParseError } from "@/lib/parse/formats/pdf";
 
 const PAGE_LIMIT = 20;
 
