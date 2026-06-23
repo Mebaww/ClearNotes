@@ -50,7 +50,8 @@ export async function POST(request: Request) {
         success: false,
         error: {
           code: "PARSE_FAILED",
-          message: "An unexpected error occurred while processing your document.",
+          message:
+            "An unexpected error occurred while processing your document.",
         },
       },
       { status: 500 },
@@ -58,19 +59,15 @@ export async function POST(request: Request) {
   }
 }
 
-
 export async function GET() {
-
-  try{
-
+  try {
     const notes = await prisma.note.findMany({
       orderBy: { createdAt: "desc" },
       take: 20,
     });
 
-    return NextResponse.json({success: true, notes});
-
-  }catch (error){
+    return NextResponse.json({ success: true, notes });
+  } catch (error) {
     return NextResponse.json(
       {
         success: false,
@@ -82,6 +79,4 @@ export async function GET() {
       { status: 500 },
     );
   }
-
-
 }

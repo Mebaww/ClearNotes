@@ -16,6 +16,7 @@ async function getData() {
   try {
     const res = await fetch(`${baseUrl}/api/stats`, {
       cache: "no-store",
+      credentials: "include"
     });
 
     if (!res.ok) {

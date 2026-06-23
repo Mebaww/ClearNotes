@@ -3,7 +3,7 @@ import NotesList from "@/components/workspace/notes/Notes-List";
 import {Note} from "@/types/note";
 
 export const metadata: Metadata = {
-  title: "Notes | CleanNotes",
+  title: "Notes | ClearNotes",
   description: "All your generated notes in one place.",
 };
 
@@ -14,7 +14,8 @@ async function getNotes(): Promise<Note[]> {
   
   try {
     const res = await fetch(`${baseUrl}/api/notes`, { 
-      cache: "no-store" 
+      cache: "no-store" ,
+      credentials: "include"
     });
 
     if (!res.ok) {
