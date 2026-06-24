@@ -1,3 +1,4 @@
+import "server-only";
 import { parsePDFDocument, ParsedDocument } from "../parse/formats/pdf";
 import { prisma } from "../prisma";
 import { geminiModel } from "./gemini";

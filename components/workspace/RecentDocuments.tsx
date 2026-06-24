@@ -4,7 +4,7 @@ type RecentDocument = {
   id?: string;
   title: string | null;
   createdAt: Date | null;
-  summary: string | null;
+  summary?: string | null;
 };
 
 function formatDate(date: Date | null) {

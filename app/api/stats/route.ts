@@ -1,15 +1,9 @@
-import { prisma } from "@/lib/prisma";
+import { getStats } from "@/lib/notes/getStats";
 import { NextResponse } from "next/server";
 
 export async function GET() {
   try {
-    const [count, recent] = await Promise.all([
-      prisma.note.count(),
-      prisma.note.findMany({
-        orderBy: { createdAt: "desc" },
-        take: 3,
-      }),
-    ]);
+    const { count, recent } = await getStats();
 
     return NextResponse.json({
       success: true,

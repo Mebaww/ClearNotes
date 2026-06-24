@@ -1,9 +1,26 @@
 "use client";
 
 import axios from "axios";
+import { sileo } from "sileo";
 import { FileUp } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+
+// Maps server-side error codes to user-friendly toast messages
+function getErrorMessage(code?: string): string {
+  switch (code) {
+    case "PAGE_LIMIT_EXCEEDED":
+      return "Your PDF is too long. Please upload a document with 20 pages or fewer.";
+    case "INVALID_FILE":
+      return "That file doesn't look like a valid PDF. Please try a different file.";
+    case "SCANNED_PDF":
+      return "This PDF appears to be a scanned image with no text layer. Try running it through OCR first.";
+    case "PARSE_FAILED":
+      return "We couldn't read that file. Make sure it's a valid, non-corrupted PDF.";
+    default:
+      return "Something went wrong. Please try again in a moment.";
+  }
+}
 
 export function DocumentUploader() {
   const router = useRouter();
@@ -19,24 +36,66 @@ export function DocumentUploader() {
     if (!selectedFile) return;
 
     setFile(selectedFile);
+    setLoading(true);
 
     const formData = new FormData();
     formData.append("file", selectedFile);
 
     try {
-      setLoading(true);
+      const data = await sileo.promise(
+        axios.post("/api/notes", formData).then((r) => r.data),
+        {
+          loading: {
+            title: "Generating notes…",
+            description: `Processing ${selectedFile.name}`,
+          },
+          success: {
+            title: "Notes ready!",
+            description: "Your document has been converted to notes.",
+          },
+          error: (err: unknown) => {
+            // Axios error — pull the structured error body from the API response
+            if (axios.isAxiosError(err)) {
+              const apiError = err.response?.data?.error;
+              const code: string | undefined = apiError?.code;
 
-      const { data } = await axios.post("/api/notes", formData);
+              // Gemini quota / server overload
+              if (
+                err.response?.status === 503 ||
+                code === "AI_OVERLOADED" ||
+                apiError?.message?.toLowerCase().includes("overloaded") ||
+                apiError?.message?.toLowerCase().includes("busy")
+              ) {
+                return {
+                  title: "AI is busy right now",
+                  description:
+                    "Gemini is under high load. Wait a few seconds and try uploading again.",
+                };
+              }
 
-      if (data.success && data.noteId) {
-        router.push(`workspace/notes/${data.noteId}`);
+              return {
+                title: "Upload failed",
+                description: getErrorMessage(code),
+              };
+            }
+
+            return {
+              title: "Upload failed",
+              description: "An unexpected error occurred. Please try again.",
+            };
+          },
+        }
+      );
+
+      if (data?.success && data?.noteId) {
+        router.push(`/workspace/notes/${data.noteId}`);
       }
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        console.error(error.response?.data?.error?.message);
-      }
+    } catch {
+      // sileo.promise() re-throws on error — errors are already shown as toasts above
     } finally {
       setLoading(false);
+      // Reset the input so the same file can be re-uploaded after an error
+      e.target.value = "";
     }
   };
 
@@ -70,14 +129,14 @@ export function DocumentUploader() {
 
         <p className="mt-4 text-sm font-medium text-foreground">
           {loading
-            ? "Generating notes..."
+            ? "Generating notes…"
             : "Drop a file here, or click to browse"}
         </p>
 
         {file && (
           <p className="mt-3 text-xs text-primary">
             {loading
-              ? `Processing ${file.name}...`
+              ? `Processing ${file.name}…`
               : file.name}
           </p>
         )}

@@ -1,7 +1,6 @@
-import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { waitlistSchema } from "@/lib/validations/waitlist";
-import { resolveUTMSource } from "@/lib/utm";
+import { joinWaitlist } from "@/lib/waitlist/joinWaitlist";
 
 export async function POST(req: Request) {
   try {
@@ -17,16 +16,8 @@ export async function POST(req: Request) {
     }
 
     const { email, source } = parsed.data;
-    const normalizedSource = resolveUTMSource(source);
 
-    const waitlistEntry = await prisma.waitlist.upsert({
-      where: { email: email.toLowerCase().trim() },
-      update: {},
-      create: {
-        email: email.toLowerCase().trim(),
-        source: normalizedSource,
-      },
-    });
+    const waitlistEntry = await joinWaitlist(email, source);
 
     return NextResponse.json(
       { message: "Joined waitlist", id: waitlistEntry.id },

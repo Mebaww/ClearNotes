@@ -1,36 +1,13 @@
 import { Metadata } from "next";
 import NotesList from "@/components/workspace/notes/Notes-List";
 import {Note} from "@/types/note";
+import { getNotes } from "@/lib/notes/getNotes";
 
 export const metadata: Metadata = {
   title: "Notes | ClearNotes",
   description: "All your generated notes in one place.",
 };
 
-export const revalidate = 0;
-
-async function getNotes(): Promise<Note[]> {
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
-  
-  try {
-    const res = await fetch(`${baseUrl}/api/notes`, { 
-      cache: "no-store" ,
-      credentials: "include"
-    });
-
-    if (!res.ok) {
-      throw new Error(`Failed to fetch notes: ${res.statusText}`);
-    }
-
-    const data = await res.json();
-    
-    // Check if your API nests data inside an envelope (e.g., { success: true, notes: [...] })
-    return Array.isArray(data) ? data : data.notes || [];
-  } catch (error) {
-    console.error("Error fetching notes inside Server Component:", error);
-    return [];
-  }
-}
 
 export default async function NotesPage() {
   const notes = await getNotes();

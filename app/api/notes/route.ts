@@ -1,73 +1,78 @@
 import { NextResponse } from "next/server";
-import { ValidateFile, ParseError } from "@/lib/parse/formats/pdf";
-import { createNote } from "@/lib/ai/createNotes";
-import { prisma } from "@/lib/prisma";
-
-const PAGE_LIMIT = 20;
+import { ParseError } from "@/lib/parse/formats/pdf";
+import { handleCreateNote } from "@/lib/notes/createNotePipeline";
+import { getNotes } from "@/lib/notes/getNotes";
 
 export async function POST(request: Request) {
   try {
     const formData = await request.formData();
     const file = formData.get("file") as File;
 
-    if (!file) {
+    const noteId = await handleCreateNote(file);
+
+    return NextResponse.json({ success: true, noteId });
+
+    
+  } catch (error) {
+    // PDF parse errors (wrong file type, page limit, scanned PDF, etc.)
+    if (error instanceof ParseError) {
       return NextResponse.json(
         {
           success: false,
-          error: { code: "INVALID_FILE", message: "No file was provided." },
+          error: { code: error.code, message: error.message },
         },
-        { status: 400 },
+        { status: 422 }
       );
     }
 
-    // Convert file to buffer once at the entry point
-    const arrayBuffer = await file.arrayBuffer();
+    const err = error as any;
+    const rawMessage: string = err?.message ?? "";
 
-    // Fast validation on raw bytes before invoking heavy parser logic
-    const precheck = ValidateFile(arrayBuffer, PAGE_LIMIT);
-    if (!precheck.valid) {
+    // Gemini model overloaded / quota exhausted
+    const isAIOverloaded =
+      rawMessage.toLowerCase().includes("overloaded") ||
+      rawMessage.toLowerCase().includes("503") ||
+      rawMessage.toLowerCase().includes("quota") ||
+      rawMessage.toLowerCase().includes("resource has been exhausted");
+
+    if (isAIOverloaded) {
       return NextResponse.json(
-        { success: false, error: precheck.error },
-        { status: 422 },
+        {
+          success: false,
+          error: {
+            code: "AI_OVERLOADED",
+            message:
+              "The AI model is currently under high load. Please wait a moment and try again.",
+          },
+        },
+        { status: 503 }
       );
     }
 
-    // Process notes using the pre-validated buffer
-    const noteId = await createNote(arrayBuffer);
+    // Precheck errors (INVALID_FILE, PAGE_LIMIT_EXCEEDED) come through as plain
+    // Errors with a .code property (set via Object.assign in createNotePipeline)
+    const errCode: string = err?.code || "PARSE_FAILED";
 
-    return NextResponse.json({ success: true, noteId });
-  } catch (error) {
-    if (error instanceof ParseError) {
-      return NextResponse.json(
-        { success: false, error: { code: error.code, message: error.message } },
-        { status: 422 },
-      );
-    }
-
-    console.error("CleanNotes generation pipeline failed:", error);
     return NextResponse.json(
       {
         success: false,
         error: {
-          code: "PARSE_FAILED",
+          code: errCode,
           message:
+            rawMessage ||
             "An unexpected error occurred while processing your document.",
         },
       },
-      { status: 500 },
+      { status: errCode === "PAGE_LIMIT_EXCEEDED" || errCode === "INVALID_FILE" ? 422 : 500 }
     );
   }
 }
 
 export async function GET() {
   try {
-    const notes = await prisma.note.findMany({
-      orderBy: { createdAt: "desc" },
-      take: 20,
-    });
-
+    const notes = await getNotes(20);
     return NextResponse.json({ success: true, notes });
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       {
         success: false,
@@ -76,7 +81,7 @@ export async function GET() {
           message: "An unexpected error occurred while fetching notes.",
         },
       },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }

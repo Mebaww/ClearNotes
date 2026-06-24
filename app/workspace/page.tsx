@@ -1,6 +1,7 @@
 import { DocumentUploader } from "@/components/workspace/DocumentUploader";
 import { RecentDocuments } from "@/components/workspace/RecentDocuments";
 import { WorkspaceStats } from "@/components/workspace/WorkspaceStats";
+import { getStats } from "@/lib/notes/getStats";
 
 function getGreeting() {
   const hour = new Date().getHours();
@@ -9,32 +10,9 @@ function getGreeting() {
   return "Good evening";
 }
 
-async function getData() {
-  const baseUrl =
-    process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
-
-  try {
-    const res = await fetch(`${baseUrl}/api/stats`, {
-      cache: "no-store",
-      credentials: "include"
-    });
-
-    if (!res.ok) {
-      throw new Error(`Failed to fetch stats: ${res.statusText}`);
-    }
-
-    return await res.json();
-  } catch (error) {
-    console.error("Error fetching stats:", error);
-    return {
-      count: 0,
-      recent: [],
-    };
-  }
-}
-
 export default async function WorkspacePage() {
-  const { count, recent } = await getData();
+  const { count, recent } = await getStats();
+
   return (
     <main className="flex-1 overflow-auto">
       <div className="mx-auto max-w-5xl px-4 py-8 md:px-8 md:py-10">
