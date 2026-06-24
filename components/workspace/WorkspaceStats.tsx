@@ -1,6 +1,24 @@
 import { Clock, Notebook, Sparkles } from "lucide-react";
 
-export async  function  WorkspaceStats({ count }: { count: number }) {
+interface WorkspaceStatsProps {
+  count: number;
+  timeSaved?: number;
+  insights?: number;
+}
+
+export function WorkspaceStats({
+  count,
+  timeSaved = 0,
+  insights = 0,
+}: WorkspaceStatsProps) {
+  // Format the time saved: e.g. "1.5h", "0.1h", or "0h"
+  const formattedTimeSaved =
+    timeSaved === 0
+      ? "0h"
+      : timeSaved < 0.1
+      ? "0.1h"
+      : `${timeSaved.toFixed(1)}h`;
+
   return (
     <div className="grid gap-3 sm:grid-cols-3 sm:gap-4">
       {/* Notes */}
@@ -12,9 +30,6 @@ export async  function  WorkspaceStats({ count }: { count: number }) {
         <p className="mt-3 text-2xl font-semibold tracking-tight text-foreground">
           {count}
         </p>
-        {/* <p className="mt-0.5 text-xs text-muted-foreground">
-          +3 this week
-        </p> */}
       </div>
 
       {/* Time saved */}
@@ -24,11 +39,8 @@ export async  function  WorkspaceStats({ count }: { count: number }) {
           <span className="text-xs font-medium">Time saved</span>
         </div>
         <p className="mt-3 text-2xl font-semibold tracking-tight text-foreground">
-          1.5h
+          {formattedTimeSaved}
         </p>
-        {/* <p className="mt-0.5 text-xs text-muted-foreground">
-          This month
-        </p> */}
       </div>
 
       {/* Insights */}
@@ -38,11 +50,8 @@ export async  function  WorkspaceStats({ count }: { count: number }) {
           <span className="text-xs font-medium">Insights</span>
         </div>
         <p className="mt-3 text-2xl font-semibold tracking-tight text-foreground">
-          128
+          {insights}
         </p>
-        {/* <p className="mt-0.5 text-xs text-muted-foreground">
-          All documents
-        </p> */}
       </div>
     </div>
   );

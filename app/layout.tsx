@@ -5,7 +5,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/theme-provider";
 import { GoogleAnalytics } from "@next/third-parties/google";
-import { Toaster } from "sileo"
+import { Toaster } from "@/components/Toaster";
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
@@ -77,7 +77,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
             <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID!} />
-           <Toaster theme="light" position="bottom-center"/>
+            <Toaster />
             {children}
       
         </ThemeProvider>

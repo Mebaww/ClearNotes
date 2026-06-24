@@ -1,8 +1,11 @@
 "use client";
 
-import { NotebookPen, Calendar, ChevronRight, Maximize2 } from "lucide-react";
+import { useState, useEffect } from "react";
+import { NotebookPen, Calendar, ChevronRight, Maximize2, Trash2 } from "lucide-react";
 import { Note } from "@/types/note";
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { sileo } from "sileo";
 
 interface NotesListProps {
   initialNotes: Note[];
@@ -10,8 +13,39 @@ interface NotesListProps {
 
 export default function NotesList({ initialNotes }: NotesListProps) {
   const router = useRouter();
+  const [notes, setNotes] = useState<Note[]>(initialNotes);
+
+  useEffect(() => {
+    setNotes(initialNotes);
+  }, [initialNotes]);
+
+  const handleDelete = async (id: string, e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent card click / navigation to note details
+
+    if (!confirm("Are you sure you want to delete this note?")) {
+      return;
+    }
+
+    const deletePromise = fetch(`/api/notes/${id}`, {
+      method: "DELETE",
+    }).then(async (res) => {
+      if (!res.ok) {
+        throw new Error("Failed to delete note");
+      }
+      // Update local state instantly for optimistic UI feedback
+      setNotes((prev) => prev.filter((note) => note.id !== id));
+      router.refresh(); // Refresh stats on layout/dashboard
+    });
+
+    sileo.promise(deletePromise, {
+      loading: { title: "Deleting note..." },
+      success: { title: "Note deleted successfully!" },
+      error: { title: "Failed to delete note." },
+    });
+  };
+
   // Empty State
-  if (!initialNotes || initialNotes.length === 0) {
+  if (!notes || notes.length === 0) {
     return (
       <div className="mt-12 flex flex-col items-center justify-center rounded-xl border border-dashed border-border/80 bg-card px-6 py-16 text-center">
         <div className="flex size-10 items-center justify-center rounded-full bg-muted text-muted-foreground">
@@ -29,7 +63,7 @@ export default function NotesList({ initialNotes }: NotesListProps) {
     <div className="mt-8">
       {/* Grid Tile Display Layout */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {initialNotes.map((note) => (
+        {notes.map((note) => (
           <div
             key={note.id}
             onClick={() => {
@@ -42,9 +76,21 @@ export default function NotesList({ initialNotes }: NotesListProps) {
                 <h3 className="font-medium text-sm leading-tight text-foreground line-clamp-2 group-hover:text-primary transition-colors">
                   {note.title || "Untitled Document"}
                 </h3>
-                <span className="flex size-6 shrink-0 items-center justify-center rounded-md bg-muted text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity">
-                  <Maximize2 className="size-3" />
-                </span>
+                
+                {/* Action buttons (Visible on Hover) */}
+                <div className="flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <span className="flex size-6 shrink-0 items-center justify-center rounded-md bg-muted text-muted-foreground">
+                    <Maximize2 className="size-3" />
+                  </span>
+                  <Button
+                    variant="destructive"
+                    size="icon-xs"
+                    onClick={(e) => handleDelete(note.id, e)}
+                    title="Delete Note"
+                  >
+                    <Trash2 className="size-3" />
+                  </Button>
+                </div>
               </div>
 
               <p className="text-xs text-muted-foreground line-clamp-3">

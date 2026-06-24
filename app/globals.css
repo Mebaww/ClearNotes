@@ -165,3 +165,9 @@ body {
     background-color: color-mix(in srgb, var(--secondary) 70%, var(--background));
   }
 }
+
+/* Force Toaster on top of all headers and modal elements */
+[data-sileo-viewport] {
+  z-index: 9999 !important;
+}
+

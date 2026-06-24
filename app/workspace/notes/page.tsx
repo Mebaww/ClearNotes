@@ -3,10 +3,13 @@ import NotesList from "@/components/workspace/notes/Notes-List";
 import {Note} from "@/types/note";
 import { getNotes } from "@/lib/notes/getNotes";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Notes | ClearNotes",
   description: "All your generated notes in one place.",
 };
+
 
 
 export default async function NotesPage() {
