@@ -1,4 +1,4 @@
-import { getDocument } from "pdfjs-dist/legacy/build/pdf.mjs";
+import "./polyfill";
 import { buildPages } from "./layout";
 import { extractPdfTokens } from "./text";
 import type { ParsedDocument } from "./types";
@@ -18,6 +18,7 @@ export class ParseError extends Error {
 export async function parsePDFDocument(
   fileBuffer: ArrayBuffer
 ): Promise<ParsedDocument> {
+  const { getDocument } = await import("pdfjs-dist/legacy/build/pdf.mjs");
   const pdfDocument = await getDocument({ data: fileBuffer }).promise;
 
   const pdfTokens = await extractPdfTokens(pdfDocument);
