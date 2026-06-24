@@ -5,22 +5,13 @@ import { sileo } from "sileo";
 import { FileUp } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import {
+  isSupportedFile,
+  ACCEPT_STRING,
+  SUPPORTED_LABELS,
+} from "@/lib/parse/supportedFormats";
 
-// Maps server-side error codes to user-friendly toast messages
-function getErrorMessage(code?: string): string {
-  switch (code) {
-    case "PAGE_LIMIT_EXCEEDED":
-      return "Your PDF is too long. Please upload a document with 20 pages or fewer.";
-    case "INVALID_FILE":
-      return "That file doesn't look like a valid PDF. Please try a different file.";
-    case "SCANNED_PDF":
-      return "This PDF appears to be a scanned image with no text layer. Try running it through OCR first.";
-    case "PARSE_FAILED":
-      return "We couldn't read that file. Make sure it's a valid, non-corrupted PDF.";
-    default:
-      return "Something went wrong. Please try again in a moment.";
-  }
-}
+
 
 export function DocumentUploader() {
   const router = useRouter();
@@ -35,15 +26,49 @@ export function DocumentUploader() {
 
     if (!selectedFile) return;
 
+    // Validate file type against the supported formats registry
+    if (!isSupportedFile(selectedFile)) {
+      sileo.error({
+        title: "Unsupported file type",
+        description: `Only ${SUPPORTED_LABELS} files are supported. Please upload a different file.`,
+      });
+      e.target.value = "";
+      return;
+    }
+
     setFile(selectedFile);
     setLoading(true);
 
-    const formData = new FormData();
-    formData.append("file", selectedFile);
-
     try {
+      // 1. Client-side PDF Parsing
+      let extractedText = "";
+      try {
+        const { parsePDFDocument, ParseError } = await import(
+          "@/lib/parse/formats/pdf/parser"
+        );
+        const arrayBuffer = await selectedFile.arrayBuffer();
+        const parsedDoc = await parsePDFDocument(arrayBuffer);
+        
+        extractedText = parsedDoc.pages.map((p) => p.content).join("\n\n");
+
+        if (!extractedText || extractedText.trim().length < 20) {
+           throw new Error("Empty document text could not be extracted.");
+        }
+      } catch (err: any) {
+        console.error("PDF Parsing Error:", err);
+        const isParseLimitError = err.name === "ParseError" && err.code === "PAGE_LIMIT_EXCEEDED";
+        sileo.error({
+          title: isParseLimitError ? "PDF too long" : "Upload failed",
+          description: err.name === "ParseError"
+            ? err.message
+            : "We couldn't read that file. Make sure it's a valid, non-corrupted PDF.",
+        });
+        return;
+      }
+
+      // 2. Send extracted text to the API
       const data = await sileo.promise(
-        axios.post("/api/notes", formData).then((r) => r.data),
+        axios.post("/api/notes", { text: extractedText }).then((r) => r.data),
         {
           loading: {
             title: "Generating notes…",
@@ -54,12 +79,10 @@ export function DocumentUploader() {
             description: "Your document has been converted to notes.",
           },
           error: (err: unknown) => {
-            // Axios error — pull the structured error body from the API response
             if (axios.isAxiosError(err)) {
               const apiError = err.response?.data?.error;
               const code: string | undefined = apiError?.code;
 
-              // Gemini quota / server overload
               if (
                 err.response?.status === 503 ||
                 code === "AI_OVERLOADED" ||
@@ -73,14 +96,17 @@ export function DocumentUploader() {
                 };
               }
 
-              return {
-                title: "Upload failed",
-                description: getErrorMessage(code),
-              };
+              if (code === "TEXT_TOO_LONG") {
+                return {
+                  title: "Document too large",
+                  description:
+                    "Your document has too much text for the AI to process. Try uploading a shorter document or splitting it into sections.",
+                };
+              }
             }
 
             return {
-              title: "Upload failed",
+              title: "Generation failed",
               description: "An unexpected error occurred. Please try again.",
             };
           },
@@ -91,16 +117,15 @@ export function DocumentUploader() {
         router.push(`/workspace/notes/${data.noteId}`);
       }
     } catch {
-      // sileo.promise() re-throws on error — errors are already shown as toasts above
+      // sileo.promise() re-throws on error
     } finally {
       setLoading(false);
-      // Reset the input so the same file can be re-uploaded after an error
       e.target.value = "";
     }
   };
 
   return (
-    <section className="flex h-full flex-col rounded-xl border border-border/80 bg-card">
+    <section className="flex h-full min-w-0 flex-col rounded-xl border border-border/80 bg-card overflow-hidden">
       <div className="border-b border-border/60 px-5 py-4">
         <h2 className="text-sm font-semibold text-foreground">
           New notes
@@ -112,12 +137,12 @@ export function DocumentUploader() {
 
       <label
         htmlFor="workspace-upload"
-        className="group m-4 flex flex-1 cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed border-border bg-muted/20 px-5 py-10 text-center transition-colors hover:border-primary/30 hover:bg-primary/[0.03]"
+        className="group m-4 flex flex-1 cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed border-border bg-muted/20 px-4 py-8 text-center transition-colors hover:border-primary/30 hover:bg-primary/[0.03] overflow-hidden min-w-0"
       >
         <input
           id="workspace-upload"
           type="file"
-          accept=".pdf,.doc,.docx,.ppt,.pptx"
+          accept={ACCEPT_STRING}
           onChange={handleFileChange}
           disabled={loading}
           className="sr-only"
@@ -134,7 +159,7 @@ export function DocumentUploader() {
         </p>
 
         {file && (
-          <p className="mt-3 text-xs text-primary">
+          <p className="mt-3 max-w-full truncate text-xs text-primary px-2">
             {loading
               ? `Processing ${file.name}…`
               : file.name}

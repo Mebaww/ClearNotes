@@ -13,9 +13,11 @@ export default function WorkspaceLayout({
       <TooltipProvider>
         <SidebarProvider className="flex flex-col">
           <SiteHeader />
-          <div className="flex flex-1">
+          <div className="flex flex-1 overflow-hidden">
             <AppSidebar />
-            {children}
+            <div className="flex flex-1 flex-col min-w-0 overflow-auto">
+              {children}
+            </div>
           </div>
         </SidebarProvider>
       </TooltipProvider>

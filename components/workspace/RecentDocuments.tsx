@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { ArrowUpRight, Notebook } from "lucide-react";
 
 type RecentDocument = {
@@ -22,7 +23,7 @@ export function RecentDocuments({
   documents?: RecentDocument[];
 }) {
   return (
-    <section className="flex h-full flex-col rounded-xl border border-border/80 bg-card">
+    <section className="flex h-full min-w-0 flex-col rounded-xl border border-border/80 bg-card overflow-hidden">
       <div className="flex items-center justify-between gap-4 border-b border-border/60 px-5 py-4">
         <div>
           <h2 className="text-sm font-semibold text-foreground">
@@ -33,40 +34,41 @@ export function RecentDocuments({
           </p>
         </div>
 
-        <button className="text-xs font-medium text-primary transition-colors hover:text-primary/80">
+        <Link
+          href="/workspace/notes"
+          className="shrink-0 text-xs font-medium text-primary transition-colors hover:text-primary/80"
+        >
           View all
-        </button>
+        </Link>
       </div>
 
       <div className="divide-y divide-border/60">
         {documents.map((doc, idx) => (
-          <button
+          <Link
             key={doc.id ?? idx}
-            type="button"
-            className="group flex w-full items-start gap-3 px-5 py-4 text-left transition-colors hover:bg-muted/40"
+            href={doc.id ? `/workspace/notes/${doc.id}` : "/workspace/notes"}
+            className="group flex w-full min-w-0 items-start gap-3 px-5 py-4 text-left transition-colors hover:bg-muted/40"
           >
             <div className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground transition-colors group-hover:bg-primary/10 group-hover:text-primary">
               <Notebook className="size-4" />
             </div>
 
-            <div className="min-w-0 flex-1">
+            <div className="min-w-0 flex-1 overflow-hidden">
               <div className="flex items-start justify-between gap-3">
                 <p className="truncate text-sm font-medium text-foreground group-hover:text-primary">
                   {doc.title ?? "Untitled Note"}
                 </p>
 
-                <span className="shrink-0 text-[11px] text-muted-foreground">
-                  {formatDate(doc.createdAt)}
-                </span>
+                
               </div>
 
               <p className="mt-0.5 line-clamp-1 text-xs text-muted-foreground">
-                {doc.summary ?? "No summary available"}
+                {doc.createdAt ? formatDate(doc.createdAt) : "n/a"}
               </p>
             </div>
 
             <ArrowUpRight className="mt-1 size-3.5 shrink-0 text-muted-foreground/0 transition-all group-hover:text-muted-foreground" />
-          </button>
+          </Link>
         ))}
       </div>
     </section>

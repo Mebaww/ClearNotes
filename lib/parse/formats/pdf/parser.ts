@@ -1,9 +1,8 @@
-import "./polyfill";
 import { buildPages } from "./layout";
 import { extractPdfTokens } from "./text";
 import type { ParsedDocument } from "./types";
 
-export type ParseErrorCode = "SCANNED_PDF" | "PARSE_FAILED";
+export type ParseErrorCode = "SCANNED_PDF" | "PARSE_FAILED" | "PAGE_LIMIT_EXCEEDED";
 
 export class ParseError extends Error {
   readonly code: ParseErrorCode;
@@ -15,11 +14,28 @@ export class ParseError extends Error {
   }
 }
 
+const PAGE_LIMIT = 20;
+
+// Set the CDN worker once at module load time (browser only)
+if (typeof window !== "undefined") {
+  import("pdfjs-dist").then((lib) => {
+    lib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${lib.version}/build/pdf.worker.min.mjs`;
+  });
+}
+
 export async function parsePDFDocument(
   fileBuffer: ArrayBuffer
 ): Promise<ParsedDocument> {
-  const { getDocument } = await import("pdfjs-dist/legacy/build/pdf.mjs");
-  const pdfDocument = await getDocument({ data: fileBuffer }).promise;
+  const pdfjsLib = await import("pdfjs-dist");
+
+  const pdfDocument = await pdfjsLib.getDocument({ data: fileBuffer }).promise;
+
+  if (pdfDocument.numPages > PAGE_LIMIT) {
+    throw new ParseError(
+      "PAGE_LIMIT_EXCEEDED",
+      `Your PDF has ${pdfDocument.numPages} pages — the limit is ${PAGE_LIMIT}. Please upload a shorter document.`
+    );
+  }
 
   const pdfTokens = await extractPdfTokens(pdfDocument);
 

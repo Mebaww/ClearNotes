@@ -5,26 +5,19 @@ import { getNotes } from "@/lib/notes/getNotes";
 
 export async function POST(request: Request) {
   try {
-    const formData = await request.formData();
-    const file = formData.get("file") as File;
+    const { text } = await request.json();
 
-    const noteId = await handleCreateNote(file);
-
-    return NextResponse.json({ success: true, noteId });
-
-    
-  } catch (error) {
-    // PDF parse errors (wrong file type, page limit, scanned PDF, etc.)
-    if (error instanceof ParseError) {
+    if (!text || typeof text !== "string") {
       return NextResponse.json(
-        {
-          success: false,
-          error: { code: error.code, message: error.message },
-        },
-        { status: 422 }
+        { success: false, error: { code: "INVALID_REQUEST", message: "Missing document text" } },
+        { status: 400 }
       );
     }
 
+    const noteId = await handleCreateNote(text);
+
+    return NextResponse.json({ success: true, noteId });
+  } catch (error) {
     const err = error as any;
     const rawMessage: string = err?.message ?? "";
 
@@ -41,29 +34,24 @@ export async function POST(request: Request) {
           success: false,
           error: {
             code: "AI_OVERLOADED",
-            message:
-              "The AI model is currently under high load. Please wait a moment and try again.",
+            message: "The AI model is currently under high load. Please wait a moment and try again.",
           },
         },
         { status: 503 }
       );
     }
 
-    // Precheck errors (INVALID_FILE, PAGE_LIMIT_EXCEEDED) come through as plain
-    // Errors with a .code property (set via Object.assign in createNotePipeline)
-    const errCode: string = err?.code || "PARSE_FAILED";
+    const errCode: string = err?.code ?? "GENERATION_FAILED";
 
     return NextResponse.json(
       {
         success: false,
         error: {
           code: errCode,
-          message:
-            rawMessage ||
-            "An unexpected error occurred while processing your document.",
+          message: rawMessage || "An unexpected error occurred while generating notes.",
         },
       },
-      { status: errCode === "PAGE_LIMIT_EXCEEDED" || errCode === "INVALID_FILE" ? 422 : 500 }
+      { status: errCode === "TEXT_TOO_LONG" ? 422 : 500 }
     );
   }
 }

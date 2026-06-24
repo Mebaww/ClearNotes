@@ -14,8 +14,8 @@ export default async function WorkspacePage() {
   const { count, recent } = await getStats();
 
   return (
-    <main className="flex-1 overflow-auto">
-      <div className="mx-auto max-w-5xl px-4 py-8 md:px-8 md:py-10">
+    <main className="w-full min-w-0 flex-1">
+      <div className="mx-auto w-full max-w-5xl px-4 py-8 md:px-8 md:py-10">
         <div className="space-y-1">
           <h1 className="text-2xl font-semibold tracking-tight text-foreground md:text-[1.75rem]">
             {getGreeting()}, Mebaw
@@ -28,11 +28,11 @@ export default async function WorkspacePage() {
         <div className="mt-8">
           <WorkspaceStats count={count} />
         </div>
-        <div className="mt-8 grid gap-6 lg:grid-cols-5 lg:gap-8">
-          <div className="lg:col-span-2">
+        <div className="mt-8 grid w-full gap-6 lg:grid-cols-5 lg:gap-8">
+          <div className="min-w-0 lg:col-span-2">
             <DocumentUploader />
           </div>
-          <div className="lg:col-span-3">
+          <div className="min-w-0 lg:col-span-3">
             <RecentDocuments documents={recent} />
           </div>
         </div>
