@@ -2,6 +2,9 @@ import { DocumentUploader } from "@/components/workspace/DocumentUploader";
 import { RecentDocuments } from "@/components/workspace/RecentDocuments";
 import { WorkspaceStats } from "@/components/workspace/WorkspaceStats";
 import { getStats } from "@/lib/notes/getStats";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
@@ -13,14 +16,22 @@ function getGreeting() {
 }
 
 export default async function WorkspacePage() {
-  const { count, recent, timeSaved, insights } = await getStats();
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session) {
+    redirect("/");
+  }
+
+  const { count, recent, timeSaved, insights } = await getStats(session.user.id);
 
   return (
     <main className="w-full min-w-0 flex-1">
       <div className="mx-auto w-full max-w-5xl px-4 py-8 md:px-8 md:py-10">
         <div className="space-y-1">
           <h1 className="text-2xl font-semibold tracking-tight text-foreground md:text-[1.75rem]">
-            {getGreeting()}, Mebaw
+            {getGreeting()}, {session.user.name.split(" ")[0]}
           </h1>
           <p className="text-sm text-muted-foreground">
             Upload a document to generate notes, or pick up where you left off.

@@ -2,6 +2,9 @@ import { Metadata } from "next";
 import NotesList from "@/components/workspace/notes/Notes-List";
 import {Note} from "@/types/note";
 import { getNotes } from "@/lib/notes/getNotes";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
@@ -10,10 +13,16 @@ export const metadata: Metadata = {
   description: "All your generated notes in one place.",
 };
 
-
-
 export default async function NotesPage() {
-  const notes = await getNotes();
+  const session = await auth.api.getSession({
+    headers: await headers()
+  });
+
+  if (!session) {
+    redirect("/");
+  }
+
+  const notes = await getNotes(session.user.id);
 
   return (
     <main className="flex-1 overflow-auto">

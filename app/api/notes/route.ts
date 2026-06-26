@@ -2,9 +2,18 @@ import { NextResponse } from "next/server";
 import { ParseError } from "@/lib/parse/formats/pdf";
 import { handleCreateNote } from "@/lib/notes/createNotePipeline";
 import { getNotes } from "@/lib/notes/getNotes";
+import { auth } from "@/lib/auth";
 
 export async function POST(request: Request) {
   try {
+    const session = await auth.api.getSession({
+      headers: request.headers
+    });
+
+    if (!session) {
+      return NextResponse.json({ success: false, error: { code: "UNAUTHORIZED", message: "User is not authenticated" } }, { status: 401 });
+    }
+
     const { text } = await request.json();
 
     if (!text || typeof text !== "string") {
@@ -14,7 +23,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const noteId = await handleCreateNote(text);
+    const noteId = await handleCreateNote(text, session.user.id);
 
     return NextResponse.json({ success: true, noteId });
   } catch (error) {
@@ -56,9 +65,17 @@ export async function POST(request: Request) {
   }
 }
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    const notes = await getNotes(20);
+    const session = await auth.api.getSession({
+      headers: request.headers
+    });
+
+    if (!session) {
+      return NextResponse.json({ success: false, error: { code: "UNAUTHORIZED", message: "User is not authenticated" } }, { status: 401 });
+    }
+
+    const notes = await getNotes(session.user.id, 20);
     return NextResponse.json({ success: true, notes });
   } catch {
     return NextResponse.json(

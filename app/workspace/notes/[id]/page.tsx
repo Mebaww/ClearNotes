@@ -1,5 +1,8 @@
 import { getNoteById } from "@/lib/notes/getNoteById";
 import NoteViewer from "@/components/workspace/notes/NoteViewer";
+import { auth } from "@/lib/auth";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 
 interface PageProps {
   params: Promise<{
@@ -8,9 +11,17 @@ interface PageProps {
 }
 
 export default async function NotePage({ params }: PageProps) {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session) {
+    redirect("/");
+  }
+
   const { id } = await params;
 
-  const note = await getNoteById(id);
+  const note = await getNoteById(id, session.user.id);
 
   if (!note) {
     console.log(`Note with ID ${id} not found.`);
