@@ -42,12 +42,12 @@ export default function Hero() {
             {/* Sneak peek / Beta CTA */}
             <div className="mt-5">
               <Link
-                href="/workspace"
+                href="/auth"
                 className="group inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors duration-200 hover:text-foreground"
               >
                 or{" "}
                 <span className="relative font-medium text-foreground">
-                  take a sneak peek
+                  try beta
                   <span className="absolute -bottom-px left-0 h-px w-0 bg-primary transition-all duration-300 group-hover:w-full" />
                 </span>
                 <ArrowRight className="h-3.5 w-3.5 text-primary opacity-0 -translate-x-1 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0" />

@@ -1,5 +1,7 @@
 "use client"
 
+import { useRouter } from "next/navigation"
+import { authClient } from "@/lib/auth-client"
 import {
   Avatar,
   AvatarFallback,
@@ -38,6 +40,7 @@ export function NavUser({
   }
 }) {
   const { isMobile } = useSidebar()
+  const router = useRouter()
   const initials = user.name
     .split(" ")
     .map((part) => part[0])
@@ -55,7 +58,7 @@ export function NavUser({
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar className="size-8 rounded-lg">
-                <AvatarImage src={user.avatar} alt={user.name} />
+                <AvatarImage src={user.avatar} alt={user.name} referrerPolicy="no-referrer" />
                 <AvatarFallback className="rounded-lg bg-primary/10 text-xs font-medium text-primary">
                   {initials}
                 </AvatarFallback>
@@ -78,7 +81,7 @@ export function NavUser({
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="size-8 rounded-lg">
-                  <AvatarImage src={user.avatar} alt={user.name} />
+                  <AvatarImage src={user.avatar} alt={user.name} referrerPolicy="no-referrer" />
                   <AvatarFallback className="rounded-lg bg-primary/10 text-xs font-medium text-primary">
                     {initials}
                   </AvatarFallback>
@@ -107,7 +110,15 @@ export function NavUser({
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={async () => {
+              await authClient.signOut({
+                fetchOptions: {
+                  onSuccess: () => {
+                    router.push("/");
+                  },
+                },
+              });
+            }}>
               <LogOutIcon />
               Log out
             </DropdownMenuItem>

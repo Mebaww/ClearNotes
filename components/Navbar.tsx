@@ -4,13 +4,10 @@ import { FileText, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { ModeToggle } from "./toggle";
 import Image from "next/image";
+import Link from "next/link";
+
 const Navbar = () => {
   const { resolvedTheme, setTheme } = useTheme();
-
-  const scrollToWaitlist = () => {
-    document.getElementById("waitlist")?.scrollIntoView({ behavior: "smooth" });
-  };
-
   return (
     <header className="absolute top-0 z-20 w-full px-4 py-5 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-6xl">
@@ -28,19 +25,13 @@ const Navbar = () => {
             >
               Features
             </a>
-            <a
-              href="#waitlist"
-              className="hidden text-sm font-medium text-muted-foreground transition hover:text-foreground sm:block"
-            >
-              Waitlist
-            </a>
             <ModeToggle />
-            <button
-              onClick={scrollToWaitlist}
+            <Link
+              href="/auth"
               className="rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-sm transition duration-200 hover:-translate-y-0.5 hover:bg-primary/90 active:translate-y-0 active:scale-[0.98]"
             >
-              Join Waitlist
-            </button>
+              Try Beta
+            </Link>
           </div>
         </nav>
       </div>

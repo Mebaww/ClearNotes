@@ -16,7 +16,7 @@ export default async function WorkspaceLayout({
   });
 
   if (!session) {
-    redirect("/");
+    redirect("/auth");
   }
 
   return (
