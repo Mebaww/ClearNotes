@@ -3,25 +3,19 @@ import { prisma } from "@/lib/prisma";
 
 /**
  * Returns the total note count, the 3 most recently created notes,
- * and dynamically computed statistics (timeSaved and insights).
- * Ready for future auth integration (e.g. filters by userId).
  */
-export async function getStats(userId?: string) {
-  // In the future, when auth is added:
-  // const userFilter = userId ? { userId } : {};
-  const userFilter = {};
-
+export async function getStats(userId: string) {
   const [count, recent, allNotes] = await Promise.all([
     prisma.note.count({
-      where: userFilter,
+      where: { userId },
     }),
     prisma.note.findMany({
-      where: userFilter,
+      where: { userId },
       orderBy: { createdAt: "desc" },
       take: 3,
     }),
     prisma.note.findMany({
-      where: userFilter,
+      where: { userId },
       select: {
         sourceText: true,
         generated: true,
@@ -33,13 +27,13 @@ export async function getStats(userId?: string) {
   let totalBulletPoints = 0;
 
   for (const note of allNotes) {
-    // 1. Calculate reading time saved
+    // Calculate reading time saved
     if (note.sourceText) {
       const words = note.sourceText.trim().split(/\s+/).filter(Boolean).length;
       totalWords += words;
     }
 
-    // 2. Count insights (list items in generated markdown)
+    //  Count insights (list items in generated markdown)
     if (note.generated) {
       // Matches markdown list item indicators at the start of a line
       const bulletMatches = note.generated.match(/^\s*[-*+]\s+/gm);

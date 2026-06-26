@@ -1,4 +1,3 @@
-
 generator client {
   provider = "prisma-client"
   output   = "./generated/prisma"
@@ -39,6 +38,8 @@ model Note {
   generated  String? @db.Text
 
   status NoteStatus @default(PROCESSING)
+  userId String
+  user   User       @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -54,6 +55,7 @@ model User {
   updatedAt     DateTime  @updatedAt
   sessions      Session[]
   accounts      Account[]
+  notes         Note[]
 
   @@unique([email])
   @@map("user")

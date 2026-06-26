@@ -5,6 +5,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Home, NotebookPen, Settings } from "lucide-react"
+import { authClient } from "@/lib/auth-client"
 
 import { NavUser } from "@/components/nav-user"
 import {
@@ -25,14 +26,19 @@ const navigation = [
   { title: "Settings", href: "/workspace/settings", icon: Settings },
 ]
 
-const user = {
-  name: "Mebaw",
-  email: "mebaw@clearnotes.xyz",
-  avatar: "",
-}
-
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const pathname = usePathname()
+  const { data: session } = authClient.useSession()
+
+  const user = session?.user ? {
+    name: session.user.name,
+    email: session.user.email,
+    avatar: session.user.image || "",
+  } : {
+    name: "Loading...",
+    email: "",
+    avatar: "",
+  }
 
   return (
     <Sidebar

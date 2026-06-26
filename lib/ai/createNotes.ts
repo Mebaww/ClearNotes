@@ -7,7 +7,7 @@ function extractTitle(markdown: string): string {
   return match?.[1]?.trim() || "Untitled Note";
 }
 
-export async function createNote(text: string) {
+export async function createNote(text: string, userId: string) {
   if (!text || text.trim().length < 20) {
     throw new Error("Empty document text could not be extracted.");
   }
@@ -39,6 +39,7 @@ export async function createNote(text: string) {
       title,
       sourceText: text,
       generated: output,
+      userId: userId,
     },
   });
 
