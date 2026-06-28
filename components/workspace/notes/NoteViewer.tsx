@@ -1,5 +1,6 @@
 "use client";
 
+import axios from "axios";
 import ReactMarkdown from "react-markdown";
 import { ArrowLeft, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -19,22 +20,44 @@ export default function NoteViewer({ note }: Props) {
       return;
     }
 
-    const deletePromise = fetch(`/api/notes/${note.id}`, {
-      method: "DELETE",
-    }).then(async (res) => {
-      if (!res.ok) {
-        throw new Error("Failed to delete note");
-      }
-      router.push("/workspace/notes");
-      router.refresh();
-    });
+    const deletePromise = axios
+      .delete(`/api/notes/${note.id}`)
+      .then(() => {
+        router.push("/workspace/notes");
+        router.refresh();
+      });
 
     sileo.promise(deletePromise, {
       loading: { title: "Deleting note..." },
       success: { title: "Note deleted successfully!" },
-      error: { title: "Failed to delete note." },
+      error: (err: unknown) => {
+        // IMPORTANT: Only read error.code — never message text or status codes.
+        const code: string | undefined = axios.isAxiosError(err)
+          ? err.response?.data?.error?.code
+          : undefined;
+
+        if (code === "INVALID_DOCUMENT") {
+          return {
+            title: "Note not found",
+            description: "This note may have already been deleted.",
+          };
+        }
+
+        if (code === "UNAUTHORIZED") {
+          return {
+            title: "Not authorised",
+            description: "You don't have permission to delete this note.",
+          };
+        }
+
+        return {
+          title: "Failed to delete note",
+          description: "An unexpected error occurred. Please try again.",
+        };
+      },
     });
   };
+
 
   return (
     <main className="mx-auto max-w-4xl px-6 py-8">
@@ -59,9 +82,7 @@ export default function NoteViewer({ note }: Props) {
       </div>
 
       <div className="rounded-xl border bg-card p-8">
-        <h1 className="mb-2 text-3xl font-bold">
-          {note.title}
-        </h1>
+        
 
         <p className="mb-8 text-sm text-muted-foreground">
           {new Date(note.createdAt).toLocaleDateString()}

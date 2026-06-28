@@ -1,5 +1,6 @@
 "use client";
 
+import axios from "axios";
 import { useState, useEffect } from "react";
 import { NotebookPen, Calendar, ChevronRight, Maximize2, Trash2 } from "lucide-react";
 import { Note } from "@/types/note";
@@ -26,23 +27,45 @@ export default function NotesList({ initialNotes }: NotesListProps) {
       return;
     }
 
-    const deletePromise = fetch(`/api/notes/${id}`, {
-      method: "DELETE",
-    }).then(async (res) => {
-      if (!res.ok) {
-        throw new Error("Failed to delete note");
-      }
-      // Update local state instantly for optimistic UI feedback
-      setNotes((prev) => prev.filter((note) => note.id !== id));
-      router.refresh(); // Refresh stats on layout/dashboard
-    });
+    const deletePromise = axios
+      .delete(`/api/notes/${id}`)
+      .then(() => {
+        // Update local state instantly for optimistic UI feedback
+        setNotes((prev) => prev.filter((note) => note.id !== id));
+        router.refresh(); // Refresh stats on layout/dashboard
+      });
 
     sileo.promise(deletePromise, {
       loading: { title: "Deleting note..." },
       success: { title: "Note deleted successfully!" },
-      error: { title: "Failed to delete note." },
+      error: (err: unknown) => {
+        // IMPORTANT: Only read error.code — never message text or status codes.
+        const code: string | undefined = axios.isAxiosError(err)
+          ? err.response?.data?.error?.code
+          : undefined;
+
+        if (code === "INVALID_DOCUMENT") {
+          return {
+            title: "Note not found",
+            description: "This note may have already been deleted.",
+          };
+        }
+
+        if (code === "UNAUTHORIZED") {
+          return {
+            title: "Not authorised",
+            description: "You don't have permission to delete this note.",
+          };
+        }
+
+        return {
+          title: "Failed to delete note",
+          description: "An unexpected error occurred. Please try again.",
+        };
+      },
     });
   };
+
 
   // Empty State
   if (!notes || notes.length === 0) {

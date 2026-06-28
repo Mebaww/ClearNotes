@@ -1,6 +1,8 @@
 import { buildPages } from "./layout";
 import { extractPdfTokens } from "./text";
 import type { ParsedDocument } from "./types";
+import { USAGE } from "../../../usage/config";
+
 
 export type ParseErrorCode = "SCANNED_PDF" | "PARSE_FAILED" | "PAGE_LIMIT_EXCEEDED";
 
@@ -14,7 +16,6 @@ export class ParseError extends Error {
   }
 }
 
-const PAGE_LIMIT = 20;
 
 // Set the CDN worker once at module load time (browser only)
 if (typeof window !== "undefined") {
@@ -30,10 +31,10 @@ export async function parsePDFDocument(
 
   const pdfDocument = await pdfjsLib.getDocument({ data: fileBuffer }).promise;
 
-  if (pdfDocument.numPages > PAGE_LIMIT) {
+  if (pdfDocument.numPages > USAGE.MAX_PDF_PAGES) {
     throw new ParseError(
       "PAGE_LIMIT_EXCEEDED",
-      `Your PDF has ${pdfDocument.numPages} pages — the limit is ${PAGE_LIMIT}. Please upload a shorter document.`
+      `Your PDF has ${pdfDocument.numPages} pages — the limit is ${USAGE.MAX_PDF_PAGES}. Please upload a shorter document.`
     );
   }
 

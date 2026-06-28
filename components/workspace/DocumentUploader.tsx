@@ -40,7 +40,7 @@ export function DocumentUploader() {
     setLoading(true);
 
     try {
-      // 1. Client-side PDF Parsing
+      // lient-side PDF Parsing
       let extractedText = "";
       try {
         const { parsePDFDocument, ParseError } = await import(
@@ -52,13 +52,19 @@ export function DocumentUploader() {
         extractedText = parsedDoc.pages.map((p) => p.content).join("\n\n");
 
         if (!extractedText || extractedText.trim().length < 20) {
-           throw new Error("Empty document text could not be extracted.");
+           throw new ParseError("PARSE_FAILED", "Empty document text could not be extracted. Please upload a file with more content.");
         }
       } catch (err: any) {
         console.error("PDF Parsing Error:", err);
-        const isParseLimitError = err.name === "ParseError" && err.code === "PAGE_LIMIT_EXCEEDED";
+        
+        let title = "Upload failed";
+        if (err.name === "ParseError") {
+          if (err.code === "PAGE_LIMIT_EXCEEDED") title = "PDF too long";
+          else if (err.code === "SCANNED_PDF") title = "Scanned PDF detected";
+        }
+
         sileo.error({
-          title: isParseLimitError ? "PDF too long" : "Upload failed",
+          title,
           description: err.name === "ParseError"
             ? err.message
             : "We couldn't read that file. Make sure it's a valid, non-corrupted PDF.",
@@ -66,7 +72,7 @@ export function DocumentUploader() {
         return;
       }
 
-      // 2. Send extracted text to the API
+      // Send extracted text to the API
       const data = await sileo.promise(
         axios.post("/api/notes", { text: extractedText }).then((r) => r.data),
         {
@@ -79,30 +85,44 @@ export function DocumentUploader() {
             description: "Your document has been converted to notes.",
           },
           error: (err: unknown) => {
-            if (axios.isAxiosError(err)) {
-              const apiError = err.response?.data?.error;
-              const code: string | undefined = apiError?.code;
+            const apiError = axios.isAxiosError(err)
+              ? err.response?.data?.error
+              : undefined;
 
-              if (
-                err.response?.status === 503 ||
-                code === "AI_OVERLOADED" ||
-                apiError?.message?.toLowerCase().includes("overloaded") ||
-                apiError?.message?.toLowerCase().includes("busy")
-              ) {
-                return {
-                  title: "AI is busy right now",
-                  description:
-                    "Gemini is under high load. Wait a few seconds and try uploading again.",
-                };
+            const code = apiError?.code;
+            const message = apiError?.message;
+
+            const titleMap: Record<string, string> = {
+              "AI_OVERLOADED": "AI is busy right now",
+              "TEXT_TOO_LONG": "Document too large",
+              "USAGE_LIMIT_EXCEEDED": "Monthly limit reached",
+              "INVALID_REQUEST": "Invalid document"
+            };
+
+            if (code && message) {
+              let description: React.ReactNode = message;
+
+              if (code === "USAGE_LIMIT_EXCEEDED") {
+                const parts = message.split(/reset on (.*?)\./);
+                if (parts.length >= 2) {
+                  description = (
+                    <span className="flex flex-col gap-1.5 mt-1">
+                      <span>You've used all your credits for this month.</span>
+                      <span className="text-[0.8rem] text-muted-foreground">
+                        Your limit will reset on{" "}
+                        <strong className="inline-flex items-center rounded bg-primary/10 px-1.5 py-0.5 text-xs font-semibold text-primary">
+                          {parts[1]}
+                        </strong>
+                      </span>
+                    </span>
+                  );
+                }
               }
 
-              if (code === "TEXT_TOO_LONG") {
-                return {
-                  title: "Document too large",
-                  description:
-                    "Your document has too much text for the AI to process. Try uploading a shorter document or splitting it into sections.",
-                };
-              }
+              return {
+                title: titleMap[code] || "Generation failed",
+                description,
+              };
             }
 
             return {
@@ -112,6 +132,7 @@ export function DocumentUploader() {
           },
         }
       );
+
 
       if (data?.success && data?.noteId) {
         router.push(`/workspace/notes/${data.noteId}`);

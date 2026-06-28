@@ -1,5 +1,6 @@
 import "server-only";
 import { prisma } from "@/lib/prisma";
+import { AppError } from "@/lib/errors";
 
 
 export async function deleteNote(id: string, userId: string) {
@@ -8,6 +9,10 @@ export async function deleteNote(id: string, userId: string) {
   });
   
   if (result.count === 0) {
-    throw new Error("Unauthorized to delete this note or it does not exist");
+    throw new AppError(
+      "INVALID_DOCUMENT",
+      "Note not found or you do not have permission to delete it."
+    );
   }
 }
+
