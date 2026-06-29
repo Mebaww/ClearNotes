@@ -1,6 +1,9 @@
 import "server-only";
 import { prisma } from "../prisma";
 import { geminiModel } from "./gemini";
+import { AppError } from "../errors";
+import { USAGE } from "../usage/config";
+
 
 function extractTitle(markdown: string): string {
   const match = markdown.match(/^#\s(.+)/m);
@@ -9,26 +12,51 @@ function extractTitle(markdown: string): string {
 
 export async function createNote(text: string, userId: string) {
   if (!text || text.trim().length < 20) {
-    throw new Error("Empty document text could not be extracted.");
-  }
-
-  // Guard against excessively large documents that would saturate Gemini's context
-  const MAX_TEXT_LENGTH = 80_000;
-  if (text.length > MAX_TEXT_LENGTH) {
-    throw Object.assign(
-      new Error(
-        `Document text is too long (${text.length.toLocaleString()} characters). Please upload a shorter document or split it into sections.`
-      ),
-      { code: "TEXT_TOO_LONG" }
+    throw new AppError(
+      "INVALID_REQUEST",
+      "The document text is too short or empty. Please upload a file with more content."
     );
   }
 
+  // Guard against excessively large documents that would saturate Gemini's context
+  if (text.length > USAGE.MAX_TEXT_LENGTH) {
+    throw new AppError(
+      "TEXT_TOO_LONG",
+      `Document text is too long (${text.length.toLocaleString()} characters). Please upload a shorter document or split it into sections.`
+    );
+  }
 
-  const result = await geminiModel.generateContent(text);
-  const output = result.response.text();
+  // Wrap the Gemini call so SDK errors are converted using the HTTP status
+  // code — never by message string matching.
+  let output: string;
+  try {
+    const result = await geminiModel.generateContent(text);
+    output = result.response.text();
+  } catch (geminiError: unknown) {
+    // The Google Generative AI SDK surfaces HTTP status on the error object.
+    // 429 = quota / rate limit, 503 = model overloaded.
+    const status =
+      (geminiError as { status?: number })?.status ??
+      (geminiError as { httpStatus?: number })?.httpStatus;
+
+    if (status === 429 || status === 503) {
+      throw new AppError(
+        "AI_OVERLOADED",
+        "The AI model is currently under high load. Please wait a moment and try again."
+      );
+    }
+
+    throw new AppError(
+      "GENERATION_FAILED",
+      "The AI failed to generate notes. Please try again."
+    );
+  }
 
   if (!output) {
-    throw new Error("AI returned an empty response.");
+    throw new AppError(
+      "GENERATION_FAILED",
+      "The AI returned an empty response. Please try again."
+    );
   }
 
   // extract title from AI markdown
@@ -40,6 +68,7 @@ export async function createNote(text: string, userId: string) {
       sourceText: text,
       generated: output,
       userId: userId,
+      characters: text.length
     },
   });
 

@@ -13,10 +13,11 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"),
   title: "ClearNotes — Read less, Understand more",
   icons: {
     icon: "/logo.png",
-  } ,
+  },
   description:
     "ClearNotes turns PDFs, slide decks, and Word documents into clear, structured notes for work and study.",
   applicationName: "ClearNotes",
@@ -72,7 +73,7 @@ export default function RootLayout({
       <body>
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="dark"
           enableSystem
           disableTransitionOnChange
         >

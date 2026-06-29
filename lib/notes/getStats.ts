@@ -17,7 +17,7 @@ export async function getStats(userId: string) {
     prisma.note.findMany({
       where: { userId },
       select: {
-        sourceText: true,
+        characters: true,
         generated: true,
       },
     }),
@@ -27,10 +27,14 @@ export async function getStats(userId: string) {
   let totalBulletPoints = 0;
 
   for (const note of allNotes) {
-    // Calculate reading time saved
-    if (note.sourceText) {
-      const words = note.sourceText.trim().split(/\s+/).filter(Boolean).length;
-      totalWords += words;
+    // Estimate word count from character count (approx. 6 characters per word, including spaces/punctuation).
+    // This avoids fetching massive sourceText fields for every note from the database.
+    if (note.characters > 0) {
+      totalWords += Math.round(note.characters / 6);
+    } else if (note.generated) {
+      // Fallback for older notes where characters is not yet backfilled:
+      // Estimate original text size based on summary length (~4x the summary size)
+      totalWords += Math.round((note.generated.length * 4) / 6);
     }
 
     //  Count insights (list items in generated markdown)

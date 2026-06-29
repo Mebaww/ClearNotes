@@ -92,6 +92,7 @@ export const NoteScalarFieldEnum = {
   title: 'title',
   sourceText: 'sourceText',
   generated: 'generated',
+  characters: 'characters',
   status: 'status',
   userId: 'userId',
   createdAt: 'createdAt',
@@ -107,6 +108,8 @@ export const UserScalarFieldEnum = {
   email: 'email',
   emailVerified: 'emailVerified',
   image: 'image',
+  monthlyCreditsUsed: 'monthlyCreditsUsed',
+  usageResetAt: 'usageResetAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

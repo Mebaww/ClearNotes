@@ -17,6 +17,7 @@ enum NoteStatus {
   PENDING
   PROCESSING
   COMPLETED
+  FAILED
 }
 
 model Waitlist {
@@ -37,25 +38,33 @@ model Note {
   sourceText String? @db.Text
   generated  String? @db.Text
 
-  status NoteStatus @default(PROCESSING)
-  userId String
-  user   User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  //  Number of characters processed from the uploaded document
+  characters Int        @default(0)
+
+  status     NoteStatus @default(PROCESSING)
+
+  userId     String
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model User {
-  id            String    @id
+  id            String  @id
   name          String
   email         String
-  emailVerified Boolean   @default(false)
+  emailVerified Boolean @default(false)
   image         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  sessions      Session[]
-  accounts      Account[]
-  notes         Note[]
+  // Usage
+  monthlyCreditsUsed Int       @default(0)
+  usageResetAt       DateTime?
+
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+  sessions           Session[]
+  accounts           Account[]
+  notes              Note[]
 
   @@unique([email])
   @@map("user")

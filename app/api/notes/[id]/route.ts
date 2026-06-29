@@ -1,6 +1,6 @@
 import { deleteNote } from "@/lib/notes/deleteNote";
-import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
+import { ok, apiErr, handleError } from "@/lib/api-response";
 
 export async function DELETE(
   request: Request,
@@ -12,25 +12,15 @@ export async function DELETE(
     });
 
     if (!session) {
-      return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
+      return apiErr("UNAUTHORIZED", "You must be signed in to delete notes.");
     }
 
     const { id } = await params;
 
     await deleteNote(id, session.user.id);
 
-    return NextResponse.json({ success: true });
+    return ok({});
   } catch (error) {
-    console.error("Failed to delete note:", error);
-    return NextResponse.json(
-      {
-        success: false,
-        error: {
-          code: "DELETE_FAILED",
-          message: "An unexpected error occurred while deleting the note.",
-        },
-      },
-      { status: 500 }
-    );
+    return handleError(error);
   }
 }
