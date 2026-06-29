@@ -69,21 +69,11 @@ export default function AuthPage() {
           {/* Security note */}
           <p className="mt-4 flex items-center justify-center gap-1.5 text-[11px] text-muted-foreground/70">
             <Lock className="h-3 w-3 shrink-0" />
-            Secured with Google OAuth — no password needed.
+            Secured with Google OAuth 
           </p>
         </div>
 
-        {/* Footer */}
-        <p className="text-center text-[11px] text-muted-foreground">
-          By signing in, you agree to our{" "}
-          <Link href="/terms" className="underline underline-offset-2 hover:text-foreground transition-colors">
-            Terms
-          </Link>{" "}
-          and{" "}
-          <Link href="/privacy" className="underline underline-offset-2 hover:text-foreground transition-colors">
-            Privacy Policy
-          </Link>.
-        </p>
+    
       </div>
     </div>
   );

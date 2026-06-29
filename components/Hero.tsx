@@ -11,7 +11,6 @@ import {
   Zap,
 } from "lucide-react";
 import Link from "next/link";
-import WaitlistForm from "./WaitlistForm";
 
 export default function Hero() {
   return (
@@ -35,23 +34,15 @@ export default function Hero() {
               ClearNotes turns dense PDFs, presentations, and Word files into
               clean, structured notes you can actually use for work and study.
             </p>
-            <div className="mt-8">
-              <WaitlistForm size="large" buttonLabel="Join the waitlist" />
-            </div>
-
-            {/* Sneak peek / Beta CTA */}
-            <div className="mt-5">
+            <div className="mt-8 flex flex-col sm:flex-row items-center gap-5">
               <Link
                 href="/auth"
-                className="group inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors duration-200 hover:text-foreground"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-8 py-4 text-base font-semibold text-black shadow-sm shadow-primary/20 transition-all duration-200 hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-md hover:shadow-primary/30 active:translate-y-0 active:scale-[0.98] sm:w-auto"
               >
-                or{" "}
-                <span className="relative font-medium text-foreground">
-                  try beta
-                  <span className="absolute -bottom-px left-0 h-px w-0 bg-primary transition-all duration-300 group-hover:w-full" />
-                </span>
-                <ArrowRight className="h-3.5 w-3.5 text-primary opacity-0 -translate-x-1 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-0" />
+                Try the beta for free
+                <ArrowRight className="h-5 w-5" strokeWidth={2.5} />
               </Link>
+             
             </div>
 
             <div className="mt-10 grid max-w-lg grid-cols-3 gap-3 text-sm">
@@ -280,24 +271,33 @@ export default function Hero() {
       </section>
 
       <section
-        id="waitlist"
+        id="cta"
         className="relative overflow-hidden px-6 py-20 sm:py-24 lg:px-8"
       >
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
           <div className="absolute left-1/2 top-0 h-100 w-100 -translate-x-1/2 rounded-full bg-primary/10 opacity-30 blur-[120px] dark:bg-primary dark:opacity-[0.06]" />
         </div>
         <div className="relative mx-auto max-w-3xl rounded-3xl border border-border bg-card p-8 text-center shadow-[0_20px_50px_-20px_rgba(0,0,0,0.15)] sm:p-16 dark:shadow-[0_20px_50px_-20px_rgba(0,0,0,0.5)]">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
-            Early access
-          </p>
-          <h2 className="mt-3 font-heading text-3xl font-normal tracking-tight text-foreground sm:text-4xl">
-            Join the waitlist
+          <div className="flex items-center justify-center gap-2">
+            
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
+              Beta Now Live
+            </p>
+          </div>
+          <h2 className="mt-4 font-heading text-3xl font-normal tracking-tight text-foreground sm:text-4xl">
+            Stop reading. Start understanding.
           </h2>
-          <p className="mx-auto mt-3 max-w-lg text-base leading-relaxed text-muted-foreground">
-            Get notified when ClearNotes is ready and be first to try it.
+          <p className="mx-auto mt-4 max-w-lg text-base leading-relaxed text-muted-foreground">
+            ClearNotes is currently in open beta. Create an account today to get early access and try it on your own documents.
           </p>
           <div className="mt-8 flex justify-center">
-            <WaitlistForm size="large" buttonLabel="Get early access" />
+            <Link
+              href="/auth"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-8 py-4 text-base font-semibold text-black shadow-sm shadow-primary/20 transition-all duration-200 hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-md hover:shadow-primary/30 active:translate-y-0 active:scale-[0.98] sm:w-auto"
+            >
+              Try ClearNotes Beta
+              <ArrowRight className="h-5 w-5" strokeWidth={2.5} />
+            </Link>
           </div>
         </div>
       </section>
