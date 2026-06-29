@@ -58,7 +58,9 @@ export function NavUser({
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar className="size-8 rounded-lg">
-                <AvatarImage src={user.avatar} alt={user.name} referrerPolicy="no-referrer" />
+                {user.avatar && (
+                  <AvatarImage src={user.avatar} alt={user.name} referrerPolicy="no-referrer" />
+                )}
                 <AvatarFallback className="rounded-lg bg-primary/10 text-xs font-medium text-primary">
                   {initials}
                 </AvatarFallback>
@@ -81,7 +83,9 @@ export function NavUser({
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="size-8 rounded-lg">
-                  <AvatarImage src={user.avatar} alt={user.name} referrerPolicy="no-referrer" />
+                  {user.avatar && (
+                    <AvatarImage src={user.avatar} alt={user.name} referrerPolicy="no-referrer" />
+                  )}
                   <AvatarFallback className="rounded-lg bg-primary/10 text-xs font-medium text-primary">
                     {initials}
                   </AvatarFallback>
@@ -96,18 +100,18 @@ export function NavUser({
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
+              {/* <DropdownMenuItem>
                 <BadgeCheckIcon />
                 Account
-              </DropdownMenuItem>
-              <DropdownMenuItem>
+              </DropdownMenuItem> */}
+              {/* <DropdownMenuItem>
                 <CreditCardIcon />
                 Billing
-              </DropdownMenuItem>
-              <DropdownMenuItem>
+              </DropdownMenuItem> */}
+              {/* <DropdownMenuItem>
                 <BellIcon />
                 Notifications
-              </DropdownMenuItem>
+              </DropdownMenuItem> */}
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={async () => {
