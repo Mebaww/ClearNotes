@@ -1,25 +1,23 @@
 import type { Metadata } from "next";
-import { Noto_Sans, Instrument_Serif } from "next/font/google";
+import { Poppins } from "next/font/google";
 import "./globals.css";
 
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/theme-provider";
 import { GoogleAnalytics } from "@next/third-parties/google";
-
-
-const instrumentSerifHeading = Instrument_Serif({
+import { Toaster } from "@/components/Toaster";
+const poppins = Poppins({
   subsets: ["latin"],
-  weight: ["400"],
-  variable: "--font-heading",
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-poppins",
 });
 
-const notoSans = Noto_Sans({ subsets: ["latin"], variable: "--font-sans" });
-
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"),
   title: "ClearNotes — Read less, Understand more",
   icons: {
     icon: "/logo.png",
-  } ,
+  },
   description:
     "ClearNotes turns PDFs, slide decks, and Word documents into clear, structured notes for work and study.",
   applicationName: "ClearNotes",
@@ -56,6 +54,7 @@ export const metadata: Metadata = {
 };
 
 
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -67,22 +66,24 @@ export default function RootLayout({
       suppressHydrationWarning
       className={cn(
         "font-sans",
-        notoSans.variable,
-        instrumentSerifHeading.variable,
+        poppins.variable,
       )}
     >
       <head />
       <body>
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="dark"
           enableSystem
           disableTransitionOnChange
         >
-          <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID!} />
-          {children}
+            <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID!} />
+            <Toaster />
+            {children}
+      
         </ThemeProvider>
       </body>
+      
     </html>
   );
 }

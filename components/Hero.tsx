@@ -1,4 +1,5 @@
 import {
+  ArrowRight,
   BookOpen,
   CheckCircle2,
   Clock3,
@@ -9,21 +10,19 @@ import {
   Upload,
   Zap,
 } from "lucide-react";
-import WaitlistForm from "./WaitlistForm";
+import Link from "next/link";
 
 export default function Hero() {
   return (
-    <main className="bg-background text-foreground">
-      <section className="relative overflow-hidden border-b border-border px-6 pb-24 pt-32 sm:pb-28 sm:pt-40 lg:px-8">
+    <main className="bg-gray-50 dark:bg-background text-foreground">
+      <section className="relative overflow-hidden border-b border-border  px-6 pb-24 pt-32 sm:pb-28 sm:pt-40 lg:px-8">
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
-          <div className="absolute -top-40 left-1/3 h-120 w-120 rounded-full opacity-25 blur-[120px] dark:bg-primary dark:opacity-[0.08]" />
-          <div className="absolute top-20 -right-32 h-100 w-100 rounded-full bg-border opacity-30 blur-[120px] dark:bg-foreground dark:opacity-[0.03]" />
-          <div className="absolute -bottom-32 left-10 h-90 w-90 rounded-full bg-primary/20 opacity-25 blur-[120px] dark:bg-primary dark:opacity-[0.05]" />
+         
         </div>
 
         <div className="relative mx-auto grid max-w-6xl gap-4 md:gap-16 lg:grid-cols-[1fr_1.1fr] lg:items-center">
           <div className="animate-fade-up">
-            <h1 className="mt-6 max-w-2xl text-4xl font-semibold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
+            <h1 className="mt-6 max-w-2xl font-heading text-4xl font-normal tracking-tight text-foreground sm:text-5xl lg:text-6xl">
               Read less.
               <br />
               <span className="relative inline-block">
@@ -35,24 +34,31 @@ export default function Hero() {
               ClearNotes turns dense PDFs, presentations, and Word files into
               clean, structured notes you can actually use for work and study.
             </p>
-            <div className="mt-8">
-              <WaitlistForm size="large" buttonLabel="Join the waitlist" />
+            <div className="mt-8 flex flex-col sm:flex-row items-center gap-5">
+              <Link
+                href="/auth"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-8 py-4 text-base font-semibold text-black shadow-sm shadow-primary/20 transition-all duration-200 hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-md hover:shadow-primary/30 active:translate-y-0 active:scale-[0.98] sm:w-auto"
+              >
+                Try the beta for free
+                <ArrowRight className="h-5 w-5" strokeWidth={2.5} />
+              </Link>
+             
             </div>
 
             <div className="mt-10 grid max-w-lg grid-cols-3 gap-3 text-sm">
-              <div className="rounded-xl border border-border bg-card/60 px-3.5 py-3 backdrop-blur-xl dark:bg-card/40">
+              <div className="rounded-xl border border-border bg-card/80 px-3.5 py-3 backdrop-blur-xl dark:bg-card/50">
                 <p className="font-semibold text-foreground">PDFs</p>
                 <p className="mt-0.5 text-xs text-muted-foreground">
                   Reports & studies
                 </p>
               </div>
-              <div className="rounded-xl border border-border bg-card/60 px-3.5 py-3 backdrop-blur-xl dark:bg-card/40">
+              <div className="rounded-xl border border-border bg-card/80 px-3.5 py-3 backdrop-blur-xl dark:bg-card/50">
                 <p className="font-semibold text-foreground">Slides</p>
                 <p className="mt-0.5 text-xs text-muted-foreground">
                   Decks & pitchbooks
                 </p>
               </div>
-              <div className="rounded-xl border border-border bg-card/60 px-3.5 py-3 backdrop-blur-xl dark:bg-card/40">
+              <div className="rounded-xl border border-border bg-card/80 px-3.5 py-3 backdrop-blur-xl dark:bg-card/50">
                 <p className="font-semibold text-foreground">Docs</p>
                 <p className="mt-0.5 text-xs text-muted-foreground">
                   Briefs & manuals
@@ -62,8 +68,8 @@ export default function Hero() {
           </div>
 
           <div className="relative animate-fade-up pt-4 md:pt-6 md:pr-6">
-            <div className="overflow-hidden rounded-2xl border border-border bg-card/85 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.15)] backdrop-blur-2xl dark:bg-card/40 dark:shadow-black/40">
-              <div className="flex items-center gap-2 border-b border-border bg-card/50 px-4 py-3 dark:bg-card/20">
+            <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-[0_30px_60px_-15px_rgba(0,0,0,0.12)] backdrop-blur-2xl dark:bg-card/80 dark:shadow-[0_30px_60px_-15px_rgba(0,0,0,0.5)]">
+              <div className="flex items-center gap-2 border-b border-border bg-muted/30 px-4 py-3 dark:bg-card/40">
                 <div className="flex gap-1.5">
                   <span className="h-3 w-3 rounded-full bg-[#FF5F57]" />
                   <span className="h-3 w-3 rounded-full bg-[#FEBC2E]" />
@@ -140,12 +146,12 @@ export default function Hero() {
         </div>
       </section>
 
-      <section className="border-b border-border bg-secondary px-6 py-20 sm:py-24 lg:px-8">
+      <section className="bg-gray-50 dark:bg-background border-b border-border px-6 py-20 sm:py-24 lg:px-8">
         <div className="mx-auto max-w-2xl text-center">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
             How it works
           </p>
-          <h2 className="mt-3 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
+          <h2 className="mt-3 font-heading text-3xl font-normal tracking-tight text-foreground sm:text-4xl">
             Simple from upload to notes
           </h2>
           <p className="mt-4 text-base leading-relaxed text-muted-foreground">
@@ -155,7 +161,7 @@ export default function Hero() {
         </div>
 
         <div className="mx-auto mt-12 grid max-w-5xl gap-6 md:grid-cols-3">
-          <div className="rounded-2xl border border-border bg-card p-6 transition duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-black/5 dark:hover:bg-card/75 dark:hover:shadow-black/40">
+          <div className="rounded-2xl border border-border bg-card p-6 transition duration-300 hover:-translate-y-1 hover:shadow-lg  dark:hover:bg-card/75 dark:hover:shadow-black/40">
             <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-foreground/5 text-muted-foreground">
               <Upload className="h-6 w-6" strokeWidth={2.25} />
             </div>
@@ -193,13 +199,13 @@ export default function Hero() {
 
       <section
         id="features"
-        className="border-b border-border bg-background px-6 py-20 sm:py-24 lg:px-8"
+        className="border-b border-border bg-gray-50 dark:bg-background px-6 py-20 sm:py-24 lg:px-8"
       >
         <div className="mx-auto max-w-2xl text-center">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
             Why people like it
           </p>
-          <h2 className="mt-3 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
+          <h2 className="mt-3 font-heading text-3xl font-normal tracking-tight text-foreground sm:text-4xl">
             Designed to feel effortless
           </h2>
           <p className="mt-4 text-base leading-relaxed text-muted-foreground">
@@ -265,24 +271,33 @@ export default function Hero() {
       </section>
 
       <section
-        id="waitlist"
-        className="relative overflow-hidden bg-secondary px-6 py-20 sm:py-24 lg:px-8"
+        id="cta"
+        className="relative overflow-hidden px-6 py-20 sm:py-24 lg:px-8"
       >
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
-          <div className="absolute left-1/2 top-0 h-100 w-100 -translate-x-1/2 rounded-full bg-primary/20 opacity-15 blur-[120px] dark:bg-primary dark:opacity-[0.06]" />
+          <div className="absolute left-1/2 top-0 h-100 w-100 -translate-x-1/2 rounded-full bg-primary/10 opacity-30 blur-[120px] dark:bg-primary dark:opacity-[0.06]" />
         </div>
-        <div className="relative mx-auto max-w-3xl rounded-3xl border border-border bg-card p-8 text-center shadow-sm sm:p-16">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
-            Early access
-          </p>
-          <h2 className="mt-3 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
-            Join the waitlist
+        <div className="relative mx-auto max-w-3xl rounded-3xl border border-border bg-card p-8 text-center shadow-[0_20px_50px_-20px_rgba(0,0,0,0.15)] sm:p-16 dark:shadow-[0_20px_50px_-20px_rgba(0,0,0,0.5)]">
+          <div className="flex items-center justify-center gap-2">
+            
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
+              Beta Now Live
+            </p>
+          </div>
+          <h2 className="mt-4 font-heading text-3xl font-normal tracking-tight text-foreground sm:text-4xl">
+            Stop reading. Start understanding.
           </h2>
-          <p className="mx-auto mt-3 max-w-lg text-base leading-relaxed text-muted-foreground">
-            Get notified when ClearNotes is ready and be first to try it.
+          <p className="mx-auto mt-4 max-w-lg text-base leading-relaxed text-muted-foreground">
+            ClearNotes is currently in open beta. Create an account today to get early access and try it on your own documents.
           </p>
           <div className="mt-8 flex justify-center">
-            <WaitlistForm size="large" buttonLabel="Get early access" />
+            <Link
+              href="/auth"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-8 py-4 text-base font-semibold text-black shadow-sm shadow-primary/20 transition-all duration-200 hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-md hover:shadow-primary/30 active:translate-y-0 active:scale-[0.98] sm:w-auto"
+            >
+              Try ClearNotes Beta
+              <ArrowRight className="h-5 w-5" strokeWidth={2.5} />
+            </Link>
           </div>
         </div>
       </section>
