@@ -1,7 +1,7 @@
 import type { ParsedDocument } from "../../types";
-// ParseError is imported from the pdf parser (not from ../../index) to avoid
-// a circular dependency: index → docx → index.
+// Import ParseError from the pdf parser directly to avoid circular imports.
 import { ParseError } from "../pdf/parser";
+
 
 export async function parseDocxDocument(
   fileBuffer: ArrayBuffer
