@@ -1,8 +1,4 @@
-// This is the main entry point for document parsing.
-// If you want to add a new format:
-// 1. Add it to supportedFormats.ts
-// 2. Create its parser inside formats/
-// 3. Add a case in the switch statement below
+
 import { detectFormat } from "./supportedFormats";
 import type { ParsedDocument, DocumentFormat } from "./types";
 import { ParseError } from "./formats/pdf/parser";
@@ -11,7 +7,7 @@ export { ParseError } from "./formats/pdf/parser";
 export type { ParseErrorCode } from "./formats/pdf/parser";
 export type { ParsedDocument, ParsedPage, DocumentFormat } from "./types";
 
-// Parses any supported file (PDF, DOCX) into a standard document format.
+// Parses any supported file into a standard document format.
 // It automatically detects the file type and routes it to the right parser.
 export async function parseDocument(
   fileBuffer: ArrayBuffer,
@@ -23,7 +19,7 @@ export async function parseDocument(
   if (!format) {
     throw new ParseError(
       "PARSE_FAILED",
-      "Unsupported file format. Please upload a PDF or Word document."
+      "Unsupported file format. Please upload a PDF, Word document, or PowerPoint presentation."
     );
   }
 
@@ -47,6 +43,11 @@ export async function parseDocument(
       );
     }
 
+    case "pptx": {
+      const { parsePptxDocument } = await import("./formats/pptx");
+      return parsePptxDocument(fileBuffer);
+    }
+    
     default: {
       const _exhaustive: never = format;
       throw new ParseError("PARSE_FAILED", `No parser found for format: ${_exhaustive}`);
@@ -54,4 +55,4 @@ export async function parseDocument(
   }
 }
 
-
+
