@@ -1,4 +1,4 @@
-export type DocumentFormat = "pdf" | "docx" | "doc";
+export type DocumentFormat = "pdf" | "docx" | "doc" | "pptx";
 
 export interface ParsedPage {
   page: number;
@@ -9,4 +9,4 @@ export interface ParsedDocument {
   format: DocumentFormat;
   pageCount: number;
   pages: ParsedPage[];
-}
+}

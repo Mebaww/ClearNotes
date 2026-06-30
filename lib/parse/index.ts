@@ -11,7 +11,7 @@ export { ParseError } from "./formats/pdf/parser";
 export type { ParseErrorCode } from "./formats/pdf/parser";
 export type { ParsedDocument, ParsedPage, DocumentFormat } from "./types";
 
-// Parses any supported file (PDF, DOCX) into a standard document format.
+// Parses any supported file (PDF, DOCX, PPTX) into a standard document format.
 // It automatically detects the file type and routes it to the right parser.
 export async function parseDocument(
   fileBuffer: ArrayBuffer,
@@ -23,7 +23,7 @@ export async function parseDocument(
   if (!format) {
     throw new ParseError(
       "PARSE_FAILED",
-      "Unsupported file format. Please upload a PDF or Word document."
+      "Unsupported file format. Please upload a PDF, Word document, or PowerPoint presentation."
     );
   }
 
@@ -47,6 +47,11 @@ export async function parseDocument(
       );
     }
 
+    case "pptx": {
+      const { parsePptxDocument } = await import("./formats/pptx");
+      return parsePptxDocument(fileBuffer);
+    }
+    
     default: {
       const _exhaustive: never = format;
       throw new ParseError("PARSE_FAILED", `No parser found for format: ${_exhaustive}`);
@@ -54,4 +59,4 @@ export async function parseDocument(
   }
 }
 
-
+

@@ -29,15 +29,15 @@ export const SUPPORTED_FORMATS: SupportedFormat[] = [
     mimeTypes: ["application/msword"],
     extensions: [".doc"],
   },
-// Future formats to support:
-  // {
-  //   format: "pptx",
-  //   label: "PowerPoint (.pptx)",
-  //   mimeTypes: [
-  //     "application/vnd.openxmlformats-officedocument.presentationml.presentation",
-  //   ],
-  //   extensions: [".pptx"],
-  // },
+
+  {
+    format: "pptx",
+    label: "PowerPoint (.pptx)",
+    mimeTypes: [
+      "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+    ],
+    extensions: [".pptx"],
+  },
 ];
 
 // All accepted file extensions joined by commas (used in file input helper)
