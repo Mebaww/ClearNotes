@@ -3,9 +3,13 @@ import { extractPdfTokens } from "./text";
 import type { ParsedDocument } from "./types";
 import { USAGE } from "../../../usage/config";
 
-
 export type ParseErrorCode = "SCANNED_PDF" | "PARSE_FAILED" | "PAGE_LIMIT_EXCEEDED";
 
+/**
+ * ParseError is defined here (instead of the shared index) to avoid a
+ * circular import: shared index imports pdf parser, pdf parser imports shared index.
+ * The shared index re-exports ParseError from here.
+ */
 export class ParseError extends Error {
   readonly code: ParseErrorCode;
 
@@ -50,7 +54,8 @@ export async function parsePDFDocument(
   const pages = buildPages(pdfTokens);
 
   return {
+    format: "pdf",
     pageCount: pdfDocument.numPages,
     pages,
   };
-}
+}

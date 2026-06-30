@@ -3,6 +3,10 @@
 import axios from "axios";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
+import "katex/dist/katex.min.css";
+
 import { ArrowLeft, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Note } from "@/types/note";
@@ -87,7 +91,8 @@ export default function NoteViewer({ note }: Props) {
 
         <article className="max-w-none overflow-x-auto">
           <ReactMarkdown
-            remarkPlugins={[remarkGfm]}
+            remarkPlugins={[remarkGfm, remarkMath]}
+            rehypePlugins={[rehypeKatex]}
             components={{
               h1: ({ ...props }) => (
                 <h1

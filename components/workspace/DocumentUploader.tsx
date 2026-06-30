@@ -40,34 +40,40 @@ export function DocumentUploader() {
     setLoading(true);
 
     try {
-      // lient-side PDF Parsing
+    
       let extractedText = "";
       try {
-        const { parsePDFDocument, ParseError } = await import(
-          "@/lib/parse/formats/pdf/parser"
-        );
+        const { parseDocument, ParseError } = await import("@/lib/parse");
         const arrayBuffer = await selectedFile.arrayBuffer();
-        const parsedDoc = await parsePDFDocument(arrayBuffer);
-        
+        const parsedDoc = await parseDocument(
+          arrayBuffer,
+          selectedFile.name,
+          selectedFile.type
+        );
+
         extractedText = parsedDoc.pages.map((p) => p.content).join("\n\n");
 
         if (!extractedText || extractedText.trim().length < 20) {
-           throw new ParseError("PARSE_FAILED", "Empty document text could not be extracted. Please upload a file with more content.");
+          throw new ParseError(
+            "PARSE_FAILED",
+            "Empty document text could not be extracted. Please upload a file with more content."
+          );
         }
       } catch (err: any) {
-        console.error("PDF Parsing Error:", err);
-        
+        console.error("Document parsing error:", err);
+
         let title = "Upload failed";
         if (err.name === "ParseError") {
-          if (err.code === "PAGE_LIMIT_EXCEEDED") title = "PDF too long";
+          if (err.code === "PAGE_LIMIT_EXCEEDED") title = "Document too long";
           else if (err.code === "SCANNED_PDF") title = "Scanned PDF detected";
         }
 
         sileo.error({
           title,
-          description: err.name === "ParseError"
-            ? err.message
-            : "We couldn't read that file. Make sure it's a valid, non-corrupted PDF.",
+          description:
+            err.name === "ParseError"
+              ? err.message
+              : "We couldn't read that file. Make sure it's a valid, non-corrupted document.",
         });
         return;
       }
