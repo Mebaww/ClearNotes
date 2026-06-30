@@ -1,3 +1,57 @@
-export { parsePDFDocument, ParseError } from "./formats/pdf";
-export type { ParseErrorCode } from "./formats/pdf";
-export type { ParsedDocument, ParsedPage, PdfTextToken } from "./formats/pdf";
+// This is the main entry point for document parsing.
+// If you want to add a new format:
+// 1. Add it to supportedFormats.ts
+// 2. Create its parser inside formats/
+// 3. Add a case in the switch statement below
+import { detectFormat } from "./supportedFormats";
+import type { ParsedDocument, DocumentFormat } from "./types";
+import { ParseError } from "./formats/pdf/parser";
+
+export { ParseError } from "./formats/pdf/parser";
+export type { ParseErrorCode } from "./formats/pdf/parser";
+export type { ParsedDocument, ParsedPage, DocumentFormat } from "./types";
+
+// Parses any supported file (PDF, DOCX) into a standard document format.
+// It automatically detects the file type and routes it to the right parser.
+export async function parseDocument(
+  fileBuffer: ArrayBuffer,
+  fileName: string,
+  mimeType: string
+): Promise<ParsedDocument> {
+  const format: DocumentFormat | null = detectFormat(fileName, mimeType);
+
+  if (!format) {
+    throw new ParseError(
+      "PARSE_FAILED",
+      "Unsupported file format. Please upload a PDF or Word document."
+    );
+  }
+
+  switch (format) {
+    case "pdf": {
+      const { parsePDFDocument } = await import("./formats/pdf/parser");
+      return parsePDFDocument(fileBuffer);
+    }
+
+    case "docx": {
+      const { parseDocxDocument } = await import("./formats/docx");
+      return parseDocxDocument(fileBuffer);
+    }
+
+    case "doc": {
+      // Old .doc binary format cannot be parsed in the browser. 
+      // Ask the user to convert it first.
+      throw new ParseError(
+        "PARSE_FAILED",
+        "Legacy .doc files can't be parsed directly. Please re-save your file as .docx or export it as a PDF and upload again."
+      );
+    }
+
+    default: {
+      const _exhaustive: never = format;
+      throw new ParseError("PARSE_FAILED", `No parser found for format: ${_exhaustive}`);
+    }
+  }
+}
+
+

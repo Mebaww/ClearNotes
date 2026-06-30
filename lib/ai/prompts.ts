@@ -25,4 +25,7 @@ Rules:
 - Do not invent, infer, or add information.
 - Do not omit important information simply to make the notes shorter.
 - Keep wording concise while preserving meaning.
+- Format all mathematical equations, scientific formulas, and math expressions using standard LaTeX markdown notation:
+  * Use a single dollar sign \`$formula$\` for inline math expressions.
+  * Use double dollar signs on their own lines \`$$formula$$\` for display/block math equations.
 `;
