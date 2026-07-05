@@ -2,6 +2,7 @@
 
 import { Folder as FolderIcon, Plus, Edit3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ButtonGroup } from "@/components/ui/button-group";
 
 interface FolderHeaderActionsProps {
   selectedFolderId: string | null;
@@ -33,18 +34,16 @@ export default function FolderHeaderActions({
       </div>
 
       {isCustomFolder && (
-        <div className="flex items-center gap-2 shrink-0">
-          {notesCount > 0 && (
-            <Button
-              variant="outline"
-              size="xs"
-              onClick={onOpenAddNotesDialog}
-              className="h-7 gap-1 text-xs cursor-pointer"
-            >
-              <Plus className="size-3" />
-              Add/Remove Notes
-            </Button>
-          )}
+        <ButtonGroup className="shrink-0 shadow-xs">
+          <Button
+            variant="outline"
+            size="xs"
+            onClick={onOpenAddNotesDialog}
+            className="h-7 gap-1 text-xs cursor-pointer"
+          >
+            <Plus className="size-3" />
+            Add/Remove Notes
+          </Button>
           <Button
             variant="outline"
             size="xs"
@@ -55,14 +54,14 @@ export default function FolderHeaderActions({
             Rename
           </Button>
           <Button
-            variant="ghost"
+            variant="outline"
             size="xs"
             onClick={onDeleteFolder}
-            className="h-7 text-xs cursor-pointer hover:bg-destructive/10 hover:text-destructive text-muted-foreground"
+            className="h-7 text-xs cursor-pointer hover:bg-destructive/10 hover:text-destructive hover:border-destructive/30 text-muted-foreground"
           >
             Delete Folder
           </Button>
-        </div>
+        </ButtonGroup>
       )}
     </div>
   );

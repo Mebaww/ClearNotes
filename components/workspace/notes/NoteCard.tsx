@@ -17,6 +17,8 @@ interface NoteCardProps {
   folders: Folder[];
   onMoveNote: (noteId: string, folderId: string | null, e: React.MouseEvent) => void;
   onDeleteNote: (noteId: string, e: React.MouseEvent) => void;
+  isSelected?: boolean;
+  onToggleSelect?: (noteId: string) => void;
 }
 
 export default function NoteCard({
@@ -24,18 +26,50 @@ export default function NoteCard({
   folders,
   onMoveNote,
   onDeleteNote,
+  isSelected = false,
+  onToggleSelect,
 }: NoteCardProps) {
   const router = useRouter();
 
   return (
     <div
       onClick={() => router.push(`/workspace/notes/${note.id}`)}
-      className="group relative flex flex-col justify-between rounded-xl border border-border/60 bg-card p-5 text-left transition-all duration-200 hover:-translate-y-0.5 hover:border-border hover:shadow-sm cursor-pointer"
+      className={`group relative flex flex-col justify-between rounded-xl border bg-card p-5 text-left transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm cursor-pointer ${
+        isSelected
+          ? "border-primary bg-primary/2 shadow-xs"
+          : "border-border/60 hover:border-border"
+      }`}
     >
+      {/* Checkbox for selection */}
+      {onToggleSelect && (
+        <div
+          onClick={(e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            onToggleSelect(note.id);
+          }}
+          className="absolute left-3 top-3.5 z-10 p-1 cursor-pointer"
+        >
+          <div
+            className={`flex size-4 items-center justify-center rounded border transition-all duration-200 ${
+              isSelected
+                ? "border-primary bg-primary text-primary-foreground scale-100 opacity-100"
+                : "border-border bg-background scale-90 opacity-0 group-hover:scale-100 group-hover:opacity-100"
+            }`}
+          >
+            {isSelected && <Check className="size-2.5" strokeWidth={3} />}
+          </div>
+        </div>
+      )}
+
       {/* Card top */}
       <div className="space-y-2">
         <div className="flex items-start justify-between gap-3">
-          <h3 className="font-medium text-sm leading-tight text-foreground line-clamp-2 group-hover:text-primary transition-colors">
+          <h3
+            className={`font-medium text-sm leading-tight text-foreground line-clamp-2 group-hover:text-primary transition-all duration-200 ${
+              isSelected ? "pl-6 text-primary" : "pl-0"
+            } ${onToggleSelect ? "group-hover:pl-6" : ""}`}
+          >
             {note.title || "Untitled Document"}
           </h3>
 
