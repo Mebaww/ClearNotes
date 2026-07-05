@@ -2,147 +2,349 @@
 
 import axios from "axios";
 import { useState, useEffect } from "react";
-import { NotebookPen, Calendar, ChevronRight, Maximize2, Trash2 } from "lucide-react";
-import { Note } from "@/types/note";
+import { NotebookPen, Plus } from "lucide-react";
+import { Note, Folder } from "@/types/note";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { sileo } from "sileo";
 
+// Custom Subcomponents
+import FolderPillsBar from "./FolderPillsBar";
+import FolderHeaderActions from "./FolderHeaderActions";
+import NoteCard from "./NoteCard";
+import FolderManagerDialog from "./FolderManagerDialog";
+
 interface NotesListProps {
   initialNotes: Note[];
+  initialFolders: Folder[];
+  selectedFolderId: string | null;
 }
 
-export default function NotesList({ initialNotes }: NotesListProps) {
+type DialogStep = "name" | "select-notes";
+
+export default function NotesList({
+  initialNotes,
+  initialFolders,
+  selectedFolderId,
+}: NotesListProps) {
   const router = useRouter();
   const [notes, setNotes] = useState<Note[]>(initialNotes);
+  const [folders, setFolders] = useState<Folder[]>(initialFolders);
 
-  useEffect(() => {
-    setNotes(initialNotes);
-  }, [initialNotes]);
+  // Dialog and Folder Management States
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogMode, setDialogMode] = useState<"create" | "add-notes">("create");
+  const [dialogStep, setDialogStep] = useState<DialogStep>("name");
+  const [newFolderName, setNewFolderName] = useState("");
+  const [selectedNoteIds, setSelectedNoteIds] = useState<string[]>([]);
+  const [isCreating, setIsCreating] = useState(false);
 
-  const handleDelete = async (id: string, e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent card click / navigation to note details
+  useEffect(() => { setNotes(initialNotes); }, [initialNotes]);
+  useEffect(() => { setFolders(initialFolders); }, [initialFolders]);
 
-    if (!confirm("Are you sure you want to delete this note?")) {
+  const handleDialogOpenChange = (open: boolean) => {
+    setDialogOpen(open);
+    if (!open) {
+      setTimeout(() => {
+        setDialogStep("name");
+        setDialogMode("create");
+        setNewFolderName("");
+        setSelectedNoteIds([]);
+      }, 200);
+    }
+  };
+
+  const handleOpenAddNotesDialog = () => {
+    if (!selectedFolderId || selectedFolderId === "uncategorized") return;
+    setDialogMode("add-notes");
+    setNewFolderName(activeFolderName);
+    setDialogStep("select-notes");
+
+    // Pre-select notes that are already in this folder
+    const currentNoteIds = notes
+      .filter((n) => n.folderId === selectedFolderId)
+      .map((n) => n.id);
+    setSelectedNoteIds(currentNoteIds);
+    setDialogOpen(true);
+  };
+
+  const handleCreateFolder = async () => {
+    if (dialogMode === "add-notes") {
+      if (!selectedFolderId) return;
+      setIsCreating(true);
+
+      try {
+        const previousNoteIds = notes
+          .filter((n) => n.folderId === selectedFolderId)
+          .map((n) => n.id);
+
+        const notesToAdd = selectedNoteIds.filter((id) => !previousNoteIds.includes(id));
+        const notesToRemove = previousNoteIds.filter((id) => !selectedNoteIds.includes(id));
+
+        if (notesToAdd.length > 0) {
+          await axios.patch("/api/notes/bulk", {
+            noteIds: notesToAdd,
+            folderId: selectedFolderId,
+          });
+        }
+
+        if (notesToRemove.length > 0) {
+          await axios.patch("/api/notes/bulk", {
+            noteIds: notesToRemove,
+            folderId: null,
+          });
+        }
+
+        // Update local state notes
+        const targetFolder = folders.find((f) => f.id === selectedFolderId) || null;
+        setNotes((prev) =>
+          prev.map((note) => {
+            if (notesToAdd.includes(note.id)) {
+              return { ...note, folderId: selectedFolderId, folder: targetFolder };
+            }
+            if (notesToRemove.includes(note.id)) {
+              return { ...note, folderId: null, folder: null };
+            }
+            return note;
+          })
+        );
+
+        // Update folder counts
+        setFolders((prev) =>
+          prev.map((f) => {
+            if (f.id === selectedFolderId) {
+              return { ...f, _count: { notes: selectedNoteIds.length } };
+            }
+            return f;
+          })
+        );
+
+        handleDialogOpenChange(false);
+        sileo.success({ title: `Folder notes updated!` });
+        router.refresh();
+      } catch (err) {
+        console.error(err);
+        sileo.error({ title: "Failed to update notes", description: "Please try again." });
+      } finally {
+        setIsCreating(false);
+      }
       return;
     }
 
-    const deletePromise = axios
-      .delete(`/api/notes/${id}`)
-      .then(() => {
-        // Update local state instantly for optimistic UI feedback
-        setNotes((prev) => prev.filter((note) => note.id !== id));
-        router.refresh(); // Refresh stats on layout/dashboard
-      });
+    const name = newFolderName.trim();
+    if (!name) return;
+    setIsCreating(true);
+
+    try {
+      const res = await axios.post("/api/folders", { name });
+      if (!res.data.success) throw new Error();
+      const created: Folder = res.data.folder;
+
+      if (selectedNoteIds.length > 0) {
+        await axios.patch("/api/notes/bulk", {
+          noteIds: selectedNoteIds,
+          folderId: created.id,
+        });
+      }
+
+      setFolders((prev) =>
+        [...prev, { ...created, _count: { notes: selectedNoteIds.length } }]
+          .sort((a, b) => a.name.localeCompare(b.name))
+      );
+
+      if (selectedNoteIds.length > 0) {
+        setNotes((prev) =>
+          prev.map((note) =>
+            selectedNoteIds.includes(note.id)
+              ? { ...note, folderId: created.id, folder: created }
+              : note
+          )
+        );
+      }
+
+      handleDialogOpenChange(false);
+      sileo.success({ title: `"${name}" folder created!` });
+      router.refresh();
+      router.push(`/workspace/notes?folderId=${created.id}`);
+    } catch {
+      sileo.error({ title: "Failed to create folder", description: "Please try again." });
+    } finally {
+      setIsCreating(false);
+    }
+  };
+
+  const handleRenameFolderPrompt = async () => {
+    if (!selectedFolderId || !activeFolder) return;
+    const newName = prompt("Rename folder to:", activeFolder.name);
+    if (!newName || !newName.trim() || newName.trim() === activeFolder.name) return;
+
+    const trimmedName = newName.trim();
+    try {
+      const res = await axios.patch(`/api/folders/${selectedFolderId}`, { name: trimmedName });
+      if (res.data.success && res.data.folder) {
+        setFolders((prev) =>
+          prev.map((f) => (f.id === selectedFolderId ? { ...f, name: trimmedName } : f))
+        );
+        sileo.success({ title: "Folder renamed!" });
+        router.refresh();
+      }
+    } catch (err) {
+      console.error(err);
+      sileo.error({ title: "Failed to rename folder", description: "Folder name may already be taken." });
+    }
+  };
+
+  const handleDeleteFolder = async (id: string, name: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+
+    if (!confirm(`Delete the "${name}" folder? Notes inside will not be deleted — they'll become uncategorized.`)) return;
+
+    const deletePromise = axios.delete(`/api/folders/${id}`).then(() => {
+      setFolders((prev) => prev.filter((f) => f.id !== id));
+      if (selectedFolderId === id) router.push("/workspace/notes");
+      router.refresh();
+    });
 
     sileo.promise(deletePromise, {
-      loading: { title: "Deleting note..." },
-      success: { title: "Note deleted successfully!" },
-      error: (err: unknown) => {
-        // IMPORTANT: Only read error.code — never message text or status codes.
-        const code: string | undefined = axios.isAxiosError(err)
-          ? err.response?.data?.error?.code
-          : undefined;
-
-        if (code === "INVALID_DOCUMENT") {
-          return {
-            title: "Note not found",
-            description: "This note may have already been deleted.",
-          };
-        }
-
-        if (code === "UNAUTHORIZED") {
-          return {
-            title: "Not authorised",
-            description: "You don't have permission to delete this note.",
-          };
-        }
-
-        return {
-          title: "Failed to delete note",
-          description: "An unexpected error occurred. Please try again.",
-        };
-      },
+      loading: { title: "Deleting folder..." },
+      success: { title: "Folder deleted." },
+      error: () => ({ title: "Failed to delete folder" }),
     });
   };
 
+  const handleMoveNote = async (noteId: string, folderId: string | null, e: React.MouseEvent) => {
+    e.stopPropagation();
+    const targetFolder = folders.find((f) => f.id === folderId) || null;
 
-  // Empty State
-  if (!notes || notes.length === 0) {
-    return (
-      <div className="mt-12 flex flex-col items-center justify-center rounded-xl border border-dashed border-border/80 bg-card px-6 py-16 text-center">
-        <div className="flex size-10 items-center justify-center rounded-full bg-muted text-muted-foreground">
-          <NotebookPen className="size-4" />
-        </div>
-        <p className="mt-4 text-sm font-medium text-foreground">No notes yet</p>
-        <p className="mt-1 max-w-sm text-xs text-muted-foreground">
-          Upload a document from Home to generate your first set of notes.
-        </p>
-      </div>
+    setNotes((prev) =>
+      prev.map((n) => n.id === noteId ? { ...n, folderId, folder: targetFolder } : n)
     );
-  }
+
+    try {
+      await axios.patch(`/api/notes/${noteId}`, { folderId });
+      router.refresh();
+    } catch {
+      setNotes(initialNotes);
+      sileo.error({ title: "Failed to move note" });
+    }
+  };
+
+  const handleDeleteNote = async (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!confirm("Are you sure you want to delete this note?")) return;
+
+    const deletePromise = axios.delete(`/api/notes/${id}`).then(() => {
+      setNotes((prev) => prev.filter((n) => n.id !== id));
+      router.refresh();
+    });
+
+    sileo.promise(deletePromise, {
+      loading: { title: "Deleting note..." },
+      success: { title: "Note deleted!" },
+      error: () => ({ title: "Failed to delete note" }),
+    });
+  };
+
+  const handleSelectFolder = (folderId: string | null) => {
+    if (folderId) {
+      router.push(`/workspace/notes?folderId=${folderId}`);
+    } else {
+      router.push("/workspace/notes");
+    }
+  };
+
+  // Filter notes client-side dynamically
+  const displayedNotes = notes.filter((note) => {
+    if (selectedFolderId === "uncategorized") return note.folderId === null;
+    if (selectedFolderId) return note.folderId === selectedFolderId;
+    return true;
+  });
+
+  const activeFolder = folders.find((f) => f.id === selectedFolderId);
+  const activeFolderName =
+    selectedFolderId === "uncategorized" ? "Uncategorized"
+    : activeFolder ? activeFolder.name
+    : "All Notes";
 
   return (
-    <div className="mt-8">
-      {/* Grid Tile Display Layout */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {notes.map((note) => (
-          <div
-            key={note.id}
-            onClick={() => {
-              router.push(`/workspace/notes/${note.id}`);
-            }}
-            className="group relative flex flex-col justify-between rounded-xl border border-border/60 bg-card p-5 text-left transition-all duration-200 hover:-translate-y-0.5 hover:border-border hover:shadow-sm cursor-pointer"
-          >
-            <div className="space-y-2">
-              <div className="flex items-start justify-between gap-4">
-                <h3 className="font-medium text-sm leading-tight text-foreground line-clamp-2 group-hover:text-primary transition-colors">
-                  {note.title || "Untitled Document"}
-                </h3>
-                
-                {/* Action buttons (Visible on Hover) */}
-                <div className="flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <span className="flex size-6 shrink-0 items-center justify-center rounded-md bg-muted text-muted-foreground">
-                    <Maximize2 className="size-3" />
-                  </span>
-                  <Button
-                    variant="destructive"
-                    size="icon-xs"
-                    onClick={(e) => handleDelete(note.id, e)}
-                    title="Delete Note"
-                  >
-                    <Trash2 className="size-3" />
-                  </Button>
-                </div>
-              </div>
+    <div className="mt-6 space-y-6">
+      {/* ── Filter bar ─────────────────────────────────────── */}
+      <FolderPillsBar
+        folders={folders}
+        selectedFolderId={selectedFolderId}
+        onSelectFolder={handleSelectFolder}
+        onDeleteFolder={handleDeleteFolder}
+        onCreateFolderTrigger={() => {
+          setDialogMode("create");
+          setDialogOpen(true);
+        }}
+      />
 
-              <p className="text-xs text-muted-foreground line-clamp-3">
-                {note.generated
-                  ? note.generated.replace(/[#*`_-]/g, "")
-                  : "No preview content available."}
-              </p>
-            </div>
+      {/* ── Folder title & actions ─────────────────────────── */}
+      <FolderHeaderActions
+        selectedFolderId={selectedFolderId}
+        activeFolderName={activeFolderName}
+        notesCount={displayedNotes.length}
+        onOpenAddNotesDialog={handleOpenAddNotesDialog}
+        onRenameFolder={handleRenameFolderPrompt}
+        onDeleteFolder={(e) => handleDeleteFolder(selectedFolderId!, activeFolderName, e)}
+      />
 
-            <div className="mt-6 flex items-center justify-between border-t border-border/40 pt-3 text-[10px] text-muted-foreground">
-              <div className="flex items-center gap-1">
-                <Calendar className="size-3" />
-                <span>
-                  {note.createdAt
-                    ? new Date(note.createdAt).toLocaleDateString(undefined, {
-                        month: "short",
-                        day: "numeric",
-                        year: "numeric",
-                      })
-                    : "Unknown date"}
-                </span>
-              </div>
-              <span className="flex items-center text-foreground font-medium opacity-0 group-hover:opacity-100 transition-opacity">
-                Open Note <ChevronRight className="ml-0.5 size-3" />
-              </span>
-            </div>
+      {/* ── Notes Grid / Empty State ───────────────────────── */}
+      {displayedNotes.length === 0 ? (
+        <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-border/80 bg-card px-6 py-16 text-center">
+          <div className="flex size-10 items-center justify-center rounded-full bg-muted text-muted-foreground">
+            <NotebookPen className="size-4" />
           </div>
-        ))}
-      </div>
+          <p className="mt-4 text-sm font-medium text-foreground">No notes here</p>
+          <p className="mt-1 max-w-xs text-xs text-muted-foreground">
+            {selectedFolderId
+              ? "This folder is currently empty. You can select notes and add them here."
+              : "Upload a document from Home to generate your first notes."}
+          </p>
+          {selectedFolderId && selectedFolderId !== "uncategorized" && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={handleOpenAddNotesDialog}
+              className="mt-4 gap-1.5 text-xs cursor-pointer"
+            >
+              <Plus className="size-3.5" />
+              Add Notes
+            </Button>
+          )}
+        </div>
+      ) : (
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {displayedNotes.map((note) => (
+            <NoteCard
+              key={note.id}
+              note={note}
+              folders={folders}
+              onMoveNote={handleMoveNote}
+              onDeleteNote={handleDeleteNote}
+            />
+          ))}
+        </div>
+      )}
+
+      {/* ── Folder Manager Dialog ────────────────────────────── */}
+      <FolderManagerDialog
+        open={dialogOpen}
+        onOpenChange={handleDialogOpenChange}
+        dialogMode={dialogMode}
+        dialogStep={dialogStep}
+        setDialogStep={setDialogStep}
+        newFolderName={newFolderName}
+        setNewFolderName={setNewFolderName}
+        selectedFolderId={selectedFolderId}
+        notes={notes}
+        selectedNoteIds={selectedNoteIds}
+        setSelectedNoteIds={setSelectedNoteIds}
+        isCreating={isCreating}
+        onSave={handleCreateFolder}
+      />
     </div>
   );
 }

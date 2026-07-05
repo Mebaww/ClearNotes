@@ -7,10 +7,19 @@ import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import "katex/dist/katex.min.css";
 
-import { ArrowLeft, Trash2 } from "lucide-react";
+import { ArrowLeft, Trash2, Folder as FolderIcon, Plus, Check } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { Note } from "@/types/note";
+import { useState, useEffect } from "react";
+import { Note, Folder } from "@/types/note";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+  DropdownMenuLabel,
+} from "@/components/ui/dropdown-menu";
 import { sileo } from "sileo";
 
 interface Props {
@@ -19,6 +28,63 @@ interface Props {
 
 export default function NoteViewer({ note }: Props) {
   const router = useRouter();
+  const [folders, setFolders] = useState<Folder[]>([]);
+  const [activeFolder, setActiveFolder] = useState<Folder | null>(note.folder || null);
+
+  useEffect(() => {
+    async function loadFolders() {
+      try {
+        const res = await fetch("/api/folders");
+        const data = await res.json();
+        if (data.success && data.folders) {
+          setFolders(data.folders);
+        }
+      } catch (err) {
+        console.error("Failed to load folders for selector", err);
+      }
+    }
+    loadFolders();
+  }, []);
+
+  const handleSelectFolder = async (folderId: string | null) => {
+    const prevFolder = activeFolder;
+    // Optimistic UI update
+    const selected = folders.find((f) => f.id === folderId) || null;
+    setActiveFolder(selected);
+
+    try {
+      const res = await axios.patch(`/api/notes/${note.id}`, { folderId });
+      if (res.data.success) {
+        sileo.success({ title: "Folder updated successfully!" });
+        router.refresh();
+      } else {
+        throw new Error();
+      }
+    } catch (err) {
+      setActiveFolder(prevFolder);
+      console.error(err);
+      sileo.error({ title: "Failed to update folder" });
+    }
+  };
+
+  const handleCreateFolder = async () => {
+    const name = prompt("Enter new folder name:");
+    if (!name || !name.trim()) return;
+
+    try {
+      const res = await axios.post("/api/folders", { name: name.trim() });
+      if (res.data.success && res.data.folder) {
+        const createdFolder = res.data.folder;
+        setFolders((prev) =>
+          [...prev, createdFolder].sort((a, b) => a.name.localeCompare(b.name))
+        );
+        await handleSelectFolder(createdFolder.id);
+      }
+    } catch (err) {
+      console.error(err);
+      sileo.error({ title: "Failed to create folder" });
+    }
+  };
 
   const handleDelete = async () => {
     if (!confirm("Are you sure you want to delete this note?")) {
@@ -73,21 +139,83 @@ export default function NoteViewer({ note }: Props) {
           Back to Notes
         </button>
 
-        <Button
-          variant="destructive"
-          size="sm"
-          onClick={handleDelete}
-          className="flex items-center gap-1.5"
-        >
-          <Trash2 className="size-3" />
-          Delete Note
-        </Button>
+        <div className="flex items-center gap-2">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="outline"
+                size="sm"
+                className="flex items-center gap-1.5 h-8 text-xs cursor-pointer font-medium"
+              >
+                <FolderIcon className="size-3.5 text-muted-foreground" />
+                <span>{activeFolder ? activeFolder.name : "Add to Folder"}</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56 bg-popover border border-border shadow-md">
+              <DropdownMenuLabel className="text-muted-foreground font-semibold px-2 py-1.5 text-xs">
+                Move to Subject
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+
+              <div className="max-h-[200px] overflow-y-auto">
+                <DropdownMenuItem
+                  onClick={() => handleSelectFolder(null)}
+                  className="text-xs flex items-center justify-between cursor-pointer"
+                >
+                  <span className="truncate">Uncategorized</span>
+                  {!activeFolder && <Check className="size-3.5 text-primary" />}
+                </DropdownMenuItem>
+
+                {folders.map((folder) => (
+                  <DropdownMenuItem
+                    key={folder.id}
+                    onClick={() => handleSelectFolder(folder.id)}
+                    className="text-xs flex items-center justify-between cursor-pointer"
+                  >
+                    <span className="truncate">{folder.name}</span>
+                    {activeFolder?.id === folder.id && (
+                      <Check className="size-3.5 text-primary" />
+                    )}
+                  </DropdownMenuItem>
+                ))}
+              </div>
+
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={handleCreateFolder}
+                className="text-xs flex items-center gap-2 cursor-pointer font-medium"
+              >
+                <Plus className="size-3.5 text-muted-foreground" />
+                <span>Create New Folder...</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={handleDelete}
+            className="flex items-center gap-1.5 h-8 text-muted-foreground hover:text-destructive hover:bg-destructive/10 cursor-pointer"
+          >
+            <Trash2 className="size-3.5" />
+            Delete Note
+          </Button>
+        </div>
       </div>
 
       <div className="rounded-xl border bg-card p-8">
-        <p className="mb-8 text-sm text-muted-foreground">
-          {new Date(note.createdAt).toLocaleDateString()}
-        </p>
+        <div className="mb-6 flex flex-wrap items-center justify-between gap-4 border-b border-border/40 pb-5">
+          <p className="text-xs text-muted-foreground">
+            {new Date(note.createdAt).toLocaleDateString()}
+          </p>
+
+          {activeFolder && (
+            <div className="inline-flex items-center gap-1.5 rounded-full bg-secondary/80 px-2.5 py-0.5 text-xs font-medium text-secondary-foreground">
+              <FolderIcon className="size-3 text-muted-foreground" />
+              <span>{activeFolder.name}</span>
+            </div>
+          )}
+        </div>
 
         <article className="max-w-none overflow-x-auto">
           <ReactMarkdown

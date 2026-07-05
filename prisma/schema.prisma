@@ -46,8 +46,27 @@ model Note {
   userId     String
   user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  folderId   String?
+  folder     Folder?    @relation(fields: [folderId], references: [id], onDelete: SetNull)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([folderId])
+}
+
+model Folder {
+  id        String   @id @default(cuid())
+  name      String
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  notes     Note[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, name])
+  @@index([userId])
+  @@map("folder")
 }
 
 model User {
@@ -65,6 +84,7 @@ model User {
   sessions           Session[]
   accounts           Account[]
   notes              Note[]
+  folders            Folder[]
 
   @@unique([email])
   @@map("user")

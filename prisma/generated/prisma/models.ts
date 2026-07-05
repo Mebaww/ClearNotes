@@ -10,6 +10,7 @@
  */
 export type * from './models/Waitlist'
 export type * from './models/Note'
+export type * from './models/Folder'
 export type * from './models/User'
 export type * from './models/Session'
 export type * from './models/Account'

@@ -68,7 +68,8 @@ export async function createNote(text: string, userId: string) {
       sourceText: text,
       generated: output,
       userId: userId,
-      characters: text.length
+      characters: text.length,
+      folderId: null,
     },
   });
 
