@@ -14,21 +14,18 @@ const poppins = Poppins({
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"),
-  title: "ClearNotes — Read less, Understand more",
-  icons: {
-    icon: "/logo.png",
-  },
+  title: "ClearNotes — Less Reading. More Understanding.",
   description:
-    "ClearNotes turns PDFs, slide decks, and Word documents into clear, structured notes for work and study.",
+  "Upload a document and get organized notes that help you find what matters faster.",
   applicationName: "ClearNotes",
   alternates: {
     canonical: "/",
   },
   openGraph: {
     type: "website",
-    title: "ClearNotes — Read less, Understand more",
-    description:
-      "Turn PDFs, slide decks, and Word documents into clear, structured notes.",
+    title: "ClearNotes — Less Reading. More Understanding.",
+  description:
+  "Upload a document and get organized notes that help you find what matters faster.",
     url: "/",
     siteName: "ClearNotes",
     images: [
@@ -42,9 +39,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "ClearNotes — Read less, Understand more",
-    description:
-      "Turn PDFs, slide decks, and Word documents into clear, structured notes.",
+    title: "ClearNotes — Less Reading. More Understanding.",
+   description:
+  "Upload a document and get organized notes that help you find what matters faster.",
     images: ["/opengraph-image"],
   },
   robots: {

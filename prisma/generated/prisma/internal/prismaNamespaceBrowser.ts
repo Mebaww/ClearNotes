@@ -53,6 +53,7 @@ export const AnyNull = runtime.AnyNull
 export const ModelName = {
   Waitlist: 'Waitlist',
   Note: 'Note',
+  Folder: 'Folder',
   User: 'User',
   Session: 'Session',
   Account: 'Account',
@@ -95,11 +96,23 @@ export const NoteScalarFieldEnum = {
   characters: 'characters',
   status: 'status',
   userId: 'userId',
+  folderId: 'folderId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
 
 export type NoteScalarFieldEnum = (typeof NoteScalarFieldEnum)[keyof typeof NoteScalarFieldEnum]
+
+
+export const FolderScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  userId: 'userId',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type FolderScalarFieldEnum = (typeof FolderScalarFieldEnum)[keyof typeof FolderScalarFieldEnum]
 
 
 export const UserScalarFieldEnum = {

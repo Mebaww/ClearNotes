@@ -1,5 +1,5 @@
-import Hero from "@/components/Hero";
-import Navbar from "@/components/Navbar";
+import Hero from "@/components/hero/Hero";
+import Navbar from "@/components/hero/Navbar";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";

@@ -16,7 +16,7 @@ export default function AuthPage() {
         provider: "google",
         callbackURL: "/workspace",
         errorCallbackURL: "/auth",
-        newUserCallbackURL: "/onboarding",
+        newUserCallbackURL: "/workspace",
       });
     } catch {
       setIsLoading(false);

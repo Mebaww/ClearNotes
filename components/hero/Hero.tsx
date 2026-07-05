@@ -1,17 +1,18 @@
 import {
-  ArrowRight,
   BookOpen,
-  CheckCircle2,
   Clock3,
   GraduationCap,
-  Layers3,
+
+  Heart,
+
   ShieldCheck,
   Sparkles,
   Upload,
   Zap,
 } from "lucide-react";
+import { GetStartedButton } from "./GetStartedButton";
+import { HeroAnimation } from "./HeroAnimation";
 import Link from "next/link";
-
 export default function Hero() {
   return (
     <main className="bg-gray-50 dark:bg-background text-foreground">
@@ -31,19 +32,9 @@ export default function Hero() {
             </h1>
 
             <p className="mt-6 max-w-xl text-base leading-relaxed text-muted-foreground">
-              ClearNotes turns dense PDFs, presentations, and Word files into
-              clean, structured notes you can actually use for work and study.
+ClearNotes extracts the important information from your documents and turns it into clear, organized notes you can actually use for work, research, and study
             </p>
-            <div className="mt-8 flex flex-col sm:flex-row items-center gap-5">
-              <Link
-                href="/auth"
-                className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-8 py-4 text-base font-semibold text-black shadow-sm shadow-primary/20 transition-all duration-200 hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-md hover:shadow-primary/30 active:translate-y-0 active:scale-[0.98] sm:w-auto"
-              >
-                Try the beta for free
-                <ArrowRight className="h-5 w-5" strokeWidth={2.5} />
-              </Link>
-             
-            </div>
+            
 
             <div className="mt-10 grid max-w-lg grid-cols-3 gap-3 text-sm">
               <div className="rounded-xl border border-border bg-card/80 px-3.5 py-3 backdrop-blur-xl dark:bg-card/50">
@@ -68,80 +59,7 @@ export default function Hero() {
           </div>
 
           <div className="relative animate-fade-up pt-4 md:pt-6 md:pr-6">
-            <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-[0_30px_60px_-15px_rgba(0,0,0,0.12)] backdrop-blur-2xl dark:bg-card/80 dark:shadow-[0_30px_60px_-15px_rgba(0,0,0,0.5)]">
-              <div className="flex items-center gap-2 border-b border-border bg-muted/30 px-4 py-3 dark:bg-card/40">
-                <div className="flex gap-1.5">
-                  <span className="h-3 w-3 rounded-full bg-[#FF5F57]" />
-                  <span className="h-3 w-3 rounded-full bg-[#FEBC2E]" />
-                  <span className="h-3 w-3 rounded-full bg-[#28C840]" />
-                </div>
-                <p className="flex-1 text-center text-xs font-medium text-muted-foreground">
-                  Quarterly_Report_Q3.pdf
-                </p>
-              </div>
-
-              <div className="p-6">
-                <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-                  Source document
-                </p>
-                <div className="mt-3 space-y-2 text-[13px] leading-relaxed text-foreground/80">
-                  <p>
-                    Our enterprise expansion grew{" "}
-                    <mark className="rounded bg-primary/20 px-0.5 text-foreground">
-                      14% this quarter
-                    </mark>
-                    , driven largely by adoption of{" "}
-                    <mark className="rounded bg-foreground/10 px-0.5 text-foreground">
-                      automated compliance tools
-                    </mark>
-                    .
-                  </p>
-                  <p>
-                    Leadership flagged{" "}
-                    <mark className="rounded bg-primary/20 px-0.5 text-foreground">
-                      three open risk items
-                    </mark>{" "}
-                    ahead of the Q4 planning cycle.
-                  </p>
-                </div>
-
-                <div className="mt-5 border-t border-border pt-5">
-                  <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-                    ClearNotes output
-                  </p>
-                  <div className="mt-3 space-y-3">
-                    <div className="flex gap-3">
-                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/12 text-primary">
-                        <CheckCircle2 className="h-4.5 w-4.5" />
-                      </div>
-                      <div>
-                        <p className="text-sm font-semibold text-foreground">
-                          Key takeaways
-                        </p>
-                        <p className="mt-0.5 text-xs leading-relaxed text-muted-foreground">
-                          Three financial goals met; product timeline confirmed
-                          for launch.
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex gap-3">
-                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-foreground/5 text-muted-foreground">
-                        <Layers3 className="h-4.5 w-4.5" />
-                      </div>
-                      <div>
-                        <p className="text-sm font-semibold text-foreground">
-                          Organized sections
-                        </p>
-                        <p className="mt-0.5 text-xs leading-relaxed text-muted-foreground">
-                          Action items, timelines, and risk flags extracted and
-                          grouped.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <HeroAnimation />
           </div>
         </div>
       </section>
@@ -279,31 +197,32 @@ export default function Hero() {
         </div>
         <div className="relative mx-auto max-w-3xl rounded-3xl border border-border bg-card p-8 text-center shadow-[0_20px_50px_-20px_rgba(0,0,0,0.15)] sm:p-16 dark:shadow-[0_20px_50px_-20px_rgba(0,0,0,0.5)]">
           <div className="flex items-center justify-center gap-2">
-            
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
-              Beta Now Live
+              Now Live
             </p>
           </div>
           <h2 className="mt-4 font-heading text-3xl font-normal tracking-tight text-foreground sm:text-4xl">
             Stop reading. Start understanding.
           </h2>
           <p className="mx-auto mt-4 max-w-lg text-base leading-relaxed text-muted-foreground">
-            ClearNotes is currently in open beta. Create an account today to get early access and try it on your own documents.
+           Upload your document and get clear, organized notes in seconds. Try it free, no credit card required.
           </p>
           <div className="mt-8 flex justify-center">
-            <Link
-              href="/auth"
-              className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-8 py-4 text-base font-semibold text-black shadow-sm shadow-primary/20 transition-all duration-200 hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-md hover:shadow-primary/30 active:translate-y-0 active:scale-[0.98] sm:w-auto"
-            >
-              Try ClearNotes Beta
-              <ArrowRight className="h-5 w-5" strokeWidth={2.5} />
-            </Link>
+            <GetStartedButton
+              label="Try it now"
+              size="lg"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-primary px-8 py-4 text-base font-semibold text-primary-foreground transition-all duration-200 hover:bg-primary/90 active:scale-[0.98] sm:w-auto cursor-pointer"
+            />
           </div>
         </div>
       </section>
 
       <footer className="border-t border-border bg-background px-6 py-10 text-center text-xs text-muted-foreground">
         © {new Date().getFullYear()} ClearNotes. All rights reserved.
+        made by {` `}
+        <Link href="https://meva.work">
+          <span className="font-semibold text-foreground">meva.work</span>
+        </Link>
       </footer>
     </main>
   );

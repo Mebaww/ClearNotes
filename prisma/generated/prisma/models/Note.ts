@@ -42,6 +42,7 @@ export type NoteMinAggregateOutputType = {
   characters: number | null
   status: $Enums.NoteStatus | null
   userId: string | null
+  folderId: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -54,6 +55,7 @@ export type NoteMaxAggregateOutputType = {
   characters: number | null
   status: $Enums.NoteStatus | null
   userId: string | null
+  folderId: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -66,6 +68,7 @@ export type NoteCountAggregateOutputType = {
   characters: number
   status: number
   userId: number
+  folderId: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -88,6 +91,7 @@ export type NoteMinAggregateInputType = {
   characters?: true
   status?: true
   userId?: true
+  folderId?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -100,6 +104,7 @@ export type NoteMaxAggregateInputType = {
   characters?: true
   status?: true
   userId?: true
+  folderId?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -112,6 +117,7 @@ export type NoteCountAggregateInputType = {
   characters?: true
   status?: true
   userId?: true
+  folderId?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -211,6 +217,7 @@ export type NoteGroupByOutputType = {
   characters: number
   status: $Enums.NoteStatus
   userId: string
+  folderId: string | null
   createdAt: Date
   updatedAt: Date
   _count: NoteCountAggregateOutputType | null
@@ -246,9 +253,11 @@ export type NoteWhereInput = {
   characters?: Prisma.IntFilter<"Note"> | number
   status?: Prisma.EnumNoteStatusFilter<"Note"> | $Enums.NoteStatus
   userId?: Prisma.StringFilter<"Note"> | string
+  folderId?: Prisma.StringNullableFilter<"Note"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Note"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Note"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  folder?: Prisma.XOR<Prisma.FolderNullableScalarRelationFilter, Prisma.FolderWhereInput> | null
 }
 
 export type NoteOrderByWithRelationInput = {
@@ -259,9 +268,11 @@ export type NoteOrderByWithRelationInput = {
   characters?: Prisma.SortOrder
   status?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  folderId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
+  folder?: Prisma.FolderOrderByWithRelationInput
 }
 
 export type NoteWhereUniqueInput = Prisma.AtLeast<{
@@ -275,9 +286,11 @@ export type NoteWhereUniqueInput = Prisma.AtLeast<{
   characters?: Prisma.IntFilter<"Note"> | number
   status?: Prisma.EnumNoteStatusFilter<"Note"> | $Enums.NoteStatus
   userId?: Prisma.StringFilter<"Note"> | string
+  folderId?: Prisma.StringNullableFilter<"Note"> | string | null
   createdAt?: Prisma.DateTimeFilter<"Note"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Note"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  folder?: Prisma.XOR<Prisma.FolderNullableScalarRelationFilter, Prisma.FolderWhereInput> | null
 }, "id">
 
 export type NoteOrderByWithAggregationInput = {
@@ -288,6 +301,7 @@ export type NoteOrderByWithAggregationInput = {
   characters?: Prisma.SortOrder
   status?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  folderId?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.NoteCountOrderByAggregateInput
@@ -308,6 +322,7 @@ export type NoteScalarWhereWithAggregatesInput = {
   characters?: Prisma.IntWithAggregatesFilter<"Note"> | number
   status?: Prisma.EnumNoteStatusWithAggregatesFilter<"Note"> | $Enums.NoteStatus
   userId?: Prisma.StringWithAggregatesFilter<"Note"> | string
+  folderId?: Prisma.StringNullableWithAggregatesFilter<"Note"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Note"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Note"> | Date | string
 }
@@ -322,6 +337,7 @@ export type NoteCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutNotesInput
+  folder?: Prisma.FolderCreateNestedOneWithoutNotesInput
 }
 
 export type NoteUncheckedCreateInput = {
@@ -332,6 +348,7 @@ export type NoteUncheckedCreateInput = {
   characters?: number
   status?: $Enums.NoteStatus
   userId: string
+  folderId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -346,6 +363,7 @@ export type NoteUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutNotesNestedInput
+  folder?: Prisma.FolderUpdateOneWithoutNotesNestedInput
 }
 
 export type NoteUncheckedUpdateInput = {
@@ -356,6 +374,7 @@ export type NoteUncheckedUpdateInput = {
   characters?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumNoteStatusFieldUpdateOperationsInput | $Enums.NoteStatus
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  folderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -368,6 +387,7 @@ export type NoteCreateManyInput = {
   characters?: number
   status?: $Enums.NoteStatus
   userId: string
+  folderId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -391,6 +411,7 @@ export type NoteUncheckedUpdateManyInput = {
   characters?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumNoteStatusFieldUpdateOperationsInput | $Enums.NoteStatus
   userId?: Prisma.StringFieldUpdateOperationsInput | string
+  folderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -403,6 +424,7 @@ export type NoteCountOrderByAggregateInput = {
   characters?: Prisma.SortOrder
   status?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  folderId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -419,6 +441,7 @@ export type NoteMaxOrderByAggregateInput = {
   characters?: Prisma.SortOrder
   status?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  folderId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -431,6 +454,7 @@ export type NoteMinOrderByAggregateInput = {
   characters?: Prisma.SortOrder
   status?: Prisma.SortOrder
   userId?: Prisma.SortOrder
+  folderId?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -459,6 +483,48 @@ export type IntFieldUpdateOperationsInput = {
 
 export type EnumNoteStatusFieldUpdateOperationsInput = {
   set?: $Enums.NoteStatus
+}
+
+export type NoteCreateNestedManyWithoutFolderInput = {
+  create?: Prisma.XOR<Prisma.NoteCreateWithoutFolderInput, Prisma.NoteUncheckedCreateWithoutFolderInput> | Prisma.NoteCreateWithoutFolderInput[] | Prisma.NoteUncheckedCreateWithoutFolderInput[]
+  connectOrCreate?: Prisma.NoteCreateOrConnectWithoutFolderInput | Prisma.NoteCreateOrConnectWithoutFolderInput[]
+  createMany?: Prisma.NoteCreateManyFolderInputEnvelope
+  connect?: Prisma.NoteWhereUniqueInput | Prisma.NoteWhereUniqueInput[]
+}
+
+export type NoteUncheckedCreateNestedManyWithoutFolderInput = {
+  create?: Prisma.XOR<Prisma.NoteCreateWithoutFolderInput, Prisma.NoteUncheckedCreateWithoutFolderInput> | Prisma.NoteCreateWithoutFolderInput[] | Prisma.NoteUncheckedCreateWithoutFolderInput[]
+  connectOrCreate?: Prisma.NoteCreateOrConnectWithoutFolderInput | Prisma.NoteCreateOrConnectWithoutFolderInput[]
+  createMany?: Prisma.NoteCreateManyFolderInputEnvelope
+  connect?: Prisma.NoteWhereUniqueInput | Prisma.NoteWhereUniqueInput[]
+}
+
+export type NoteUpdateManyWithoutFolderNestedInput = {
+  create?: Prisma.XOR<Prisma.NoteCreateWithoutFolderInput, Prisma.NoteUncheckedCreateWithoutFolderInput> | Prisma.NoteCreateWithoutFolderInput[] | Prisma.NoteUncheckedCreateWithoutFolderInput[]
+  connectOrCreate?: Prisma.NoteCreateOrConnectWithoutFolderInput | Prisma.NoteCreateOrConnectWithoutFolderInput[]
+  upsert?: Prisma.NoteUpsertWithWhereUniqueWithoutFolderInput | Prisma.NoteUpsertWithWhereUniqueWithoutFolderInput[]
+  createMany?: Prisma.NoteCreateManyFolderInputEnvelope
+  set?: Prisma.NoteWhereUniqueInput | Prisma.NoteWhereUniqueInput[]
+  disconnect?: Prisma.NoteWhereUniqueInput | Prisma.NoteWhereUniqueInput[]
+  delete?: Prisma.NoteWhereUniqueInput | Prisma.NoteWhereUniqueInput[]
+  connect?: Prisma.NoteWhereUniqueInput | Prisma.NoteWhereUniqueInput[]
+  update?: Prisma.NoteUpdateWithWhereUniqueWithoutFolderInput | Prisma.NoteUpdateWithWhereUniqueWithoutFolderInput[]
+  updateMany?: Prisma.NoteUpdateManyWithWhereWithoutFolderInput | Prisma.NoteUpdateManyWithWhereWithoutFolderInput[]
+  deleteMany?: Prisma.NoteScalarWhereInput | Prisma.NoteScalarWhereInput[]
+}
+
+export type NoteUncheckedUpdateManyWithoutFolderNestedInput = {
+  create?: Prisma.XOR<Prisma.NoteCreateWithoutFolderInput, Prisma.NoteUncheckedCreateWithoutFolderInput> | Prisma.NoteCreateWithoutFolderInput[] | Prisma.NoteUncheckedCreateWithoutFolderInput[]
+  connectOrCreate?: Prisma.NoteCreateOrConnectWithoutFolderInput | Prisma.NoteCreateOrConnectWithoutFolderInput[]
+  upsert?: Prisma.NoteUpsertWithWhereUniqueWithoutFolderInput | Prisma.NoteUpsertWithWhereUniqueWithoutFolderInput[]
+  createMany?: Prisma.NoteCreateManyFolderInputEnvelope
+  set?: Prisma.NoteWhereUniqueInput | Prisma.NoteWhereUniqueInput[]
+  disconnect?: Prisma.NoteWhereUniqueInput | Prisma.NoteWhereUniqueInput[]
+  delete?: Prisma.NoteWhereUniqueInput | Prisma.NoteWhereUniqueInput[]
+  connect?: Prisma.NoteWhereUniqueInput | Prisma.NoteWhereUniqueInput[]
+  update?: Prisma.NoteUpdateWithWhereUniqueWithoutFolderInput | Prisma.NoteUpdateWithWhereUniqueWithoutFolderInput[]
+  updateMany?: Prisma.NoteUpdateManyWithWhereWithoutFolderInput | Prisma.NoteUpdateManyWithWhereWithoutFolderInput[]
+  deleteMany?: Prisma.NoteScalarWhereInput | Prisma.NoteScalarWhereInput[]
 }
 
 export type NoteCreateNestedManyWithoutUserInput = {
@@ -503,6 +569,72 @@ export type NoteUncheckedUpdateManyWithoutUserNestedInput = {
   deleteMany?: Prisma.NoteScalarWhereInput | Prisma.NoteScalarWhereInput[]
 }
 
+export type NoteCreateWithoutFolderInput = {
+  id?: string
+  title?: string | null
+  sourceText?: string | null
+  generated?: string | null
+  characters?: number
+  status?: $Enums.NoteStatus
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutNotesInput
+}
+
+export type NoteUncheckedCreateWithoutFolderInput = {
+  id?: string
+  title?: string | null
+  sourceText?: string | null
+  generated?: string | null
+  characters?: number
+  status?: $Enums.NoteStatus
+  userId: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type NoteCreateOrConnectWithoutFolderInput = {
+  where: Prisma.NoteWhereUniqueInput
+  create: Prisma.XOR<Prisma.NoteCreateWithoutFolderInput, Prisma.NoteUncheckedCreateWithoutFolderInput>
+}
+
+export type NoteCreateManyFolderInputEnvelope = {
+  data: Prisma.NoteCreateManyFolderInput | Prisma.NoteCreateManyFolderInput[]
+  skipDuplicates?: boolean
+}
+
+export type NoteUpsertWithWhereUniqueWithoutFolderInput = {
+  where: Prisma.NoteWhereUniqueInput
+  update: Prisma.XOR<Prisma.NoteUpdateWithoutFolderInput, Prisma.NoteUncheckedUpdateWithoutFolderInput>
+  create: Prisma.XOR<Prisma.NoteCreateWithoutFolderInput, Prisma.NoteUncheckedCreateWithoutFolderInput>
+}
+
+export type NoteUpdateWithWhereUniqueWithoutFolderInput = {
+  where: Prisma.NoteWhereUniqueInput
+  data: Prisma.XOR<Prisma.NoteUpdateWithoutFolderInput, Prisma.NoteUncheckedUpdateWithoutFolderInput>
+}
+
+export type NoteUpdateManyWithWhereWithoutFolderInput = {
+  where: Prisma.NoteScalarWhereInput
+  data: Prisma.XOR<Prisma.NoteUpdateManyMutationInput, Prisma.NoteUncheckedUpdateManyWithoutFolderInput>
+}
+
+export type NoteScalarWhereInput = {
+  AND?: Prisma.NoteScalarWhereInput | Prisma.NoteScalarWhereInput[]
+  OR?: Prisma.NoteScalarWhereInput[]
+  NOT?: Prisma.NoteScalarWhereInput | Prisma.NoteScalarWhereInput[]
+  id?: Prisma.StringFilter<"Note"> | string
+  title?: Prisma.StringNullableFilter<"Note"> | string | null
+  sourceText?: Prisma.StringNullableFilter<"Note"> | string | null
+  generated?: Prisma.StringNullableFilter<"Note"> | string | null
+  characters?: Prisma.IntFilter<"Note"> | number
+  status?: Prisma.EnumNoteStatusFilter<"Note"> | $Enums.NoteStatus
+  userId?: Prisma.StringFilter<"Note"> | string
+  folderId?: Prisma.StringNullableFilter<"Note"> | string | null
+  createdAt?: Prisma.DateTimeFilter<"Note"> | Date | string
+  updatedAt?: Prisma.DateTimeFilter<"Note"> | Date | string
+}
+
 export type NoteCreateWithoutUserInput = {
   id?: string
   title?: string | null
@@ -512,6 +644,7 @@ export type NoteCreateWithoutUserInput = {
   status?: $Enums.NoteStatus
   createdAt?: Date | string
   updatedAt?: Date | string
+  folder?: Prisma.FolderCreateNestedOneWithoutNotesInput
 }
 
 export type NoteUncheckedCreateWithoutUserInput = {
@@ -521,6 +654,7 @@ export type NoteUncheckedCreateWithoutUserInput = {
   generated?: string | null
   characters?: number
   status?: $Enums.NoteStatus
+  folderId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -551,19 +685,52 @@ export type NoteUpdateManyWithWhereWithoutUserInput = {
   data: Prisma.XOR<Prisma.NoteUpdateManyMutationInput, Prisma.NoteUncheckedUpdateManyWithoutUserInput>
 }
 
-export type NoteScalarWhereInput = {
-  AND?: Prisma.NoteScalarWhereInput | Prisma.NoteScalarWhereInput[]
-  OR?: Prisma.NoteScalarWhereInput[]
-  NOT?: Prisma.NoteScalarWhereInput | Prisma.NoteScalarWhereInput[]
-  id?: Prisma.StringFilter<"Note"> | string
-  title?: Prisma.StringNullableFilter<"Note"> | string | null
-  sourceText?: Prisma.StringNullableFilter<"Note"> | string | null
-  generated?: Prisma.StringNullableFilter<"Note"> | string | null
-  characters?: Prisma.IntFilter<"Note"> | number
-  status?: Prisma.EnumNoteStatusFilter<"Note"> | $Enums.NoteStatus
-  userId?: Prisma.StringFilter<"Note"> | string
-  createdAt?: Prisma.DateTimeFilter<"Note"> | Date | string
-  updatedAt?: Prisma.DateTimeFilter<"Note"> | Date | string
+export type NoteCreateManyFolderInput = {
+  id?: string
+  title?: string | null
+  sourceText?: string | null
+  generated?: string | null
+  characters?: number
+  status?: $Enums.NoteStatus
+  userId: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+}
+
+export type NoteUpdateWithoutFolderInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  generated?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  characters?: Prisma.IntFieldUpdateOperationsInput | number
+  status?: Prisma.EnumNoteStatusFieldUpdateOperationsInput | $Enums.NoteStatus
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutNotesNestedInput
+}
+
+export type NoteUncheckedUpdateWithoutFolderInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  generated?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  characters?: Prisma.IntFieldUpdateOperationsInput | number
+  status?: Prisma.EnumNoteStatusFieldUpdateOperationsInput | $Enums.NoteStatus
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type NoteUncheckedUpdateManyWithoutFolderInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  sourceText?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  generated?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  characters?: Prisma.IntFieldUpdateOperationsInput | number
+  status?: Prisma.EnumNoteStatusFieldUpdateOperationsInput | $Enums.NoteStatus
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type NoteCreateManyUserInput = {
@@ -573,6 +740,7 @@ export type NoteCreateManyUserInput = {
   generated?: string | null
   characters?: number
   status?: $Enums.NoteStatus
+  folderId?: string | null
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -586,6 +754,7 @@ export type NoteUpdateWithoutUserInput = {
   status?: Prisma.EnumNoteStatusFieldUpdateOperationsInput | $Enums.NoteStatus
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  folder?: Prisma.FolderUpdateOneWithoutNotesNestedInput
 }
 
 export type NoteUncheckedUpdateWithoutUserInput = {
@@ -595,6 +764,7 @@ export type NoteUncheckedUpdateWithoutUserInput = {
   generated?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   characters?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumNoteStatusFieldUpdateOperationsInput | $Enums.NoteStatus
+  folderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -606,6 +776,7 @@ export type NoteUncheckedUpdateManyWithoutUserInput = {
   generated?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   characters?: Prisma.IntFieldUpdateOperationsInput | number
   status?: Prisma.EnumNoteStatusFieldUpdateOperationsInput | $Enums.NoteStatus
+  folderId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -620,9 +791,11 @@ export type NoteSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   characters?: boolean
   status?: boolean
   userId?: boolean
+  folderId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  folder?: boolean | Prisma.Note$folderArgs<ExtArgs>
 }, ExtArgs["result"]["note"]>
 
 export type NoteSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -633,9 +806,11 @@ export type NoteSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   characters?: boolean
   status?: boolean
   userId?: boolean
+  folderId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  folder?: boolean | Prisma.Note$folderArgs<ExtArgs>
 }, ExtArgs["result"]["note"]>
 
 export type NoteSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -646,9 +821,11 @@ export type NoteSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   characters?: boolean
   status?: boolean
   userId?: boolean
+  folderId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  folder?: boolean | Prisma.Note$folderArgs<ExtArgs>
 }, ExtArgs["result"]["note"]>
 
 export type NoteSelectScalar = {
@@ -659,25 +836,30 @@ export type NoteSelectScalar = {
   characters?: boolean
   status?: boolean
   userId?: boolean
+  folderId?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type NoteOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "sourceText" | "generated" | "characters" | "status" | "userId" | "createdAt" | "updatedAt", ExtArgs["result"]["note"]>
+export type NoteOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "sourceText" | "generated" | "characters" | "status" | "userId" | "folderId" | "createdAt" | "updatedAt", ExtArgs["result"]["note"]>
 export type NoteInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  folder?: boolean | Prisma.Note$folderArgs<ExtArgs>
 }
 export type NoteIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  folder?: boolean | Prisma.Note$folderArgs<ExtArgs>
 }
 export type NoteIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  folder?: boolean | Prisma.Note$folderArgs<ExtArgs>
 }
 
 export type $NotePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Note"
   objects: {
     user: Prisma.$UserPayload<ExtArgs>
+    folder: Prisma.$FolderPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -687,6 +869,7 @@ export type $NotePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     characters: number
     status: $Enums.NoteStatus
     userId: string
+    folderId: string | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["note"]>
@@ -1084,6 +1267,7 @@ readonly fields: NoteFieldRefs;
 export interface Prisma__NoteClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  folder<T extends Prisma.Note$folderArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Note$folderArgs<ExtArgs>>): Prisma.Prisma__FolderClient<runtime.Types.Result.GetResult<Prisma.$FolderPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1120,6 +1304,7 @@ export interface NoteFieldRefs {
   readonly characters: Prisma.FieldRef<"Note", 'Int'>
   readonly status: Prisma.FieldRef<"Note", 'NoteStatus'>
   readonly userId: Prisma.FieldRef<"Note", 'String'>
+  readonly folderId: Prisma.FieldRef<"Note", 'String'>
   readonly createdAt: Prisma.FieldRef<"Note", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Note", 'DateTime'>
 }
@@ -1520,6 +1705,25 @@ export type NoteDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Internal
    * Limit how many Notes to delete.
    */
   limit?: number
+}
+
+/**
+ * Note.folder
+ */
+export type Note$folderArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Folder
+   */
+  select?: Prisma.FolderSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Folder
+   */
+  omit?: Prisma.FolderOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.FolderInclude<ExtArgs> | null
+  where?: Prisma.FolderWhereInput
 }
 
 /**

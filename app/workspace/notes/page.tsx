@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import NotesList from "@/components/workspace/notes/Notes-List";
-import {Note} from "@/types/note";
 import { getNotes } from "@/lib/notes/getNotes";
+import { getFolders } from "@/lib/notes/getFolders";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
@@ -13,7 +13,13 @@ export const metadata: Metadata = {
   description: "All your generated notes in one place.",
 };
 
-export default async function NotesPage() {
+interface PageProps {
+  searchParams: Promise<{
+    folderId?: string;
+  }>;
+}
+
+export default async function NotesPage({ searchParams }: PageProps) {
   const session = await auth.api.getSession({
     headers: await headers()
   });
@@ -22,7 +28,9 @@ export default async function NotesPage() {
     redirect("/");
   }
 
-  const notes = await getNotes(session.user.id);
+  const { folderId } = await searchParams;
+  const notes = await getNotes(session.user.id, 200);
+  const folders = await getFolders(session.user.id);
 
   return (
     <main className="flex-1 overflow-auto">
@@ -37,7 +45,11 @@ export default async function NotesPage() {
         </div>
 
         {/* Dynamic Client Interactive View Layer */}
-        <NotesList initialNotes={notes} />
+        <NotesList 
+          initialNotes={notes} 
+          initialFolders={folders} 
+          selectedFolderId={folderId || null} 
+        />
       </div>
     </main>
   );

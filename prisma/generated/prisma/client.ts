@@ -52,6 +52,11 @@ export type Waitlist = Prisma.WaitlistModel
  */
 export type Note = Prisma.NoteModel
 /**
+ * Model Folder
+ * 
+ */
+export type Folder = Prisma.FolderModel
+/**
  * Model User
  * 
  */
