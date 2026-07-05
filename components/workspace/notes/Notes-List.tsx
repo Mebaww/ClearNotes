@@ -582,17 +582,17 @@ export default function NotesList({
 
       {/* ── Bulk Actions Floating Toolbar ────────────────────── */}
       {bulkSelectedNoteIds.length > 0 && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 flex items-center gap-3 rounded-full border border-border/80 bg-background/90 backdrop-blur-md px-4 py-2.5 shadow-lg animate-in fade-in slide-in-from-bottom-4 duration-200">
-          <span className="text-xs font-semibold text-foreground px-1 pl-2">
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 flex flex-wrap items-center justify-center gap-2 sm:gap-3 rounded-[2rem] border border-border/80 bg-background/90 backdrop-blur-md px-4 py-2.5 shadow-lg animate-in fade-in slide-in-from-bottom-4 duration-200 w-[95%] sm:w-auto max-w-sm sm:max-w-none">
+          <span className="text-xs font-semibold text-foreground px-1 pl-2 whitespace-nowrap">
             {bulkSelectedNoteIds.length} selected
           </span>
 
-          <div className="h-4 w-px bg-border/80" />
+          <div className="hidden sm:block h-4 w-px bg-border/80" />
 
-          <ButtonGroup>
+          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="xs" className="h-7 gap-1 text-xs cursor-pointer">
+                <Button variant="outline" size="xs" className="h-7 gap-1 text-xs cursor-pointer shadow-xs">
                   <FolderIcon className="size-3 text-muted-foreground" />
                   Move to
                 </Button>
@@ -631,7 +631,7 @@ export default function NotesList({
               variant="outline"
               size="xs"
               onClick={() => setBulkDeleteConfirmOpen(true)}
-              className="h-7 gap-1 text-xs cursor-pointer hover:bg-destructive/10 hover:text-destructive hover:border-destructive/30 text-muted-foreground"
+              className="h-7 gap-1 text-xs cursor-pointer hover:bg-destructive/10 hover:text-destructive hover:border-destructive/30 text-muted-foreground shadow-xs"
             >
               <Trash2 className="size-3 text-muted-foreground" />
               Delete
@@ -641,11 +641,11 @@ export default function NotesList({
               variant="outline"
               size="xs"
               onClick={() => setBulkSelectedNoteIds([])}
-              className="h-7 text-xs cursor-pointer text-muted-foreground"
+              className="h-7 text-xs cursor-pointer text-muted-foreground shadow-xs"
             >
               Deselect
             </Button>
-          </ButtonGroup>
+          </div>
         </div>
       )}
 

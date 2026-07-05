@@ -50,7 +50,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           href="/workspace"
           className="flex items-center gap-2.5 rounded-lg px-2 py-1 transition-opacity hover:opacity-80"
         >
-          <Image src="/logo.png" alt="ClearNotes" width={26} height={26} />
+          <Image src="/logo.png" alt="ClearNotes" width={23} height={23} />
           <span className="text-sm font-semibold tracking-tight">ClearNotes</span>
         </Link>
       </SidebarHeader>

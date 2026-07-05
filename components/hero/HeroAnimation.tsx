@@ -4,9 +4,9 @@ import { useEffect, useState } from "react";
 import { FileText, CheckCircle2, Sparkles, UploadCloud } from "lucide-react";
 
 // Phase durations in ms
-const UPLOAD_DURATION   = 3500;
-const SCAN_DURATION     = 4500;
-const NOTES_DURATION    = 5000;
+const UPLOAD_DURATION   = 3000;
+const SCAN_DURATION     = 4000;
+const NOTES_DURATION    = 6500;
 const TOTAL             = UPLOAD_DURATION + SCAN_DURATION + NOTES_DURATION;
 
 // Raw document lines — some are "signal", some are "noise"
@@ -51,79 +51,113 @@ function renderBold(text: string) {
 
 function UploadPhase({ progress }: { progress: number }) {
   const done = progress >= 100;
-  // Calculate a scale and translateY for a 'flying in' effect for the card
-  const cardScale = Math.min(1, 0.95 + progress / 2000);
-  const cardY = Math.max(0, 30 - progress * 0.3);
-  const cardOpacity = Math.min(1, progress / 10);
+  // Smooth entrance
+  const entryProgress = Math.min(1, progress / 15); // 0→1 over first 15%
+  const cardOpacity = entryProgress;
+  const cardY = (1 - entryProgress) * 16;
 
   return (
-    <div className="relative flex flex-col items-center justify-center h-full gap-5 px-4 animate-in fade-in duration-300">
-      
-      {/* Background dashed drop zone */}
-      <div className="absolute inset-4 rounded-2xl border-2 border-dashed transition-all duration-500"
-           style={{
-             borderColor: done ? "rgba(34, 197, 94, 0.25)" : "rgba(184, 134, 59, 0.2)",
-             backgroundColor: done ? "rgba(34, 197, 94, 0.03)" : "transparent",
-             transform: done ? "scale(0.98)" : "scale(1)"
-           }}
+    <div className="relative flex flex-col items-center justify-center h-full gap-6 px-6 animate-in fade-in duration-500">
+
+      {/* Soft radial glow behind everything */}
+      <div
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none rounded-full transition-all duration-1000"
+        style={{
+          width: done ? "180px" : "140px",
+          height: done ? "180px" : "140px",
+          background: done
+            ? "radial-gradient(circle, rgba(34,197,94,0.08) 0%, transparent 70%)"
+            : "radial-gradient(circle, rgba(184,134,59,0.06) 0%, transparent 70%)",
+        }}
       />
-      
-      {/* Background pulsing circle when uploading */}
-      {!done && (
-         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center pointer-events-none">
-            <div className="h-32 w-32 rounded-full border border-primary/20 bg-primary/5 animate-[ping_2.5s_cubic-bezier(0,0,0.2,1)_infinite]" />
-         </div>
-      )}
+
+      {/* Upload icon — breathes gently */}
+      <div
+        className="relative z-10 flex items-center justify-center transition-all duration-700"
+        style={{
+          opacity: cardOpacity,
+          transform: `translateY(${cardY}px)`,
+        }}
+      >
+        <div className={`flex size-12 items-center justify-center rounded-2xl transition-all duration-700 ${
+          done
+            ? "bg-emerald-500/10 text-emerald-500"
+            : "bg-primary/8 text-primary"
+        }`}
+          style={{
+            animation: done ? "none" : "breathe 3s ease-in-out infinite",
+          }}
+        >
+          {done ? (
+            <CheckCircle2 className="size-6 animate-in zoom-in-50 duration-400" />
+          ) : (
+            <UploadCloud className="size-6" />
+          )}
+        </div>
+      </div>
 
       {/* File card */}
       <div
-        className="relative z-10 flex items-center gap-3.5 rounded-xl border border-border bg-card px-5 py-4 shadow-xl transition-all duration-300 w-full max-w-[260px]"
-        style={{ transform: `translateY(${cardY}px) scale(${cardScale})`, opacity: cardOpacity }}
+        className="relative z-10 w-full max-w-[260px] transition-all duration-500"
+        style={{
+          opacity: cardOpacity,
+          transform: `translateY(${cardY * 0.6}px)`,
+        }}
       >
-        <div className={`relative flex size-10 shrink-0 items-center justify-center rounded-lg transition-colors duration-500 overflow-hidden ${done ? "bg-emerald-500/15 text-emerald-500 ring-1 ring-emerald-500/30" : "bg-primary/10 text-primary ring-1 ring-primary/20"}`}>
-          {/* Progress fill inside icon box */}
-          {!done && (
-            <div className="absolute bottom-0 left-0 right-0 bg-primary/20 transition-all duration-150" style={{ height: `${progress}%` }} />
-          )}
-          {done
-            ? <CheckCircle2 className="size-5 relative z-10 animate-in zoom-in" />
-            : <FileText className="size-5 relative z-10" />
-          }
-        </div>
-        <div className="min-w-0 flex-1">
-          <p className="text-sm font-semibold text-foreground truncate">Q3_Report_2024.pdf</p>
-          <div className="flex items-center gap-2 mt-0.5">
-            <p className="text-[10px] text-muted-foreground font-medium">2.4 MB</p>
-            {!done && (
-               <>
-                 <span className="w-1 h-1 rounded-full bg-muted-foreground/30" />
-                 <p className="text-[10px] text-primary font-medium animate-pulse">Uploading...</p>
-               </>
-            )}
+        <div className={`flex items-center gap-3 rounded-xl border px-4 py-3 shadow-sm transition-all duration-500 ${
+          done
+            ? "border-emerald-500/20 bg-emerald-500/[0.03]"
+            : "border-border bg-card"
+        }`}>
+          <div className={`flex size-9 shrink-0 items-center justify-center rounded-lg transition-all duration-500 ${
+            done ? "bg-emerald-500/10 text-emerald-500" : "bg-muted text-muted-foreground"
+          }`}>
+            <FileText className="size-4" />
           </div>
-        </div>
-      </div>
-
-      {/* Progress bar */}
-      <div className="relative z-10 w-full max-w-[260px] space-y-1.5 transition-all duration-500" style={{ transform: `translateY(${cardY * 0.5}px)`, opacity: cardOpacity }}>
-        <div className="flex items-center justify-between">
-          <span className="text-[10px] font-medium text-muted-foreground flex items-center gap-1.5">
-            {done ? <CheckCircle2 className="size-3 text-emerald-500" /> : <UploadCloud className="size-3 text-primary animate-bounce" />}
-            {done ? "Upload complete" : "Transferring data"}
+          <div className="min-w-0 flex-1">
+            <p className="text-[13px] font-medium text-foreground truncate">Q3_Report_2024.pdf</p>
+            <p className="text-[11px] text-muted-foreground mt-0.5">
+              {done ? "Ready" : "2.4 MB"}
+            </p>
+          </div>
+          <span className={`text-[11px] font-semibold tabular-nums transition-colors duration-300 ${
+            done ? "text-emerald-500" : "text-muted-foreground"
+          }`}>
+            {done ? "✓" : `${Math.min(100, Math.round(progress))}%`}
           </span>
-          <span className="text-[10px] font-bold text-foreground">{Math.min(100, Math.round(progress))}%</span>
         </div>
-        <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted/60 p-[1px]">
+
+        {/* Progress bar — thin and elegant */}
+        <div className="mt-3 h-[3px] w-full overflow-hidden rounded-full bg-muted/50">
           <div
-            className="h-full rounded-full transition-all duration-150 ease-out"
+            className="h-full rounded-full transition-all duration-200 ease-out"
             style={{
               width: `${Math.min(100, progress)}%`,
-              background: done ? "#22c55e" : "var(--primary)",
-              boxShadow: done ? "0 0 8px #22c55e88" : "0 0 8px #B8863B66"
+              background: done
+                ? "#22c55e"
+                : "var(--primary)",
+              boxShadow: done
+                ? "0 0 6px rgba(34,197,94,0.4)"
+                : "0 0 6px rgba(184,134,59,0.3)",
             }}
           />
         </div>
+
+        {/* Status text */}
+        <p className={`mt-2.5 text-center text-[11px] font-medium transition-colors duration-500 ${
+          done ? "text-emerald-500" : "text-muted-foreground"
+        }`}>
+          {done ? "Upload complete" : "Uploading…"}
+        </p>
       </div>
+
+      {/* Keyframe for the breathing effect */}
+      <style jsx>{`
+        @keyframes breathe {
+          0%, 100% { transform: scale(1); opacity: 0.9; }
+          50% { transform: scale(1.06); opacity: 1; }
+        }
+      `}</style>
     </div>
   );
 }
@@ -306,7 +340,12 @@ export function HeroAnimation() {
     } else {
       const elapsed = tick - UPLOAD_DURATION - SCAN_DURATION;
       const fraction = elapsed / NOTES_DURATION;
-      setNoteReveal(Math.floor(fraction * (TOTAL_REVEAL + 1)));
+      // Ease-in curve: items appear slowly at first, then faster
+      const eased = fraction * fraction; // quadratic ease-in
+      // Map to reveal count, but reserve the last 20% of time for the "done" state
+      const revealFraction = Math.min(1, fraction / 0.8);
+      const easedReveal = revealFraction * revealFraction;
+      setNoteReveal(Math.floor(easedReveal * (TOTAL_REVEAL + 1)));
       setScanPct(100);
     }
   }, [tick, phase]);

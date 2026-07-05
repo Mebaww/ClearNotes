@@ -24,7 +24,7 @@ export default function FolderHeaderActions({
   const isCustomFolder = selectedFolderId && selectedFolderId !== "uncategorized";
 
   return (
-    <div className="flex items-center justify-between gap-4 border-b border-border/40 pb-3">
+    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 border-b border-border/40 pb-3">
       <div className="flex items-center gap-2">
         {isCustomFolder && <FolderIcon className="size-4 text-muted-foreground" />}
         <h2 className="text-sm font-semibold text-foreground">{activeFolderName}</h2>
@@ -34,12 +34,12 @@ export default function FolderHeaderActions({
       </div>
 
       {isCustomFolder && (
-        <ButtonGroup className="shrink-0 shadow-xs">
+        <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 shrink-0">
           <Button
             variant="outline"
             size="xs"
             onClick={onOpenAddNotesDialog}
-            className="h-7 gap-1 text-xs cursor-pointer"
+            className="h-7 gap-1 text-xs cursor-pointer shadow-xs"
           >
             <Plus className="size-3" />
             Add/Remove Notes
@@ -48,7 +48,7 @@ export default function FolderHeaderActions({
             variant="outline"
             size="xs"
             onClick={onRenameFolder}
-            className="h-7 gap-1 text-xs cursor-pointer"
+            className="h-7 gap-1 text-xs cursor-pointer shadow-xs"
           >
             <Edit3 className="size-3 text-muted-foreground" />
             Rename
@@ -57,11 +57,11 @@ export default function FolderHeaderActions({
             variant="outline"
             size="xs"
             onClick={onDeleteFolder}
-            className="h-7 text-xs cursor-pointer hover:bg-destructive/10 hover:text-destructive hover:border-destructive/30 text-muted-foreground"
+            className="h-7 text-xs cursor-pointer hover:bg-destructive/10 hover:text-destructive hover:border-destructive/30 text-muted-foreground shadow-xs"
           >
             Delete Folder
           </Button>
-        </ButtonGroup>
+        </div>
       )}
     </div>
   );
