@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/theme-provider";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { Toaster } from "@/components/Toaster";
+import { ServiceWorkerRegistration } from "@/components/ServiceWorkerRegistration";
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
@@ -20,6 +21,13 @@ export const metadata: Metadata = {
   applicationName: "ClearNotes",
   alternates: {
     canonical: "/",
+  },
+  // iOS PWA support
+  appleWebApp: {
+    capable: true,
+    title: "ClearNotes",
+    statusBarStyle: "black-translucent",
+    startupImage: ["/icon-512x512.png"],
   },
   openGraph: {
     type: "website",
@@ -66,7 +74,13 @@ export default function RootLayout({
         poppins.variable,
       )}
     >
-      <head />
+      <head>
+        {/* Apple touch icon for iOS home screen */}
+        <link rel="apple-touch-icon" href="/icon-512x512.png" />
+        <link rel="apple-touch-icon" sizes="192x192" href="/icon-192x192.png" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="theme-color" content="#C49A3C" />
+      </head>
       <body>
         <ThemeProvider
           attribute="class"
@@ -74,6 +88,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
+            <ServiceWorkerRegistration />
             <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID!} />
             <Toaster />
             {children}
