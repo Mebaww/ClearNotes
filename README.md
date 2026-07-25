@@ -2,10 +2,9 @@
   <img src="public/logo.png" alt="ClearNotes logo" width="80" />
   <h1>ClearNotes</h1>
   <p><strong>Less Reading. More Understanding.</strong></p>
-  <p>Upload a document — get structured, AI-generated notes in seconds.</p>
+  <p>Turn documents into clean, structured notes powered by AI</p>
 
-  <p>
-    <a href="https://github.com/Mebaww/ClearNotes/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/badge/license-MIT-gold?style=flat-square" /></a>
+ <img alt="Source" src="https://img.shields.io/badge/Source-Proprietary-red?style=flat-square" />
     <img alt="Next.js" src="https://img.shields.io/badge/Next.js-16-black?style=flat-square&logo=next.js" />
     <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-5-blue?style=flat-square&logo=typescript" />
     <img alt="Gemini AI" src="https://img.shields.io/badge/Gemini-AI-4285F4?style=flat-square&logo=google" />
@@ -22,6 +21,9 @@ ClearNotes is a **document intelligence web app** that transforms dense PDFs, Wo
 Instead of reading a 40-page report, you upload it and get the key ideas, definitions, data points, and conclusions — organized and scannable in seconds. It's built for students, researchers, and professionals who need to process a lot of information quickly.
 
 ### Core workflow
+
+🌐 **Live:** https://clearnotes.xyz
+
 
 ```
 Upload document  →  Parse & extract text  →  Gemini AI structures notes  →  Read, review, organize
@@ -207,18 +209,12 @@ ClearNotes is a fully installable Progressive Web App:
 
 ---
 
-## Contributing
-
-Contributions, bug reports, and feature requests are welcome.
-
-1. Fork the repository
-2. Create your feature branch: `git checkout -b feat/your-feature`
-3. Commit your changes: `git commit -m 'feat: add your feature'`
-4. Push to the branch: `git push origin feat/your-feature`
-5. Open a Pull Request
-
 ---
 
-## License
+## Copyright
 
-MIT © [meva.work](https://meva.work)
+Copyright © 2026 Meba Wondwesen.
+
+All rights reserved.
+
+This repository contains proprietary software. The source code is provided for reference only. No part of this project may be copied, modified, distributed, or used to create derivative works without prior written permission.
