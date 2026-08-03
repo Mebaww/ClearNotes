@@ -13,9 +13,27 @@ const poppins = Poppins({
   variable: "--font-poppins",
 });
 
+const getMetadataBase = (): URL => {
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL;
+  if (!appUrl) {
+    throw new Error(
+      `[Missing Environment Variable] NEXT_PUBLIC_APP_URL is not defined in your environment (.env). Please set NEXT_PUBLIC_APP_URL (e.g. NEXT_PUBLIC_APP_URL=http://localhost:3000 or https://yourdomain.com).`
+    );
+  }
+  try {
+    return new URL(appUrl);
+  } catch {
+    throw new Error(
+      `[Invalid Environment Variable] NEXT_PUBLIC_APP_URL is not a valid URL. Received: "${appUrl}". Please ensure it includes the scheme (e.g. "http://localhost:3000" or "https://yourdomain.com").`
+    );
+  }
+};
+
+
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"),
+  metadataBase: getMetadataBase(),
   title: "ClearNotes — Less Reading. More Understanding.",
+
   description:
   "Upload a document and get organized notes that help you find what matters faster.",
   applicationName: "ClearNotes",
