@@ -16,12 +16,6 @@ const Navbar = () => {
             </span>
           </a>
           <div className="flex items-center gap-6 sm:gap-8">
-            <a
-              href="#features"
-              className="hidden text-sm font-medium text-muted-foreground transition hover:text-foreground sm:block"
-            >
-              Features
-            </a>
             <ModeToggle />
             <GetStartedButton
               label="Get Started"
