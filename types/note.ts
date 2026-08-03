@@ -9,6 +9,16 @@ export interface Folder {
   };
 }
 
+export interface NoteShare {
+  id: string;
+  noteId: string;
+  token: string;
+  enabled: boolean;
+  viewCount: number;
+  createdAt: Date | string;
+  updatedAt: Date | string;
+}
+
 export interface Note {
   id: string;
   title: string | null;
@@ -16,6 +26,7 @@ export interface Note {
   generated: string | null;
   folderId: string | null;
   folder?: Folder | null;
+  share?: NoteShare | null;
   createdAt: Date;
   updatedAt: Date;
-}
+}

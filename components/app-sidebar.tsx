@@ -4,7 +4,7 @@ import * as React from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Home, NotebookPen, Settings } from "lucide-react"
+import { Home, NotebookPen, Settings, Share2 } from "lucide-react"
 import { authClient } from "@/lib/auth-client"
 
 import { NavUser } from "@/components/nav-user"
@@ -20,15 +20,35 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 
-const navigation = [
+const baseNavigation = [
   { title: "Home", href: "/workspace", icon: Home },
   { title: "Notes", href: "/workspace/notes", icon: NotebookPen },
-  { title: "Settings", href: "/workspace/settings", icon: Settings },
 ]
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const pathname = usePathname()
   const { data: session } = authClient.useSession()
+  const [hasSharedNotes, setHasSharedNotes] = React.useState(false)
+
+  React.useEffect(() => {
+    async function checkSharedNotes() {
+      try {
+        const res = await fetch("/api/notes/shared/count")
+        const data = await res.json()
+        if (data.success && data.count > 0) {
+          setHasSharedNotes(true)
+        } else {
+          setHasSharedNotes(false)
+        }
+      } catch (err) {
+        console.error("Failed to fetch shared notes count", err)
+      }
+    }
+
+    if (session?.user) {
+      checkSharedNotes()
+    }
+  }, [session, pathname])
 
   const user = session?.user ? {
     name: session.user.name,
@@ -39,6 +59,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     email: "",
     avatar: "",
   }
+
+  const navigation = [
+    ...baseNavigation,
+    ...(hasSharedNotes
+      ? [{ title: "Shared", href: "/workspace/shared", icon: Share2 }]
+      : []),
+    { title: "Settings", href: "/workspace/settings", icon: Settings },
+  ]
 
   return (
     <Sidebar
@@ -87,3 +115,4 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     </Sidebar>
   )
 }
+

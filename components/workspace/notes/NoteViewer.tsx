@@ -1,16 +1,10 @@
 "use client";
 
 import axios from "axios";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-import remarkMath from "remark-math";
-import rehypeKatex from "rehype-katex";
-import "katex/dist/katex.min.css";
-
-import { ArrowLeft, Trash2, Folder as FolderIcon, Plus, Check } from "lucide-react";
+import { ArrowLeft, Trash2, Folder as FolderIcon, Plus, Check, Share2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
-import { Note, Folder } from "@/types/note";
+import { Note, Folder, NoteShare } from "@/types/note";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -21,6 +15,8 @@ import {
   DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
 import { sileo } from "sileo";
+import { MarkdownContent } from "./MarkdownContent";
+import { ShareModal } from "./ShareModal";
 
 interface Props {
   note: Note;
@@ -30,6 +26,8 @@ export default function NoteViewer({ note }: Props) {
   const router = useRouter();
   const [folders, setFolders] = useState<Folder[]>([]);
   const [activeFolder, setActiveFolder] = useState<Folder | null>(note.folder || null);
+  const [shareInfo, setShareInfo] = useState<NoteShare | null>(note.share || null);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
 
   useEffect(() => {
     async function loadFolders() {
@@ -45,6 +43,20 @@ export default function NoteViewer({ note }: Props) {
     }
     loadFolders();
   }, []);
+
+  useEffect(() => {
+    async function loadShareInfo() {
+      try {
+        const res = await axios.get(`/api/notes/${note.id}/share`);
+        if (res.data.success) {
+          setShareInfo(res.data.share);
+        }
+      } catch (err) {
+        console.error("Failed to fetch share info", err);
+      }
+    }
+    loadShareInfo();
+  }, [note.id]);
 
   const handleSelectFolder = async (folderId: string | null) => {
     const prevFolder = activeFolder;
@@ -129,26 +141,44 @@ export default function NoteViewer({ note }: Props) {
   };
 
   return (
-    <main className="mx-auto max-w-4xl px-6 py-8">
-      <div className="mb-6 flex items-center justify-between">
+    <main className="mx-auto max-w-4xl px-3 py-4 sm:px-6 sm:py-8">
+      <div className="mb-4 flex items-center justify-between gap-2">
         <button
           onClick={() => router.push("/workspace/notes")}
-          className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
+          className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground cursor-pointer shrink-0"
         >
           <ArrowLeft className="size-4" />
-          Back to Notes
+          <span className="hidden sm:inline">Back to Notes</span>
         </button>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5">
+          {/* Share button — icon-only on mobile */}
+          <Button
+            variant={shareInfo?.enabled ? "default" : "outline"}
+            size="sm"
+            onClick={() => setIsShareModalOpen(true)}
+            title={shareInfo?.enabled ? "Shared" : "Share"}
+            className="h-8 w-8 p-0 sm:w-auto sm:px-3 cursor-pointer"
+          >
+            <Share2 className="size-3.5 shrink-0" />
+            <span className="hidden sm:inline ml-1 text-xs font-medium">
+              {shareInfo?.enabled ? "Shared" : "Share"}
+            </span>
+          </Button>
+
+          {/* Folder button */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
                 variant="outline"
                 size="sm"
-                className="flex items-center gap-1.5 h-8 text-xs cursor-pointer font-medium"
+                title={activeFolder ? activeFolder.name : "Add to Folder"}
+                className="h-8 w-8 p-0 sm:w-auto sm:px-3 cursor-pointer"
               >
-                <FolderIcon className="size-3.5 text-muted-foreground" />
-                <span>{activeFolder ? activeFolder.name : "Add to Folder"}</span>
+                <FolderIcon className="size-3.5 text-muted-foreground shrink-0" />
+                <span className="hidden sm:inline ml-1 text-xs font-medium">
+                  {activeFolder ? activeFolder.name : "Folder"}
+                </span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56 bg-popover border border-border shadow-md">
@@ -191,19 +221,21 @@ export default function NoteViewer({ note }: Props) {
             </DropdownMenuContent>
           </DropdownMenu>
 
+          {/* Delete button — icon-only on mobile */}
           <Button
             variant="ghost"
             size="sm"
             onClick={handleDelete}
-            className="flex items-center gap-1.5 h-8 text-muted-foreground hover:text-destructive hover:bg-destructive/10 cursor-pointer"
+            title="Delete Note"
+            className="h-8 w-8 p-0 sm:w-auto sm:px-3 text-muted-foreground hover:text-destructive hover:bg-destructive/10 cursor-pointer"
           >
-            <Trash2 className="size-3.5" />
-            Delete Note
+            <Trash2 className="size-3.5 shrink-0" />
+            <span className="hidden sm:inline ml-1 text-xs">Delete</span>
           </Button>
         </div>
       </div>
 
-      <div className="rounded-xl border bg-card p-8">
+      <div className="rounded-xl border bg-card p-4 sm:p-8">
         <div className="mb-6 flex flex-wrap items-center justify-between gap-4 border-b border-border/40 pb-5">
           <p className="text-xs text-muted-foreground">
             {new Date(note.createdAt).toLocaleDateString()}
@@ -217,132 +249,26 @@ export default function NoteViewer({ note }: Props) {
           )}
         </div>
 
-        <article className="max-w-none overflow-x-auto">
-          <ReactMarkdown
-            remarkPlugins={[remarkGfm, remarkMath]}
-            rehypePlugins={[rehypeKatex]}
-            components={{
-              h1: ({ ...props }) => (
-                <h1
-                  className="mt-8 mb-4 text-3xl font-bold tracking-tight"
-                  {...props}
-                />
-              ),
-
-              h2: ({ ...props }) => (
-                <h2
-                  className="mt-8 mb-3 border-b pb-2 text-2xl font-semibold"
-                  {...props}
-                />
-              ),
-
-              h3: ({ ...props }) => (
-                <h3
-                  className="mt-6 mb-2 text-xl font-semibold"
-                  {...props}
-                />
-              ),
-
-              p: ({ ...props }) => (
-                <p
-                  className="mb-4 leading-7 text-muted-foreground"
-                  {...props}
-                />
-              ),
-
-              ul: ({ ...props }) => (
-                <ul
-                  className="mb-4 list-disc space-y-2 pl-6"
-                  {...props}
-                />
-              ),
-
-              ol: ({ ...props }) => (
-                <ol
-                  className="mb-4 list-decimal space-y-2 pl-6"
-                  {...props}
-                />
-              ),
-
-              li: ({ ...props }) => (
-                <li
-                  className="leading-7 text-muted-foreground"
-                  {...props}
-                />
-              ),
-
-              strong: ({ ...props }) => (
-                <strong
-                  className="font-semibold text-foreground"
-                  {...props}
-                />
-              ),
-
-              blockquote: ({ ...props }) => (
-                <blockquote
-                  className="my-4 border-l-4 border-border pl-4 italic text-muted-foreground"
-                  {...props}
-                />
-              ),
-
-              code: ({ className, ...props }) => (
-                <code
-                  className={`rounded bg-muted px-1.5 py-0.5 text-sm ${className ?? ""}`}
-                  {...props}
-                />
-              ),
-
-              hr: ({ ...props }) => (
-                <hr
-                  className="my-8 border-border"
-                  {...props}
-                />
-              ),
-
-              table: ({ ...props }) => (
-                <table
-                  className="my-6 w-full border-collapse text-sm"
-                  {...props}
-                />
-              ),
-
-              thead: ({ ...props }) => (
-                <thead
-                  className="bg-muted"
-                  {...props}
-                />
-              ),
-
-              tbody: ({ ...props }) => (
-                <tbody {...props} />
-              ),
-
-              tr: ({ ...props }) => (
-                <tr
-                  className="border-b border-border"
-                  {...props}
-                />
-              ),
-
-              th: ({ ...props }) => (
-                <th
-                  className="border border-border px-4 py-2 text-left font-semibold"
-                  {...props}
-                />
-              ),
-
-              td: ({ ...props }) => (
-                <td
-                  className="border border-border px-4 py-2 align-top text-muted-foreground"
-                  {...props}
-                />
-              ),
-            }}
-          >
-            {note.generated ?? ""}
-          </ReactMarkdown>
-        </article>
+        <MarkdownContent content={note.generated ?? ""} />
       </div>
+
+      <ShareModal
+        noteId={note.id}
+        initialShare={shareInfo}
+        isOpen={isShareModalOpen}
+        onOpenChange={setIsShareModalOpen}
+        onShareStatusChange={(updatedShare) => {
+          if (updatedShare !== undefined) {
+            setShareInfo(updatedShare);
+          } else {
+            axios.get(`/api/notes/${note.id}/share`).then((res) => {
+              if (res.data.success) setShareInfo(res.data.share);
+            });
+          }
+          router.refresh();
+        }}
+      />
+
     </main>
   );
 }
