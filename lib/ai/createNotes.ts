@@ -5,12 +5,15 @@ import { AppError } from "../errors";
 import { USAGE } from "../usage/config";
 
 
+import { NoteStyle } from "@/types/note";
+import { NOTE_STYLE_PROMPTS } from "./prompts";
+
 function extractTitle(markdown: string): string {
   const match = markdown.match(/^#\s(.+)/m);
   return match?.[1]?.trim() || "Untitled Note";
 }
 
-export async function createNote(text: string, userId: string) {
+export async function createNote(text: string, userId: string, style: NoteStyle = "standard") {
   if (!text || text.trim().length < 20) {
     throw new AppError(
       "INVALID_REQUEST",
@@ -26,11 +29,15 @@ export async function createNote(text: string, userId: string) {
     );
   }
 
+  // Assemble the prompt: selected style instructions followed by the document text
+  const stylePrompt = NOTE_STYLE_PROMPTS[style] || NOTE_STYLE_PROMPTS.standard;
+  const fullPrompt = `${stylePrompt}\n\nDOCUMENT CONTENT:\n${text}`;
+
   // Wrap the Gemini call so SDK errors are converted using the HTTP status
   // code — never by message string matching.
   let output: string;
   try {
-    const result = await geminiModel.generateContent(text);
+    const result = await geminiModel.generateContent(fullPrompt);
     output = result.response.text();
   } catch (geminiError: unknown) {
     // The Google Generative AI SDK surfaces HTTP status on the error object.

@@ -3,7 +3,13 @@ import { createNote } from "@/lib/ai/createNotes";
 import { calculateCredits, checkUsageLimit, incrementUsage, decrementUsage } from "../usage";
 import { AppError } from "../errors";
 
-export async function handleCreateNote(text: string, userId: string) {
+import { NoteStyle } from "@/types/note";
+
+export async function handleCreateNote(
+  text: string,
+  userId: string,
+  style: NoteStyle = "standard"
+) {
   if (!text) {
     throw new AppError("INVALID_REQUEST", "No text provided");
   }
@@ -17,7 +23,7 @@ export async function handleCreateNote(text: string, userId: string) {
   await incrementUsage(userId, credits);
 
   try {
-    const noteId = await createNote(text, userId);
+    const noteId = await createNote(text, userId, style);
     return noteId;
   } catch (error) {
     // Refund the reserved credits if note generation fails

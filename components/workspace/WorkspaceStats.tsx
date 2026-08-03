@@ -1,4 +1,4 @@
-import { Clock, Notebook, Sparkles } from "lucide-react";
+import { Clock, Notebook } from "lucide-react";
 
 interface WorkspaceStatsProps {
   count: number;
@@ -46,7 +46,6 @@ export function WorkspaceStats({
       {/* Insights */}
       <div className="rounded-xl border border-border/80 bg-card px-4 py-4">
         <div className="flex items-center gap-2 text-muted-foreground">
-          <Sparkles className="size-4" />
           <span className="text-xs font-medium">Insights</span>
         </div>
         <p className="mt-3 text-2xl font-semibold tracking-tight text-foreground">
