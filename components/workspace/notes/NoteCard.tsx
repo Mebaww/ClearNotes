@@ -20,6 +20,8 @@ interface NoteCardProps {
   onDeleteNote?: (noteId: string, e: React.MouseEvent) => void;
   isSelected?: boolean;
   onToggleSelect?: (noteId: string) => void;
+  /** When true the card is a note shared with this user — clicking routes to its share token page */
+  isSharedWithMe?: boolean;
 }
 
 
@@ -30,12 +32,21 @@ export default function NoteCard({
   onDeleteNote,
   isSelected = false,
   onToggleSelect,
+  isSharedWithMe = false,
 }: NoteCardProps) {
   const router = useRouter();
 
+  const handleOpen = () => {
+    if (isSharedWithMe && note.share?.token) {
+      router.push(`/share/${note.share.token}`);
+    } else {
+      router.push(`/workspace/notes/${note.id}`);
+    }
+  };
+
   return (
     <div
-      onClick={() => router.push(`/workspace/notes/${note.id}`)}
+      onClick={handleOpen}
       className={`group relative flex flex-col justify-between rounded-xl border bg-card p-5 text-left transition-all duration-200 hover:-translate-y-0.5 hover:shadow-sm cursor-pointer ${
         isSelected
           ? "border-primary bg-primary/2 shadow-xs"

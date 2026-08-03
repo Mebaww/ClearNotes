@@ -84,6 +84,7 @@ export default async function SharedNotesPage() {
                     key={note.id}
                     note={note}
                     folders={folders}
+                    isSharedWithMe
                   />
                 ))}
               </div>
