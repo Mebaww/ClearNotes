@@ -3,10 +3,7 @@ import { PrismaClient } from "@/prisma/generated/prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { Pool } from "pg";
 
-const databaseUrl =
-  process.env.DATABASE_URL ||
-  process.env.DB_URL_MAIN ||
-  process.env.DB_URL_DEV;
+const databaseUrl = process.env.DB_URL_DEV;
 
 if (!databaseUrl) {
   throw new Error(

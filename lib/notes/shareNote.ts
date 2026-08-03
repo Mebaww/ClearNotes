@@ -113,6 +113,22 @@ export async function recordUserNoteAccess(userId: string, shareId: string) {
   }
 }
 
+export async function removeUserNoteAccess(userId: string, shareId: string) {
+  try {
+    await prisma.userNoteAccess.deleteMany({
+      where: {
+        userId,
+        shareId,
+      },
+    });
+  } catch (err) {
+    console.error("Failed to remove user note access", err);
+  }
+}
+
+
+
+
 export async function getSharedNoteByToken(
   token: string,
   userId?: string,
@@ -214,7 +230,7 @@ export async function getUserSharedNotes(userId: string) {
   });
 
   const sharedWithMe = accessedEntries
-    .filter((entry) => entry.share.note.userId !== userId)
+    .filter((entry) => entry.share?.note && entry.share.note.userId !== userId)
     .map((entry) => ({
       ...entry.share,
       isReceived: true,

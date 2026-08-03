@@ -20,9 +20,14 @@ import { ShareModal } from "./ShareModal";
 
 interface Props {
   note: Note;
+  isReadOnly?: boolean;
+  onBack?: () => void;
+  /** If set, the Back button navigates to this URL instead of window.history.back() */
+  backHref?: string;
 }
 
-export default function NoteViewer({ note }: Props) {
+export default function NoteViewer({ note, isReadOnly = false, onBack, backHref }: Props) {
+
   const router = useRouter();
   const [folders, setFolders] = useState<Folder[]>([]);
   const [activeFolder, setActiveFolder] = useState<Folder | null>(note.folder || null);
@@ -30,6 +35,7 @@ export default function NoteViewer({ note }: Props) {
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
 
   useEffect(() => {
+    if (isReadOnly) return;
     async function loadFolders() {
       try {
         const res = await fetch("/api/folders");
@@ -42,9 +48,10 @@ export default function NoteViewer({ note }: Props) {
       }
     }
     loadFolders();
-  }, []);
+  }, [isReadOnly]);
 
   useEffect(() => {
+    if (isReadOnly) return;
     async function loadShareInfo() {
       try {
         const res = await axios.get(`/api/notes/${note.id}/share`);
@@ -56,7 +63,7 @@ export default function NoteViewer({ note }: Props) {
       }
     }
     loadShareInfo();
-  }, [note.id]);
+  }, [note.id, isReadOnly]);
 
   const handleSelectFolder = async (folderId: string | null) => {
     const prevFolder = activeFolder;
@@ -140,99 +147,113 @@ export default function NoteViewer({ note }: Props) {
     });
   };
 
+  const handleBack = () => {
+    if (onBack) {
+      onBack();
+    } else if (backHref) {
+      router.push(backHref);
+    } else if (window.history.length > 1) {
+      router.back();
+    } else {
+      router.push("/workspace");
+    }
+  };
+
   return (
     <main className="mx-auto max-w-4xl px-3 py-4 sm:px-6 sm:py-8">
       <div className="mb-4 flex items-center justify-between gap-2">
         <button
-          onClick={() => router.push("/workspace/notes")}
+          onClick={handleBack}
           className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground cursor-pointer shrink-0"
         >
           <ArrowLeft className="size-4" />
-          <span className="hidden sm:inline">Back to Notes</span>
+          <span className="hidden sm:inline">Back</span>
         </button>
 
-        <div className="flex items-center gap-1.5">
-          {/* Share button — icon-only on mobile */}
-          <Button
-            variant={shareInfo?.enabled ? "default" : "outline"}
-            size="sm"
-            onClick={() => setIsShareModalOpen(true)}
-            title={shareInfo?.enabled ? "Shared" : "Share"}
-            className="h-8 w-8 p-0 sm:w-auto sm:px-3 cursor-pointer"
-          >
-            <Share2 className="size-3.5 shrink-0" />
-            <span className="hidden sm:inline ml-1 text-xs font-medium">
-              {shareInfo?.enabled ? "Shared" : "Share"}
-            </span>
-          </Button>
+        {!isReadOnly && (
+          <div className="flex items-center gap-1.5">
+            {/* Share button — icon-only on mobile */}
+            <Button
+              variant={shareInfo?.enabled ? "default" : "outline"}
+              size="sm"
+              onClick={() => setIsShareModalOpen(true)}
+              title={shareInfo?.enabled ? "Shared" : "Share"}
+              className="h-8 w-8 p-0 sm:w-auto sm:px-3 cursor-pointer"
+            >
+              <Share2 className="size-3.5 shrink-0" />
+              <span className="hidden sm:inline ml-1 text-xs font-medium">
+                {shareInfo?.enabled ? "Shared" : "Share"}
+              </span>
+            </Button>
 
-          {/* Folder button */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="outline"
-                size="sm"
-                title={activeFolder ? activeFolder.name : "Add to Folder"}
-                className="h-8 w-8 p-0 sm:w-auto sm:px-3 cursor-pointer"
-              >
-                <FolderIcon className="size-3.5 text-muted-foreground shrink-0" />
-                <span className="hidden sm:inline ml-1 text-xs font-medium">
-                  {activeFolder ? activeFolder.name : "Folder"}
-                </span>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56 bg-popover border border-border shadow-md">
-              <DropdownMenuLabel className="text-muted-foreground font-semibold px-2 py-1.5 text-xs">
-                Move to Subject
-              </DropdownMenuLabel>
-              <DropdownMenuSeparator />
-
-              <div className="max-h-[200px] overflow-y-auto">
-                <DropdownMenuItem
-                  onClick={() => handleSelectFolder(null)}
-                  className="text-xs flex items-center justify-between cursor-pointer"
+            {/* Folder button */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  title={activeFolder ? activeFolder.name : "Add to Folder"}
+                  className="h-8 w-8 p-0 sm:w-auto sm:px-3 cursor-pointer"
                 >
-                  <span className="truncate">Uncategorized</span>
-                  {!activeFolder && <Check className="size-3.5 text-primary" />}
-                </DropdownMenuItem>
+                  <FolderIcon className="size-3.5 text-muted-foreground shrink-0" />
+                  <span className="hidden sm:inline ml-1 text-xs font-medium">
+                    {activeFolder ? activeFolder.name : "Folder"}
+                  </span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56 bg-popover border border-border shadow-md">
+                <DropdownMenuLabel className="text-muted-foreground font-semibold px-2 py-1.5 text-xs">
+                  Move to Subject
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
 
-                {folders.map((folder) => (
+                <div className="max-h-[200px] overflow-y-auto">
                   <DropdownMenuItem
-                    key={folder.id}
-                    onClick={() => handleSelectFolder(folder.id)}
+                    onClick={() => handleSelectFolder(null)}
                     className="text-xs flex items-center justify-between cursor-pointer"
                   >
-                    <span className="truncate">{folder.name}</span>
-                    {activeFolder?.id === folder.id && (
-                      <Check className="size-3.5 text-primary" />
-                    )}
+                    <span className="truncate">Uncategorized</span>
+                    {!activeFolder && <Check className="size-3.5 text-primary" />}
                   </DropdownMenuItem>
-                ))}
-              </div>
 
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                onClick={handleCreateFolder}
-                className="text-xs flex items-center gap-2 cursor-pointer font-medium"
-              >
-                <Plus className="size-3.5 text-muted-foreground" />
-                <span>Create New Folder...</span>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+                  {folders.map((folder) => (
+                    <DropdownMenuItem
+                      key={folder.id}
+                      onClick={() => handleSelectFolder(folder.id)}
+                      className="text-xs flex items-center justify-between cursor-pointer"
+                    >
+                      <span className="truncate">{folder.name}</span>
+                      {activeFolder?.id === folder.id && (
+                        <Check className="size-3.5 text-primary" />
+                      )}
+                    </DropdownMenuItem>
+                  ))}
+                </div>
 
-          {/* Delete button — icon-only on mobile */}
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleDelete}
-            title="Delete Note"
-            className="h-8 w-8 p-0 sm:w-auto sm:px-3 text-muted-foreground hover:text-destructive hover:bg-destructive/10 cursor-pointer"
-          >
-            <Trash2 className="size-3.5 shrink-0" />
-            <span className="hidden sm:inline ml-1 text-xs">Delete</span>
-          </Button>
-        </div>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  onClick={handleCreateFolder}
+                  className="text-xs flex items-center gap-2 cursor-pointer font-medium"
+                >
+                  <Plus className="size-3.5 text-muted-foreground" />
+                  <span>Create New Folder...</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            {/* Delete button — icon-only on mobile */}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleDelete}
+              title="Delete Note"
+              className="h-8 w-8 p-0 sm:w-auto sm:px-3 text-muted-foreground hover:text-destructive hover:bg-destructive/10 cursor-pointer"
+            >
+              <Trash2 className="size-3.5 shrink-0" />
+              <span className="hidden sm:inline ml-1 text-xs">Delete</span>
+            </Button>
+          </div>
+        )}
       </div>
 
       <div className="rounded-xl border bg-card p-4 sm:p-8">
@@ -252,22 +273,19 @@ export default function NoteViewer({ note }: Props) {
         <MarkdownContent content={note.generated ?? ""} />
       </div>
 
-      <ShareModal
-        noteId={note.id}
-        initialShare={shareInfo}
-        isOpen={isShareModalOpen}
-        onOpenChange={setIsShareModalOpen}
-        onShareStatusChange={(updatedShare) => {
-          if (updatedShare !== undefined) {
-            setShareInfo(updatedShare);
-          } else {
-            axios.get(`/api/notes/${note.id}/share`).then((res) => {
-              if (res.data.success) setShareInfo(res.data.share);
-            });
-          }
-          router.refresh();
-        }}
-      />
+      {!isReadOnly && (
+        <ShareModal
+          noteId={note.id}
+          initialShare={shareInfo}
+          isOpen={isShareModalOpen}
+          onOpenChange={setIsShareModalOpen}
+          onShareStatusChange={(updatedShare) => {
+            if (updatedShare !== undefined) {
+              setShareInfo(updatedShare);
+            }
+          }}
+        />
+      )}
 
     </main>
   );

@@ -30,7 +30,7 @@ export function RecentDocuments({
             Recent notes
           </h2>
           <p className="mt-0.5 text-xs text-muted-foreground">
-            Continue reading your latest summaries
+            Continue reading 
           </p>
         </div>
 

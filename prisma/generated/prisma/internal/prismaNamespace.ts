@@ -389,6 +389,8 @@ export const ModelName = {
   NoteShare: 'NoteShare',
   UserNoteAccess: 'UserNoteAccess',
   Folder: 'Folder',
+  FolderShare: 'FolderShare',
+  UserFolderAccess: 'UserFolderAccess',
   User: 'User',
   Session: 'Session',
   Account: 'Account',
@@ -408,7 +410,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "waitlist" | "note" | "noteShare" | "userNoteAccess" | "folder" | "user" | "session" | "account" | "verification"
+    modelProps: "waitlist" | "note" | "noteShare" | "userNoteAccess" | "folder" | "folderShare" | "userFolderAccess" | "user" | "session" | "account" | "verification"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -779,6 +781,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.FolderCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.FolderCountAggregateOutputType> | number
+        }
+      }
+    }
+    FolderShare: {
+      payload: Prisma.$FolderSharePayload<ExtArgs>
+      fields: Prisma.FolderShareFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.FolderShareFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FolderSharePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.FolderShareFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FolderSharePayload>
+        }
+        findFirst: {
+          args: Prisma.FolderShareFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FolderSharePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.FolderShareFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FolderSharePayload>
+        }
+        findMany: {
+          args: Prisma.FolderShareFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FolderSharePayload>[]
+        }
+        create: {
+          args: Prisma.FolderShareCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FolderSharePayload>
+        }
+        createMany: {
+          args: Prisma.FolderShareCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.FolderShareCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FolderSharePayload>[]
+        }
+        delete: {
+          args: Prisma.FolderShareDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FolderSharePayload>
+        }
+        update: {
+          args: Prisma.FolderShareUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FolderSharePayload>
+        }
+        deleteMany: {
+          args: Prisma.FolderShareDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.FolderShareUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.FolderShareUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FolderSharePayload>[]
+        }
+        upsert: {
+          args: Prisma.FolderShareUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FolderSharePayload>
+        }
+        aggregate: {
+          args: Prisma.FolderShareAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateFolderShare>
+        }
+        groupBy: {
+          args: Prisma.FolderShareGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.FolderShareGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.FolderShareCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.FolderShareCountAggregateOutputType> | number
+        }
+      }
+    }
+    UserFolderAccess: {
+      payload: Prisma.$UserFolderAccessPayload<ExtArgs>
+      fields: Prisma.UserFolderAccessFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.UserFolderAccessFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserFolderAccessPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.UserFolderAccessFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserFolderAccessPayload>
+        }
+        findFirst: {
+          args: Prisma.UserFolderAccessFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserFolderAccessPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.UserFolderAccessFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserFolderAccessPayload>
+        }
+        findMany: {
+          args: Prisma.UserFolderAccessFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserFolderAccessPayload>[]
+        }
+        create: {
+          args: Prisma.UserFolderAccessCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserFolderAccessPayload>
+        }
+        createMany: {
+          args: Prisma.UserFolderAccessCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.UserFolderAccessCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserFolderAccessPayload>[]
+        }
+        delete: {
+          args: Prisma.UserFolderAccessDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserFolderAccessPayload>
+        }
+        update: {
+          args: Prisma.UserFolderAccessUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserFolderAccessPayload>
+        }
+        deleteMany: {
+          args: Prisma.UserFolderAccessDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.UserFolderAccessUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.UserFolderAccessUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserFolderAccessPayload>[]
+        }
+        upsert: {
+          args: Prisma.UserFolderAccessUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserFolderAccessPayload>
+        }
+        aggregate: {
+          args: Prisma.UserFolderAccessAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateUserFolderAccess>
+        }
+        groupBy: {
+          args: Prisma.UserFolderAccessGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.UserFolderAccessGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.UserFolderAccessCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.UserFolderAccessCountAggregateOutputType> | number
         }
       }
     }
@@ -1181,6 +1331,31 @@ export const FolderScalarFieldEnum = {
 export type FolderScalarFieldEnum = (typeof FolderScalarFieldEnum)[keyof typeof FolderScalarFieldEnum]
 
 
+export const FolderShareScalarFieldEnum = {
+  id: 'id',
+  folderId: 'folderId',
+  token: 'token',
+  enabled: 'enabled',
+  passwordHash: 'passwordHash',
+  expiresAt: 'expiresAt',
+  viewCount: 'viewCount',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type FolderShareScalarFieldEnum = (typeof FolderShareScalarFieldEnum)[keyof typeof FolderShareScalarFieldEnum]
+
+
+export const UserFolderAccessScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  shareId: 'shareId',
+  accessedAt: 'accessedAt'
+} as const
+
+export type UserFolderAccessScalarFieldEnum = (typeof UserFolderAccessScalarFieldEnum)[keyof typeof UserFolderAccessScalarFieldEnum]
+
+
 export const UserScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -1476,6 +1651,8 @@ export type GlobalOmitConfig = {
   noteShare?: Prisma.NoteShareOmit
   userNoteAccess?: Prisma.UserNoteAccessOmit
   folder?: Prisma.FolderOmit
+  folderShare?: Prisma.FolderShareOmit
+  userFolderAccess?: Prisma.UserFolderAccessOmit
   user?: Prisma.UserOmit
   session?: Prisma.SessionOmit
   account?: Prisma.AccountOmit
