@@ -2,7 +2,8 @@
 
 import { Note, Folder } from "@/types/note";
 import { useRouter } from "next/navigation";
-import { Folder as FolderIcon, Trash2, Calendar, ChevronRight, Check } from "lucide-react";
+import { Folder as FolderIcon, Trash2, Calendar, ChevronRight, Check, Share2 } from "lucide-react";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,11 +16,12 @@ import {
 interface NoteCardProps {
   note: Note;
   folders: Folder[];
-  onMoveNote: (noteId: string, folderId: string | null, e: React.MouseEvent) => void;
-  onDeleteNote: (noteId: string, e: React.MouseEvent) => void;
+  onMoveNote?: (noteId: string, folderId: string | null, e: React.MouseEvent) => void;
+  onDeleteNote?: (noteId: string, e: React.MouseEvent) => void;
   isSelected?: boolean;
   onToggleSelect?: (noteId: string) => void;
 }
+
 
 export default function NoteCard({
   note,
@@ -74,54 +76,61 @@ export default function NoteCard({
           </h3>
 
           {/* Hover actions */}
-          <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button
-                  onClick={(e) => e.stopPropagation()}
-                  title="Move to folder"
-                  className="flex size-6 items-center justify-center rounded-md bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground transition-colors"
-                >
-                  <FolderIcon className="size-3" />
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-44" onClick={(e) => e.stopPropagation()}>
-                <DropdownMenuLabel className="text-[10px] uppercase text-muted-foreground font-semibold">
-                  Move to folder
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  className="text-xs cursor-pointer"
-                  onClick={(e) => onMoveNote(note.id, null, e)}
-                >
-                  <span className="flex items-center gap-2">
-                    {!note.folderId && <Check className="size-3 text-primary" />}
-                    <span className={!note.folderId ? "ml-0" : "ml-5"}>Uncategorized</span>
-                  </span>
-                </DropdownMenuItem>
-                {folders.map((folder) => (
-                  <DropdownMenuItem
-                    key={folder.id}
-                    className="text-xs cursor-pointer"
-                    onClick={(e) => onMoveNote(note.id, folder.id, e)}
-                  >
-                    <span className="flex items-center gap-2">
-                      {note.folderId === folder.id && <Check className="size-3 text-primary" />}
-                      <span className={note.folderId === folder.id ? "" : "ml-5"}>{folder.name}</span>
-                    </span>
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
+          {(onMoveNote || onDeleteNote) && (
+            <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
+              {onMoveNote && (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button
+                      onClick={(e) => e.stopPropagation()}
+                      title="Move to folder"
+                      className="flex size-6 items-center justify-center rounded-md bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground transition-colors"
+                    >
+                      <FolderIcon className="size-3" />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-44" onClick={(e) => e.stopPropagation()}>
+                    <DropdownMenuLabel className="text-[10px] uppercase text-muted-foreground font-semibold">
+                      Move to folder
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      className="text-xs cursor-pointer"
+                      onClick={(e) => onMoveNote(note.id, null, e)}
+                    >
+                      <span className="flex items-center gap-2">
+                        {!note.folderId && <Check className="size-3 text-primary" />}
+                        <span className={!note.folderId ? "ml-0" : "ml-5"}>Uncategorized</span>
+                      </span>
+                    </DropdownMenuItem>
+                    {folders.map((folder) => (
+                      <DropdownMenuItem
+                        key={folder.id}
+                        className="text-xs cursor-pointer"
+                        onClick={(e) => onMoveNote(note.id, folder.id, e)}
+                      >
+                        <span className="flex items-center gap-2">
+                          {note.folderId === folder.id && <Check className="size-3 text-primary" />}
+                          <span className={note.folderId === folder.id ? "" : "ml-5"}>{folder.name}</span>
+                        </span>
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
 
-            <button
-              onClick={(e) => onDeleteNote(note.id, e)}
-              title="Delete note"
-              className="flex size-6 items-center justify-center rounded-md bg-destructive/10 text-destructive hover:bg-destructive/20 transition-colors"
-            >
-              <Trash2 className="size-3" />
-            </button>
-          </div>
+              {onDeleteNote && (
+                <button
+                  onClick={(e) => onDeleteNote(note.id, e)}
+                  title="Delete note"
+                  className="flex size-6 items-center justify-center rounded-md bg-destructive/10 text-destructive hover:bg-destructive/20 transition-colors"
+                >
+                  <Trash2 className="size-3" />
+                </button>
+              )}
+            </div>
+          )}
+
         </div>
 
         <p className="text-xs text-muted-foreground line-clamp-3">
@@ -133,13 +142,22 @@ export default function NoteCard({
 
       {/* Card footer */}
       <div className="mt-5 flex flex-col gap-2 border-t border-border/40 pt-3">
-        {/* Folder tag */}
-        {note.folder && (
-          <div className="inline-flex self-start items-center gap-1 rounded-full bg-primary/8 px-2 py-0.5 text-[9px] font-medium text-primary/80">
-            <FolderIcon className="size-2.5 shrink-0" />
-            <span className="truncate max-w-[120px]">{note.folder.name}</span>
-          </div>
-        )}
+        {/* Folder / Share tags */}
+        <div className="flex items-center gap-1.5 flex-wrap">
+          {note.folder && (
+            <div className="inline-flex self-start items-center gap-1 rounded-full bg-primary/8 px-2 py-0.5 text-[9px] font-medium text-primary/80">
+              <FolderIcon className="size-2.5 shrink-0" />
+              <span className="truncate max-w-[120px]">{note.folder.name}</span>
+            </div>
+          )}
+          {note.share?.enabled && (
+            <div className="inline-flex self-start items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-[9px] font-medium text-emerald-600 dark:text-emerald-400">
+              <Share2 className="size-2.5 shrink-0" />
+              <span>Shared</span>
+            </div>
+          )}
+        </div>
+
         <div className="flex items-center justify-between text-[10px] text-muted-foreground">
           <div className="flex items-center gap-1">
             <Calendar className="size-3" />

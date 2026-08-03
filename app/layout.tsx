@@ -88,6 +88,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
+
             <ServiceWorkerRegistration />
             <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID!} />
             <Toaster />

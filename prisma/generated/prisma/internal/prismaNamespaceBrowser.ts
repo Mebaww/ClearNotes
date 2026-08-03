@@ -53,6 +53,8 @@ export const AnyNull = runtime.AnyNull
 export const ModelName = {
   Waitlist: 'Waitlist',
   Note: 'Note',
+  NoteShare: 'NoteShare',
+  UserNoteAccess: 'UserNoteAccess',
   Folder: 'Folder',
   User: 'User',
   Session: 'Session',
@@ -102,6 +104,31 @@ export const NoteScalarFieldEnum = {
 } as const
 
 export type NoteScalarFieldEnum = (typeof NoteScalarFieldEnum)[keyof typeof NoteScalarFieldEnum]
+
+
+export const NoteShareScalarFieldEnum = {
+  id: 'id',
+  noteId: 'noteId',
+  token: 'token',
+  enabled: 'enabled',
+  passwordHash: 'passwordHash',
+  expiresAt: 'expiresAt',
+  viewCount: 'viewCount',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type NoteShareScalarFieldEnum = (typeof NoteShareScalarFieldEnum)[keyof typeof NoteShareScalarFieldEnum]
+
+
+export const UserNoteAccessScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  shareId: 'shareId',
+  accessedAt: 'accessedAt'
+} as const
+
+export type UserNoteAccessScalarFieldEnum = (typeof UserNoteAccessScalarFieldEnum)[keyof typeof UserNoteAccessScalarFieldEnum]
 
 
 export const FolderScalarFieldEnum = {

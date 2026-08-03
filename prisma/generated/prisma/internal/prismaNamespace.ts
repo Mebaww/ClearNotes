@@ -386,6 +386,8 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 export const ModelName = {
   Waitlist: 'Waitlist',
   Note: 'Note',
+  NoteShare: 'NoteShare',
+  UserNoteAccess: 'UserNoteAccess',
   Folder: 'Folder',
   User: 'User',
   Session: 'Session',
@@ -406,7 +408,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "waitlist" | "note" | "folder" | "user" | "session" | "account" | "verification"
+    modelProps: "waitlist" | "note" | "noteShare" | "userNoteAccess" | "folder" | "user" | "session" | "account" | "verification"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -555,6 +557,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.NoteCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.NoteCountAggregateOutputType> | number
+        }
+      }
+    }
+    NoteShare: {
+      payload: Prisma.$NoteSharePayload<ExtArgs>
+      fields: Prisma.NoteShareFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.NoteShareFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NoteSharePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.NoteShareFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NoteSharePayload>
+        }
+        findFirst: {
+          args: Prisma.NoteShareFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NoteSharePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.NoteShareFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NoteSharePayload>
+        }
+        findMany: {
+          args: Prisma.NoteShareFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NoteSharePayload>[]
+        }
+        create: {
+          args: Prisma.NoteShareCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NoteSharePayload>
+        }
+        createMany: {
+          args: Prisma.NoteShareCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.NoteShareCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NoteSharePayload>[]
+        }
+        delete: {
+          args: Prisma.NoteShareDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NoteSharePayload>
+        }
+        update: {
+          args: Prisma.NoteShareUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NoteSharePayload>
+        }
+        deleteMany: {
+          args: Prisma.NoteShareDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.NoteShareUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.NoteShareUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NoteSharePayload>[]
+        }
+        upsert: {
+          args: Prisma.NoteShareUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NoteSharePayload>
+        }
+        aggregate: {
+          args: Prisma.NoteShareAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateNoteShare>
+        }
+        groupBy: {
+          args: Prisma.NoteShareGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.NoteShareGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.NoteShareCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.NoteShareCountAggregateOutputType> | number
+        }
+      }
+    }
+    UserNoteAccess: {
+      payload: Prisma.$UserNoteAccessPayload<ExtArgs>
+      fields: Prisma.UserNoteAccessFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.UserNoteAccessFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserNoteAccessPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.UserNoteAccessFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserNoteAccessPayload>
+        }
+        findFirst: {
+          args: Prisma.UserNoteAccessFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserNoteAccessPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.UserNoteAccessFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserNoteAccessPayload>
+        }
+        findMany: {
+          args: Prisma.UserNoteAccessFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserNoteAccessPayload>[]
+        }
+        create: {
+          args: Prisma.UserNoteAccessCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserNoteAccessPayload>
+        }
+        createMany: {
+          args: Prisma.UserNoteAccessCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.UserNoteAccessCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserNoteAccessPayload>[]
+        }
+        delete: {
+          args: Prisma.UserNoteAccessDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserNoteAccessPayload>
+        }
+        update: {
+          args: Prisma.UserNoteAccessUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserNoteAccessPayload>
+        }
+        deleteMany: {
+          args: Prisma.UserNoteAccessDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.UserNoteAccessUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.UserNoteAccessUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserNoteAccessPayload>[]
+        }
+        upsert: {
+          args: Prisma.UserNoteAccessUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$UserNoteAccessPayload>
+        }
+        aggregate: {
+          args: Prisma.UserNoteAccessAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateUserNoteAccess>
+        }
+        groupBy: {
+          args: Prisma.UserNoteAccessGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.UserNoteAccessGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.UserNoteAccessCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.UserNoteAccessCountAggregateOutputType> | number
         }
       }
     }
@@ -995,6 +1145,31 @@ export const NoteScalarFieldEnum = {
 export type NoteScalarFieldEnum = (typeof NoteScalarFieldEnum)[keyof typeof NoteScalarFieldEnum]
 
 
+export const NoteShareScalarFieldEnum = {
+  id: 'id',
+  noteId: 'noteId',
+  token: 'token',
+  enabled: 'enabled',
+  passwordHash: 'passwordHash',
+  expiresAt: 'expiresAt',
+  viewCount: 'viewCount',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type NoteShareScalarFieldEnum = (typeof NoteShareScalarFieldEnum)[keyof typeof NoteShareScalarFieldEnum]
+
+
+export const UserNoteAccessScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  shareId: 'shareId',
+  accessedAt: 'accessedAt'
+} as const
+
+export type UserNoteAccessScalarFieldEnum = (typeof UserNoteAccessScalarFieldEnum)[keyof typeof UserNoteAccessScalarFieldEnum]
+
+
 export const FolderScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -1298,6 +1473,8 @@ export type PrismaClientOptions = ({
 export type GlobalOmitConfig = {
   waitlist?: Prisma.WaitlistOmit
   note?: Prisma.NoteOmit
+  noteShare?: Prisma.NoteShareOmit
+  userNoteAccess?: Prisma.UserNoteAccessOmit
   folder?: Prisma.FolderOmit
   user?: Prisma.UserOmit
   session?: Prisma.SessionOmit

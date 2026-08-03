@@ -14,7 +14,9 @@ export async function getNotes(userId: string, limit = 20, folderId?: string | n
     where,
     include: {
       folder: true,
+      share: true,
     },
+
     orderBy: { createdAt: "desc" },
     take: limit,
   });

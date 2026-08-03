@@ -49,11 +49,50 @@ model Note {
   folderId   String?
   folder     Folder?    @relation(fields: [folderId], references: [id], onDelete: SetNull)
 
+  share      NoteShare?
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@index([folderId])
 }
+
+model NoteShare {
+  id           String    @id @default(cuid())
+  noteId       String    @unique
+  token        String    @unique
+  enabled      Boolean   @default(true)
+
+  passwordHash String?
+  expiresAt    DateTime?
+  viewCount    Int       @default(0)
+
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  note         Note      @relation(fields: [noteId], references: [id], onDelete: Cascade)
+  accessedBy   UserNoteAccess[]
+
+  @@index([token])
+  @@index([noteId])
+}
+
+model UserNoteAccess {
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  shareId     String
+  share       NoteShare @relation(fields: [shareId], references: [id], onDelete: Cascade)
+  
+  accessedAt  DateTime  @default(now())
+
+  @@unique([userId, shareId])
+  @@index([userId])
+  @@index([shareId])
+}
+
+
 
 model Folder {
   id        String   @id @default(cuid())
@@ -85,6 +124,8 @@ model User {
   accounts           Account[]
   notes              Note[]
   folders            Folder[]
+  accessedSharedNotes UserNoteAccess[]
+
 
   @@unique([email])
   @@map("user")
