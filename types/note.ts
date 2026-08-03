@@ -31,8 +31,9 @@ export interface NoteShare {
   updatedAt: Date | string;
 }
 
-export interface Note {
+export type NoteStyle = "standard" | "study" | "research";
 
+export interface Note {
   id: string;
   title: string | null;
   sourceText: string | null;

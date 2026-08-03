@@ -13,13 +13,18 @@ export async function POST(request: Request) {
       return apiErr("UNAUTHORIZED", "You must be signed in to generate notes.");
     }
 
-    const { text } = await request.json();
+    const { text, style } = await request.json();
 
     if (!text || typeof text !== "string") {
       return apiErr("INVALID_REQUEST", "Missing or invalid document text.");
     }
 
-    const noteId = await handleCreateNote(text, session.user.id);
+    const validStyle =
+      style === "study" || style === "research" || style === "standard"
+        ? style
+        : "standard";
+
+    const noteId = await handleCreateNote(text, session.user.id, validStyle);
 
     return ok({ noteId });
   } catch (error) {
