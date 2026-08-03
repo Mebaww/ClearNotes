@@ -1,5 +1,6 @@
 import { getSharedNoteByToken } from "@/lib/notes/shareNote";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
+
 import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -49,6 +50,12 @@ export default async function SharedNotePage({ params }: Props) {
   });
 
   const sharedData = await getSharedNoteByToken(token, session?.user?.id);
+
+  // If user is logged in, redirect them directly into their app workspace view
+  if (session?.user && sharedData) {
+    redirect(`/workspace/shared`);
+  }
+
 
 
   if (!sharedData) {
