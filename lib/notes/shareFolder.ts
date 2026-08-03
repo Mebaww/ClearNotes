@@ -111,6 +111,21 @@ export async function recordUserFolderAccess(userId: string, shareId: string) {
   }
 }
 
+export async function removeUserFolderAccess(userId: string, shareId: string) {
+  try {
+    await prisma.userFolderAccess.deleteMany({
+      where: {
+        userId,
+        shareId,
+      },
+    });
+  } catch (err) {
+    console.error("Failed to remove user folder access", err);
+  }
+}
+
+
+
 export async function getSharedFolderByToken(
   token: string,
   userId?: string,
@@ -236,7 +251,7 @@ export async function getUserSharedFolders(userId: string) {
   });
 
   const sharedWithMe = accessedEntries
-    .filter((entry: any) => entry.share.folder.userId !== userId)
+    .filter((entry: any) => entry.share?.folder && entry.share.folder.userId !== userId)
     .map((entry: any) => ({
       ...entry.share,
       isReceived: true,

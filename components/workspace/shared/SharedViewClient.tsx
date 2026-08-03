@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import NoteCard from "@/components/workspace/notes/NoteCard";
-import { Folder as FolderIcon, NotebookPen, Search, Share2, UserCheck, Link2 } from "lucide-react";
+import { Folder as FolderIcon, NotebookPen, Search, Share2, UserCheck, Link2, Trash2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Folder, Note } from "@/types/note";
 
@@ -26,7 +26,27 @@ export default function SharedViewClient({
 
   const filterText = searchQuery.toLowerCase().trim();
 
-  const filteredReceivedNotes = receivedNotes.filter(
+  const [recFolders, setRecFolders] = useState(receivedFolders);
+  const [recNotes, setRecNotes] = useState(receivedNotes);
+
+  const handleRemoveAccess = async (shareId: string, type: "note" | "folder") => {
+    try {
+      if (type === "folder") {
+        setRecFolders((prev) => prev.filter((f) => f.id !== shareId));
+      } else {
+        setRecNotes((prev) => prev.filter((n) => n.share?.id !== shareId && n.id !== shareId));
+      }
+      await fetch("/api/notes/shared/count", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ shareId, type }),
+      });
+    } catch (err) {
+      console.error("Failed to remove shared access:", err);
+    }
+  };
+
+  const filteredReceivedNotes = recNotes.filter(
     (n) =>
       !filterText ||
       n.title?.toLowerCase().includes(filterText) ||
@@ -40,7 +60,7 @@ export default function SharedViewClient({
       n.generated?.toLowerCase().includes(filterText)
   );
 
-  const filteredReceivedFolders = receivedFolders.filter(
+  const filteredReceivedFolders = recFolders.filter(
     (f) => !filterText || f.folder?.name?.toLowerCase().includes(filterText)
   );
 
@@ -50,12 +70,13 @@ export default function SharedViewClient({
 
   const hasAnyShared =
     ownedNotes.length > 0 ||
-    receivedNotes.length > 0 ||
+    recNotes.length > 0 ||
     ownedFolders.length > 0 ||
-    receivedFolders.length > 0;
+    recFolders.length > 0;
+
 
   return (
-    <main className="mx-auto max-w-6xl px-6 py-8">
+    <main className="w-full px-6 md:px-10 py-8">
       <div className="mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="flex items-center gap-2.5 text-2xl font-bold tracking-tight">
@@ -68,13 +89,13 @@ export default function SharedViewClient({
         </div>
 
         {hasAnyShared && (
-          <div className="relative w-full sm:w-64">
-            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+          <div className="relative w-full sm:w-72">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
             <Input
               placeholder="Search shared items..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-8 h-9 text-xs"
+              className="pl-9 h-9 text-xs"
             />
           </div>
         )}
@@ -97,27 +118,40 @@ export default function SharedViewClient({
                 <UserCheck className="size-4 text-primary" />
                 <h2 className="text-base font-semibold">Folders Shared with Me</h2>
               </div>
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                 {filteredReceivedFolders.map((item) => (
-                  <Link
+                  <div
                     key={item.id}
-                    href={`/share/folder/${item.token}`}
-                    className="group flex items-center justify-between rounded-xl border bg-card p-4 hover:-translate-y-0.5 hover:shadow-xs transition-all cursor-pointer"
+                    className="group relative flex items-center justify-between rounded-xl border bg-card p-4 hover:-translate-y-0.5 hover:shadow-xs transition-all cursor-pointer"
                   >
-                    <div className="flex items-center gap-3">
-                      <div className="flex size-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                    <Link
+                      href={`/share/folder/${item.token}`}
+                      className="flex items-center gap-3 flex-1 min-w-0"
+                    >
+                      <div className="flex size-9 items-center justify-center rounded-lg bg-primary/10 text-primary shrink-0">
                         <FolderIcon className="size-4" />
                       </div>
-                      <div>
-                        <h3 className="text-sm font-semibold group-hover:text-primary transition-colors">
+                      <div className="min-w-0 flex-1">
+                        <h3 className="text-sm font-semibold group-hover:text-primary transition-colors truncate">
                           {item.folder.name}
                         </h3>
-                        <p className="text-xs text-muted-foreground">
+                        <p className="text-xs text-muted-foreground truncate">
                           Shared by {item.folder.user?.name || "User"} · {item.folder._count?.notes || 0} notes
                         </p>
                       </div>
-                    </div>
-                  </Link>
+                    </Link>
+                    <button
+                      title="Remove from my shared list"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        handleRemoveAccess(item.id, "folder");
+                      }}
+                      className="opacity-0 group-hover:opacity-100 p-1.5 hover:bg-muted text-muted-foreground hover:text-destructive rounded-md transition-all ml-2"
+                    >
+                      <Trash2 className="size-4" />
+                    </button>
+                  </div>
                 ))}
               </div>
             </section>
@@ -130,13 +164,19 @@ export default function SharedViewClient({
                 <NotebookPen className="size-4 text-primary" />
                 <h2 className="text-base font-semibold">Notes Shared with Me</h2>
               </div>
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                 {filteredReceivedNotes.map((note) => (
                   <NoteCard
                     key={note.id}
                     note={note}
                     folders={userFolders}
                     isSharedWithMe
+                    onDeleteNote={(noteId, e) => {
+                      e.stopPropagation();
+                      if (note.share?.id) {
+                        handleRemoveAccess(note.share.id, "note");
+                      }
+                    }}
                   />
                 ))}
               </div>
@@ -150,7 +190,7 @@ export default function SharedViewClient({
                 <Link2 className="size-4 text-muted-foreground" />
                 <h2 className="text-base font-semibold">Folders Shared by Me</h2>
               </div>
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                 {filteredOwnedFolders.map((item) => (
                   <Link
                     key={item.id}
@@ -183,7 +223,7 @@ export default function SharedViewClient({
                 <Link2 className="size-4 text-muted-foreground" />
                 <h2 className="text-base font-semibold">Notes Shared by Me</h2>
               </div>
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                 {filteredOwnedNotes.map((note) => (
                   <NoteCard
                     key={note.id}
