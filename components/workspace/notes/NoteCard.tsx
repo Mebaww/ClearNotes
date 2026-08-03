@@ -22,6 +22,8 @@ interface NoteCardProps {
   onToggleSelect?: (noteId: string) => void;
   /** When true the card is a note shared with this user — clicking routes to its share token page */
   isSharedWithMe?: boolean;
+  /** When set (folder share token), clicking routes to /share/folder/[token]/note/[noteId] */
+  folderShareToken?: string;
 }
 
 
@@ -33,11 +35,15 @@ export default function NoteCard({
   isSelected = false,
   onToggleSelect,
   isSharedWithMe = false,
+  folderShareToken,
 }: NoteCardProps) {
   const router = useRouter();
 
   const handleOpen = () => {
-    if (isSharedWithMe && note.share?.token) {
+    if (folderShareToken) {
+      // Note is inside a shared folder — use nested route (no individual NoteShare needed)
+      router.push(`/share/folder/${folderShareToken}/note/${note.id}`);
+    } else if (isSharedWithMe && note.share?.token) {
       router.push(`/share/${note.share.token}`);
     } else {
       router.push(`/workspace/notes/${note.id}`);

@@ -56,6 +56,8 @@ export const ModelName = {
   NoteShare: 'NoteShare',
   UserNoteAccess: 'UserNoteAccess',
   Folder: 'Folder',
+  FolderShare: 'FolderShare',
+  UserFolderAccess: 'UserFolderAccess',
   User: 'User',
   Session: 'Session',
   Account: 'Account',
@@ -140,6 +142,31 @@ export const FolderScalarFieldEnum = {
 } as const
 
 export type FolderScalarFieldEnum = (typeof FolderScalarFieldEnum)[keyof typeof FolderScalarFieldEnum]
+
+
+export const FolderShareScalarFieldEnum = {
+  id: 'id',
+  folderId: 'folderId',
+  token: 'token',
+  enabled: 'enabled',
+  passwordHash: 'passwordHash',
+  expiresAt: 'expiresAt',
+  viewCount: 'viewCount',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type FolderShareScalarFieldEnum = (typeof FolderShareScalarFieldEnum)[keyof typeof FolderShareScalarFieldEnum]
+
+
+export const UserFolderAccessScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  shareId: 'shareId',
+  accessedAt: 'accessedAt'
+} as const
+
+export type UserFolderAccessScalarFieldEnum = (typeof UserFolderAccessScalarFieldEnum)[keyof typeof UserFolderAccessScalarFieldEnum]
 
 
 export const UserScalarFieldEnum = {

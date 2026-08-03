@@ -1,6 +1,7 @@
 import { auth } from "@/lib/auth";
 import { ok, apiErr, handleError } from "@/lib/api-response";
 import { getUserSharedNotesCount } from "@/lib/notes/shareNote";
+import { getUserSharedFoldersCount } from "@/lib/notes/shareFolder";
 
 export async function GET(request: Request) {
   try {
@@ -12,10 +13,12 @@ export async function GET(request: Request) {
       return apiErr("UNAUTHORIZED", "You must be signed in.");
     }
 
-    const count = await getUserSharedNotesCount(session.user.id);
+    const notesCount = await getUserSharedNotesCount(session.user.id);
+    const foldersCount = await getUserSharedFoldersCount(session.user.id);
 
-    return ok({ count });
+    return ok({ count: notesCount + foldersCount });
   } catch (error) {
     return handleError(error);
   }
 }
+

@@ -95,17 +95,53 @@ model UserNoteAccess {
 
 
 model Folder {
-  id        String   @id @default(cuid())
+  id        String       @id @default(cuid())
   name      String
   userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   notes     Note[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  share     FolderShare?
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
 
   @@unique([userId, name])
   @@index([userId])
   @@map("folder")
+}
+
+model FolderShare {
+  id           String    @id @default(cuid())
+  folderId     String    @unique
+  token        String    @unique
+  enabled      Boolean   @default(true)
+
+  passwordHash String?
+  expiresAt    DateTime?
+  viewCount    Int       @default(0)
+
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  folder       Folder    @relation(fields: [folderId], references: [id], onDelete: Cascade)
+  accessedBy   UserFolderAccess[]
+
+  @@index([token])
+  @@index([folderId])
+}
+
+model UserFolderAccess {
+  id         String       @id @default(cuid())
+  userId     String
+  user       User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  shareId    String
+  share      FolderShare  @relation(fields: [shareId], references: [id], onDelete: Cascade)
+
+  accessedAt DateTime     @default(now())
+
+  @@unique([userId, shareId])
+  @@index([userId])
+  @@index([shareId])
 }
 
 model User {
@@ -125,6 +161,8 @@ model User {
   notes              Note[]
   folders            Folder[]
   accessedSharedNotes UserNoteAccess[]
+  accessedSharedFolders UserFolderAccess[]
+
 
 
   @@unique([email])

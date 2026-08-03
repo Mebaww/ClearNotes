@@ -67,6 +67,16 @@ export type UserNoteAccess = Prisma.UserNoteAccessModel
  */
 export type Folder = Prisma.FolderModel
 /**
+ * Model FolderShare
+ * 
+ */
+export type FolderShare = Prisma.FolderShareModel
+/**
+ * Model UserFolderAccess
+ * 
+ */
+export type UserFolderAccess = Prisma.UserFolderAccessModel
+/**
  * Model User
  * 
  */

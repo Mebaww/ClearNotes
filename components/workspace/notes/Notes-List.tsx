@@ -36,11 +36,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { sileo } from "sileo";
 
-// Custom Subcomponents
 import FolderPillsBar from "./FolderPillsBar";
 import FolderHeaderActions from "./FolderHeaderActions";
 import NoteCard from "./NoteCard";
 import FolderManagerDialog from "./FolderManagerDialog";
+import FolderShareModal from "./FolderShareModal";
+
 
 interface NotesListProps {
   initialNotes: Note[];
@@ -429,6 +430,10 @@ export default function NotesList({
     : activeFolder ? activeFolder.name
     : "All Notes";
 
+  // Folder Share Modal State
+  const [folderShareModalOpen, setFolderShareModalOpen] = useState(false);
+  const activeFolderShare = activeFolder?.share || null;
+
   return (
     <div className="mt-6 space-y-6">
       {/* ── Filter bar ─────────────────────────────────────── */}
@@ -448,9 +453,15 @@ export default function NotesList({
         selectedFolderId={selectedFolderId}
         activeFolderName={activeFolderName}
         notesCount={displayedNotes.length}
+        isShared={!!activeFolderShare?.enabled}
         onOpenAddNotesDialog={handleOpenAddNotesDialog}
         onRenameFolder={handleOpenRenameDialog}
-        onDeleteFolder={(e) => handleDeleteFolderTrigger(selectedFolderId!, activeFolderName, e)}
+        onDeleteFolder={(e) => {
+          if (selectedFolderId && selectedFolderId !== "uncategorized") {
+            handleDeleteFolderTrigger(selectedFolderId, activeFolderName, e);
+          }
+        }}
+        onShareFolder={() => setFolderShareModalOpen(true)}
       />
 
       {/* ── Notes Grid / Empty State ───────────────────────── */}
@@ -672,6 +683,29 @@ export default function NotesList({
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* ── Folder Share Modal ─────────────────────────────── */}
+
+      {selectedFolderId && selectedFolderId !== "uncategorized" && (
+        <FolderShareModal
+          folderId={selectedFolderId}
+          folderName={activeFolderName}
+          initialShare={activeFolderShare}
+          isOpen={folderShareModalOpen}
+          onOpenChange={setFolderShareModalOpen}
+          onShareStatusChange={(updatedShare) => {
+            if (updatedShare !== undefined) {
+              setFolders((prev) =>
+                prev.map((f) =>
+                  f.id === selectedFolderId ? { ...f, share: updatedShare } : f
+                )
+              );
+            }
+            router.refresh();
+          }}
+        />
+      )}
     </div>
   );
 }
+

@@ -184,6 +184,7 @@ export type FolderWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"Folder"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   notes?: Prisma.NoteListRelationFilter
+  share?: Prisma.XOR<Prisma.FolderShareNullableScalarRelationFilter, Prisma.FolderShareWhereInput> | null
 }
 
 export type FolderOrderByWithRelationInput = {
@@ -194,6 +195,7 @@ export type FolderOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   user?: Prisma.UserOrderByWithRelationInput
   notes?: Prisma.NoteOrderByRelationAggregateInput
+  share?: Prisma.FolderShareOrderByWithRelationInput
 }
 
 export type FolderWhereUniqueInput = Prisma.AtLeast<{
@@ -208,6 +210,7 @@ export type FolderWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"Folder"> | Date | string
   user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   notes?: Prisma.NoteListRelationFilter
+  share?: Prisma.XOR<Prisma.FolderShareNullableScalarRelationFilter, Prisma.FolderShareWhereInput> | null
 }, "id" | "userId_name">
 
 export type FolderOrderByWithAggregationInput = {
@@ -239,6 +242,7 @@ export type FolderCreateInput = {
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutFoldersInput
   notes?: Prisma.NoteCreateNestedManyWithoutFolderInput
+  share?: Prisma.FolderShareCreateNestedOneWithoutFolderInput
 }
 
 export type FolderUncheckedCreateInput = {
@@ -248,6 +252,7 @@ export type FolderUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   notes?: Prisma.NoteUncheckedCreateNestedManyWithoutFolderInput
+  share?: Prisma.FolderShareUncheckedCreateNestedOneWithoutFolderInput
 }
 
 export type FolderUpdateInput = {
@@ -257,6 +262,7 @@ export type FolderUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutFoldersNestedInput
   notes?: Prisma.NoteUpdateManyWithoutFolderNestedInput
+  share?: Prisma.FolderShareUpdateOneWithoutFolderNestedInput
 }
 
 export type FolderUncheckedUpdateInput = {
@@ -266,6 +272,7 @@ export type FolderUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   notes?: Prisma.NoteUncheckedUpdateManyWithoutFolderNestedInput
+  share?: Prisma.FolderShareUncheckedUpdateOneWithoutFolderNestedInput
 }
 
 export type FolderCreateManyInput = {
@@ -325,6 +332,11 @@ export type FolderMinOrderByAggregateInput = {
   updatedAt?: Prisma.SortOrder
 }
 
+export type FolderScalarRelationFilter = {
+  is?: Prisma.FolderWhereInput
+  isNot?: Prisma.FolderWhereInput
+}
+
 export type FolderListRelationFilter = {
   every?: Prisma.FolderWhereInput
   some?: Prisma.FolderWhereInput
@@ -349,6 +361,20 @@ export type FolderUpdateOneWithoutNotesNestedInput = {
   delete?: Prisma.FolderWhereInput | boolean
   connect?: Prisma.FolderWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.FolderUpdateToOneWithWhereWithoutNotesInput, Prisma.FolderUpdateWithoutNotesInput>, Prisma.FolderUncheckedUpdateWithoutNotesInput>
+}
+
+export type FolderCreateNestedOneWithoutShareInput = {
+  create?: Prisma.XOR<Prisma.FolderCreateWithoutShareInput, Prisma.FolderUncheckedCreateWithoutShareInput>
+  connectOrCreate?: Prisma.FolderCreateOrConnectWithoutShareInput
+  connect?: Prisma.FolderWhereUniqueInput
+}
+
+export type FolderUpdateOneRequiredWithoutShareNestedInput = {
+  create?: Prisma.XOR<Prisma.FolderCreateWithoutShareInput, Prisma.FolderUncheckedCreateWithoutShareInput>
+  connectOrCreate?: Prisma.FolderCreateOrConnectWithoutShareInput
+  upsert?: Prisma.FolderUpsertWithoutShareInput
+  connect?: Prisma.FolderWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.FolderUpdateToOneWithWhereWithoutShareInput, Prisma.FolderUpdateWithoutShareInput>, Prisma.FolderUncheckedUpdateWithoutShareInput>
 }
 
 export type FolderCreateNestedManyWithoutUserInput = {
@@ -399,6 +425,7 @@ export type FolderCreateWithoutNotesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   user: Prisma.UserCreateNestedOneWithoutFoldersInput
+  share?: Prisma.FolderShareCreateNestedOneWithoutFolderInput
 }
 
 export type FolderUncheckedCreateWithoutNotesInput = {
@@ -407,6 +434,7 @@ export type FolderUncheckedCreateWithoutNotesInput = {
   userId: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  share?: Prisma.FolderShareUncheckedCreateNestedOneWithoutFolderInput
 }
 
 export type FolderCreateOrConnectWithoutNotesInput = {
@@ -431,6 +459,7 @@ export type FolderUpdateWithoutNotesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   user?: Prisma.UserUpdateOneRequiredWithoutFoldersNestedInput
+  share?: Prisma.FolderShareUpdateOneWithoutFolderNestedInput
 }
 
 export type FolderUncheckedUpdateWithoutNotesInput = {
@@ -439,6 +468,59 @@ export type FolderUncheckedUpdateWithoutNotesInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  share?: Prisma.FolderShareUncheckedUpdateOneWithoutFolderNestedInput
+}
+
+export type FolderCreateWithoutShareInput = {
+  id?: string
+  name: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  user: Prisma.UserCreateNestedOneWithoutFoldersInput
+  notes?: Prisma.NoteCreateNestedManyWithoutFolderInput
+}
+
+export type FolderUncheckedCreateWithoutShareInput = {
+  id?: string
+  name: string
+  userId: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  notes?: Prisma.NoteUncheckedCreateNestedManyWithoutFolderInput
+}
+
+export type FolderCreateOrConnectWithoutShareInput = {
+  where: Prisma.FolderWhereUniqueInput
+  create: Prisma.XOR<Prisma.FolderCreateWithoutShareInput, Prisma.FolderUncheckedCreateWithoutShareInput>
+}
+
+export type FolderUpsertWithoutShareInput = {
+  update: Prisma.XOR<Prisma.FolderUpdateWithoutShareInput, Prisma.FolderUncheckedUpdateWithoutShareInput>
+  create: Prisma.XOR<Prisma.FolderCreateWithoutShareInput, Prisma.FolderUncheckedCreateWithoutShareInput>
+  where?: Prisma.FolderWhereInput
+}
+
+export type FolderUpdateToOneWithWhereWithoutShareInput = {
+  where?: Prisma.FolderWhereInput
+  data: Prisma.XOR<Prisma.FolderUpdateWithoutShareInput, Prisma.FolderUncheckedUpdateWithoutShareInput>
+}
+
+export type FolderUpdateWithoutShareInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  user?: Prisma.UserUpdateOneRequiredWithoutFoldersNestedInput
+  notes?: Prisma.NoteUpdateManyWithoutFolderNestedInput
+}
+
+export type FolderUncheckedUpdateWithoutShareInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  notes?: Prisma.NoteUncheckedUpdateManyWithoutFolderNestedInput
 }
 
 export type FolderCreateWithoutUserInput = {
@@ -447,6 +529,7 @@ export type FolderCreateWithoutUserInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   notes?: Prisma.NoteCreateNestedManyWithoutFolderInput
+  share?: Prisma.FolderShareCreateNestedOneWithoutFolderInput
 }
 
 export type FolderUncheckedCreateWithoutUserInput = {
@@ -455,6 +538,7 @@ export type FolderUncheckedCreateWithoutUserInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   notes?: Prisma.NoteUncheckedCreateNestedManyWithoutFolderInput
+  share?: Prisma.FolderShareUncheckedCreateNestedOneWithoutFolderInput
 }
 
 export type FolderCreateOrConnectWithoutUserInput = {
@@ -507,6 +591,7 @@ export type FolderUpdateWithoutUserInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   notes?: Prisma.NoteUpdateManyWithoutFolderNestedInput
+  share?: Prisma.FolderShareUpdateOneWithoutFolderNestedInput
 }
 
 export type FolderUncheckedUpdateWithoutUserInput = {
@@ -515,6 +600,7 @@ export type FolderUncheckedUpdateWithoutUserInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   notes?: Prisma.NoteUncheckedUpdateManyWithoutFolderNestedInput
+  share?: Prisma.FolderShareUncheckedUpdateOneWithoutFolderNestedInput
 }
 
 export type FolderUncheckedUpdateManyWithoutUserInput = {
@@ -563,6 +649,7 @@ export type FolderSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   updatedAt?: boolean
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   notes?: boolean | Prisma.Folder$notesArgs<ExtArgs>
+  share?: boolean | Prisma.Folder$shareArgs<ExtArgs>
   _count?: boolean | Prisma.FolderCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["folder"]>
 
@@ -596,6 +683,7 @@ export type FolderOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
 export type FolderInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   notes?: boolean | Prisma.Folder$notesArgs<ExtArgs>
+  share?: boolean | Prisma.Folder$shareArgs<ExtArgs>
   _count?: boolean | Prisma.FolderCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type FolderIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -610,6 +698,7 @@ export type $FolderPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
   objects: {
     user: Prisma.$UserPayload<ExtArgs>
     notes: Prisma.$NotePayload<ExtArgs>[]
+    share: Prisma.$FolderSharePayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1013,6 +1102,7 @@ export interface Prisma__FolderClient<T, Null = never, ExtArgs extends runtime.T
   readonly [Symbol.toStringTag]: "PrismaPromise"
   user<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   notes<T extends Prisma.Folder$notesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Folder$notesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  share<T extends Prisma.Folder$shareArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Folder$shareArgs<ExtArgs>>): Prisma.Prisma__FolderShareClient<runtime.Types.Result.GetResult<Prisma.$FolderSharePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1469,6 +1559,25 @@ export type Folder$notesArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
   take?: number
   skip?: number
   distinct?: Prisma.NoteScalarFieldEnum | Prisma.NoteScalarFieldEnum[]
+}
+
+/**
+ * Folder.share
+ */
+export type Folder$shareArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the FolderShare
+   */
+  select?: Prisma.FolderShareSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the FolderShare
+   */
+  omit?: Prisma.FolderShareOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.FolderShareInclude<ExtArgs> | null
+  where?: Prisma.FolderShareWhereInput
 }
 
 /**

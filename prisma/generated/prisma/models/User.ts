@@ -253,6 +253,7 @@ export type UserWhereInput = {
   notes?: Prisma.NoteListRelationFilter
   folders?: Prisma.FolderListRelationFilter
   accessedSharedNotes?: Prisma.UserNoteAccessListRelationFilter
+  accessedSharedFolders?: Prisma.UserFolderAccessListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -270,6 +271,7 @@ export type UserOrderByWithRelationInput = {
   notes?: Prisma.NoteOrderByRelationAggregateInput
   folders?: Prisma.FolderOrderByRelationAggregateInput
   accessedSharedNotes?: Prisma.UserNoteAccessOrderByRelationAggregateInput
+  accessedSharedFolders?: Prisma.UserFolderAccessOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -290,6 +292,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   notes?: Prisma.NoteListRelationFilter
   folders?: Prisma.FolderListRelationFilter
   accessedSharedNotes?: Prisma.UserNoteAccessListRelationFilter
+  accessedSharedFolders?: Prisma.UserFolderAccessListRelationFilter
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -339,6 +342,7 @@ export type UserCreateInput = {
   notes?: Prisma.NoteCreateNestedManyWithoutUserInput
   folders?: Prisma.FolderCreateNestedManyWithoutUserInput
   accessedSharedNotes?: Prisma.UserNoteAccessCreateNestedManyWithoutUserInput
+  accessedSharedFolders?: Prisma.UserFolderAccessCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -356,6 +360,7 @@ export type UserUncheckedCreateInput = {
   notes?: Prisma.NoteUncheckedCreateNestedManyWithoutUserInput
   folders?: Prisma.FolderUncheckedCreateNestedManyWithoutUserInput
   accessedSharedNotes?: Prisma.UserNoteAccessUncheckedCreateNestedManyWithoutUserInput
+  accessedSharedFolders?: Prisma.UserFolderAccessUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -373,6 +378,7 @@ export type UserUpdateInput = {
   notes?: Prisma.NoteUpdateManyWithoutUserNestedInput
   folders?: Prisma.FolderUpdateManyWithoutUserNestedInput
   accessedSharedNotes?: Prisma.UserNoteAccessUpdateManyWithoutUserNestedInput
+  accessedSharedFolders?: Prisma.UserFolderAccessUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -390,6 +396,7 @@ export type UserUncheckedUpdateInput = {
   notes?: Prisma.NoteUncheckedUpdateManyWithoutUserNestedInput
   folders?: Prisma.FolderUncheckedUpdateManyWithoutUserNestedInput
   accessedSharedNotes?: Prisma.UserNoteAccessUncheckedUpdateManyWithoutUserNestedInput
+  accessedSharedFolders?: Prisma.UserFolderAccessUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -519,6 +526,20 @@ export type UserUpdateOneRequiredWithoutFoldersNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutFoldersInput, Prisma.UserUpdateWithoutFoldersInput>, Prisma.UserUncheckedUpdateWithoutFoldersInput>
 }
 
+export type UserCreateNestedOneWithoutAccessedSharedFoldersInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAccessedSharedFoldersInput, Prisma.UserUncheckedCreateWithoutAccessedSharedFoldersInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAccessedSharedFoldersInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutAccessedSharedFoldersNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutAccessedSharedFoldersInput, Prisma.UserUncheckedCreateWithoutAccessedSharedFoldersInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutAccessedSharedFoldersInput
+  upsert?: Prisma.UserUpsertWithoutAccessedSharedFoldersInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutAccessedSharedFoldersInput, Prisma.UserUpdateWithoutAccessedSharedFoldersInput>, Prisma.UserUncheckedUpdateWithoutAccessedSharedFoldersInput>
+}
+
 export type UserCreateNestedOneWithoutSessionsInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutSessionsInput, Prisma.UserUncheckedCreateWithoutSessionsInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutSessionsInput
@@ -561,6 +582,7 @@ export type UserCreateWithoutNotesInput = {
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   folders?: Prisma.FolderCreateNestedManyWithoutUserInput
   accessedSharedNotes?: Prisma.UserNoteAccessCreateNestedManyWithoutUserInput
+  accessedSharedFolders?: Prisma.UserFolderAccessCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutNotesInput = {
@@ -577,6 +599,7 @@ export type UserUncheckedCreateWithoutNotesInput = {
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   folders?: Prisma.FolderUncheckedCreateNestedManyWithoutUserInput
   accessedSharedNotes?: Prisma.UserNoteAccessUncheckedCreateNestedManyWithoutUserInput
+  accessedSharedFolders?: Prisma.UserFolderAccessUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutNotesInput = {
@@ -609,6 +632,7 @@ export type UserUpdateWithoutNotesInput = {
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   folders?: Prisma.FolderUpdateManyWithoutUserNestedInput
   accessedSharedNotes?: Prisma.UserNoteAccessUpdateManyWithoutUserNestedInput
+  accessedSharedFolders?: Prisma.UserFolderAccessUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutNotesInput = {
@@ -625,6 +649,7 @@ export type UserUncheckedUpdateWithoutNotesInput = {
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   folders?: Prisma.FolderUncheckedUpdateManyWithoutUserNestedInput
   accessedSharedNotes?: Prisma.UserNoteAccessUncheckedUpdateManyWithoutUserNestedInput
+  accessedSharedFolders?: Prisma.UserFolderAccessUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutAccessedSharedNotesInput = {
@@ -641,6 +666,7 @@ export type UserCreateWithoutAccessedSharedNotesInput = {
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   notes?: Prisma.NoteCreateNestedManyWithoutUserInput
   folders?: Prisma.FolderCreateNestedManyWithoutUserInput
+  accessedSharedFolders?: Prisma.UserFolderAccessCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutAccessedSharedNotesInput = {
@@ -657,6 +683,7 @@ export type UserUncheckedCreateWithoutAccessedSharedNotesInput = {
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   notes?: Prisma.NoteUncheckedCreateNestedManyWithoutUserInput
   folders?: Prisma.FolderUncheckedCreateNestedManyWithoutUserInput
+  accessedSharedFolders?: Prisma.UserFolderAccessUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutAccessedSharedNotesInput = {
@@ -689,6 +716,7 @@ export type UserUpdateWithoutAccessedSharedNotesInput = {
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   notes?: Prisma.NoteUpdateManyWithoutUserNestedInput
   folders?: Prisma.FolderUpdateManyWithoutUserNestedInput
+  accessedSharedFolders?: Prisma.UserFolderAccessUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAccessedSharedNotesInput = {
@@ -705,6 +733,7 @@ export type UserUncheckedUpdateWithoutAccessedSharedNotesInput = {
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   notes?: Prisma.NoteUncheckedUpdateManyWithoutUserNestedInput
   folders?: Prisma.FolderUncheckedUpdateManyWithoutUserNestedInput
+  accessedSharedFolders?: Prisma.UserFolderAccessUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutFoldersInput = {
@@ -721,6 +750,7 @@ export type UserCreateWithoutFoldersInput = {
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
   notes?: Prisma.NoteCreateNestedManyWithoutUserInput
   accessedSharedNotes?: Prisma.UserNoteAccessCreateNestedManyWithoutUserInput
+  accessedSharedFolders?: Prisma.UserFolderAccessCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutFoldersInput = {
@@ -737,6 +767,7 @@ export type UserUncheckedCreateWithoutFoldersInput = {
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
   notes?: Prisma.NoteUncheckedCreateNestedManyWithoutUserInput
   accessedSharedNotes?: Prisma.UserNoteAccessUncheckedCreateNestedManyWithoutUserInput
+  accessedSharedFolders?: Prisma.UserFolderAccessUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutFoldersInput = {
@@ -769,6 +800,7 @@ export type UserUpdateWithoutFoldersInput = {
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
   notes?: Prisma.NoteUpdateManyWithoutUserNestedInput
   accessedSharedNotes?: Prisma.UserNoteAccessUpdateManyWithoutUserNestedInput
+  accessedSharedFolders?: Prisma.UserFolderAccessUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutFoldersInput = {
@@ -784,6 +816,91 @@ export type UserUncheckedUpdateWithoutFoldersInput = {
   sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
   notes?: Prisma.NoteUncheckedUpdateManyWithoutUserNestedInput
+  accessedSharedNotes?: Prisma.UserNoteAccessUncheckedUpdateManyWithoutUserNestedInput
+  accessedSharedFolders?: Prisma.UserFolderAccessUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutAccessedSharedFoldersInput = {
+  id: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  image?: string | null
+  monthlyCreditsUsed?: number
+  usageResetAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sessions?: Prisma.SessionCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  notes?: Prisma.NoteCreateNestedManyWithoutUserInput
+  folders?: Prisma.FolderCreateNestedManyWithoutUserInput
+  accessedSharedNotes?: Prisma.UserNoteAccessCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutAccessedSharedFoldersInput = {
+  id: string
+  name: string
+  email: string
+  emailVerified?: boolean
+  image?: string | null
+  monthlyCreditsUsed?: number
+  usageResetAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sessions?: Prisma.SessionUncheckedCreateNestedManyWithoutUserInput
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  notes?: Prisma.NoteUncheckedCreateNestedManyWithoutUserInput
+  folders?: Prisma.FolderUncheckedCreateNestedManyWithoutUserInput
+  accessedSharedNotes?: Prisma.UserNoteAccessUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutAccessedSharedFoldersInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutAccessedSharedFoldersInput, Prisma.UserUncheckedCreateWithoutAccessedSharedFoldersInput>
+}
+
+export type UserUpsertWithoutAccessedSharedFoldersInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutAccessedSharedFoldersInput, Prisma.UserUncheckedUpdateWithoutAccessedSharedFoldersInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutAccessedSharedFoldersInput, Prisma.UserUncheckedCreateWithoutAccessedSharedFoldersInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutAccessedSharedFoldersInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutAccessedSharedFoldersInput, Prisma.UserUncheckedUpdateWithoutAccessedSharedFoldersInput>
+}
+
+export type UserUpdateWithoutAccessedSharedFoldersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  monthlyCreditsUsed?: Prisma.IntFieldUpdateOperationsInput | number
+  usageResetAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sessions?: Prisma.SessionUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  notes?: Prisma.NoteUpdateManyWithoutUserNestedInput
+  folders?: Prisma.FolderUpdateManyWithoutUserNestedInput
+  accessedSharedNotes?: Prisma.UserNoteAccessUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutAccessedSharedFoldersInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  image?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  monthlyCreditsUsed?: Prisma.IntFieldUpdateOperationsInput | number
+  usageResetAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sessions?: Prisma.SessionUncheckedUpdateManyWithoutUserNestedInput
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  notes?: Prisma.NoteUncheckedUpdateManyWithoutUserNestedInput
+  folders?: Prisma.FolderUncheckedUpdateManyWithoutUserNestedInput
   accessedSharedNotes?: Prisma.UserNoteAccessUncheckedUpdateManyWithoutUserNestedInput
 }
 
@@ -801,6 +918,7 @@ export type UserCreateWithoutSessionsInput = {
   notes?: Prisma.NoteCreateNestedManyWithoutUserInput
   folders?: Prisma.FolderCreateNestedManyWithoutUserInput
   accessedSharedNotes?: Prisma.UserNoteAccessCreateNestedManyWithoutUserInput
+  accessedSharedFolders?: Prisma.UserFolderAccessCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutSessionsInput = {
@@ -817,6 +935,7 @@ export type UserUncheckedCreateWithoutSessionsInput = {
   notes?: Prisma.NoteUncheckedCreateNestedManyWithoutUserInput
   folders?: Prisma.FolderUncheckedCreateNestedManyWithoutUserInput
   accessedSharedNotes?: Prisma.UserNoteAccessUncheckedCreateNestedManyWithoutUserInput
+  accessedSharedFolders?: Prisma.UserFolderAccessUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutSessionsInput = {
@@ -849,6 +968,7 @@ export type UserUpdateWithoutSessionsInput = {
   notes?: Prisma.NoteUpdateManyWithoutUserNestedInput
   folders?: Prisma.FolderUpdateManyWithoutUserNestedInput
   accessedSharedNotes?: Prisma.UserNoteAccessUpdateManyWithoutUserNestedInput
+  accessedSharedFolders?: Prisma.UserFolderAccessUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSessionsInput = {
@@ -865,6 +985,7 @@ export type UserUncheckedUpdateWithoutSessionsInput = {
   notes?: Prisma.NoteUncheckedUpdateManyWithoutUserNestedInput
   folders?: Prisma.FolderUncheckedUpdateManyWithoutUserNestedInput
   accessedSharedNotes?: Prisma.UserNoteAccessUncheckedUpdateManyWithoutUserNestedInput
+  accessedSharedFolders?: Prisma.UserFolderAccessUncheckedUpdateManyWithoutUserNestedInput
 }
 
 export type UserCreateWithoutAccountsInput = {
@@ -881,6 +1002,7 @@ export type UserCreateWithoutAccountsInput = {
   notes?: Prisma.NoteCreateNestedManyWithoutUserInput
   folders?: Prisma.FolderCreateNestedManyWithoutUserInput
   accessedSharedNotes?: Prisma.UserNoteAccessCreateNestedManyWithoutUserInput
+  accessedSharedFolders?: Prisma.UserFolderAccessCreateNestedManyWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutAccountsInput = {
@@ -897,6 +1019,7 @@ export type UserUncheckedCreateWithoutAccountsInput = {
   notes?: Prisma.NoteUncheckedCreateNestedManyWithoutUserInput
   folders?: Prisma.FolderUncheckedCreateNestedManyWithoutUserInput
   accessedSharedNotes?: Prisma.UserNoteAccessUncheckedCreateNestedManyWithoutUserInput
+  accessedSharedFolders?: Prisma.UserFolderAccessUncheckedCreateNestedManyWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutAccountsInput = {
@@ -929,6 +1052,7 @@ export type UserUpdateWithoutAccountsInput = {
   notes?: Prisma.NoteUpdateManyWithoutUserNestedInput
   folders?: Prisma.FolderUpdateManyWithoutUserNestedInput
   accessedSharedNotes?: Prisma.UserNoteAccessUpdateManyWithoutUserNestedInput
+  accessedSharedFolders?: Prisma.UserFolderAccessUpdateManyWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutAccountsInput = {
@@ -945,6 +1069,7 @@ export type UserUncheckedUpdateWithoutAccountsInput = {
   notes?: Prisma.NoteUncheckedUpdateManyWithoutUserNestedInput
   folders?: Prisma.FolderUncheckedUpdateManyWithoutUserNestedInput
   accessedSharedNotes?: Prisma.UserNoteAccessUncheckedUpdateManyWithoutUserNestedInput
+  accessedSharedFolders?: Prisma.UserFolderAccessUncheckedUpdateManyWithoutUserNestedInput
 }
 
 
@@ -958,6 +1083,7 @@ export type UserCountOutputType = {
   notes: number
   folders: number
   accessedSharedNotes: number
+  accessedSharedFolders: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -966,6 +1092,7 @@ export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.I
   notes?: boolean | UserCountOutputTypeCountNotesArgs
   folders?: boolean | UserCountOutputTypeCountFoldersArgs
   accessedSharedNotes?: boolean | UserCountOutputTypeCountAccessedSharedNotesArgs
+  accessedSharedFolders?: boolean | UserCountOutputTypeCountAccessedSharedFoldersArgs
 }
 
 /**
@@ -1013,6 +1140,13 @@ export type UserCountOutputTypeCountAccessedSharedNotesArgs<ExtArgs extends runt
   where?: Prisma.UserNoteAccessWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountAccessedSharedFoldersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.UserFolderAccessWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1029,6 +1163,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   notes?: boolean | Prisma.User$notesArgs<ExtArgs>
   folders?: boolean | Prisma.User$foldersArgs<ExtArgs>
   accessedSharedNotes?: boolean | Prisma.User$accessedSharedNotesArgs<ExtArgs>
+  accessedSharedFolders?: boolean | Prisma.User$accessedSharedFoldersArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -1075,6 +1210,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   notes?: boolean | Prisma.User$notesArgs<ExtArgs>
   folders?: boolean | Prisma.User$foldersArgs<ExtArgs>
   accessedSharedNotes?: boolean | Prisma.User$accessedSharedNotesArgs<ExtArgs>
+  accessedSharedFolders?: boolean | Prisma.User$accessedSharedFoldersArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -1088,6 +1224,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     notes: Prisma.$NotePayload<ExtArgs>[]
     folders: Prisma.$FolderPayload<ExtArgs>[]
     accessedSharedNotes: Prisma.$UserNoteAccessPayload<ExtArgs>[]
+    accessedSharedFolders: Prisma.$UserFolderAccessPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1498,6 +1635,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   notes<T extends Prisma.User$notesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$notesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   folders<T extends Prisma.User$foldersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$foldersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FolderPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   accessedSharedNotes<T extends Prisma.User$accessedSharedNotesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$accessedSharedNotesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserNoteAccessPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  accessedSharedFolders<T extends Prisma.User$accessedSharedFoldersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$accessedSharedFoldersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserFolderAccessPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2046,6 +2184,30 @@ export type User$accessedSharedNotesArgs<ExtArgs extends runtime.Types.Extension
   take?: number
   skip?: number
   distinct?: Prisma.UserNoteAccessScalarFieldEnum | Prisma.UserNoteAccessScalarFieldEnum[]
+}
+
+/**
+ * User.accessedSharedFolders
+ */
+export type User$accessedSharedFoldersArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the UserFolderAccess
+   */
+  select?: Prisma.UserFolderAccessSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the UserFolderAccess
+   */
+  omit?: Prisma.UserFolderAccessOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.UserFolderAccessInclude<ExtArgs> | null
+  where?: Prisma.UserFolderAccessWhereInput
+  orderBy?: Prisma.UserFolderAccessOrderByWithRelationInput | Prisma.UserFolderAccessOrderByWithRelationInput[]
+  cursor?: Prisma.UserFolderAccessWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.UserFolderAccessScalarFieldEnum | Prisma.UserFolderAccessScalarFieldEnum[]
 }
 
 /**
