@@ -1,32 +1,21 @@
-import { NextResponse } from "next/server";
 import { waitlistSchema } from "@/lib/validations/waitlist";
 import { joinWaitlist } from "@/lib/waitlist/joinWaitlist";
+import { ok, apiErr, handleError } from "@/lib/api-response";
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-
     const parsed = waitlistSchema.safeParse(body);
 
     if (!parsed.success) {
-      return NextResponse.json(
-        { error: "Invalid input" },
-        { status: 400 }
-      );
+      return apiErr("INVALID_REQUEST", "Invalid waitlist submission data.");
     }
 
     const { email, source } = parsed.data;
-
     const waitlistEntry = await joinWaitlist(email, source);
 
-    return NextResponse.json(
-      { message: "Joined waitlist", id: waitlistEntry.id },
-      { status: 201 }
-    );
+    return ok({ message: "Joined waitlist", id: waitlistEntry.id });
   } catch (error) {
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
-    );
+    return handleError(error);
   }
 }

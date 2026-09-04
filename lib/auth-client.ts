@@ -1,21 +1,15 @@
-import { createAuthClient } from "better-auth/react"
+import { createAuthClient } from "better-auth/react";
 
-const getBaseUrl = () => {
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL;
-  if (!appUrl) {
-    throw new Error(
-      `[Missing Environment Variable] NEXT_PUBLIC_APP_URL is not defined in your environment (.env). Please set NEXT_PUBLIC_APP_URL.`
-    );
+function getBaseUrl(): string {
+  if (process.env.NEXT_PUBLIC_APP_URL) {
+    return process.env.NEXT_PUBLIC_APP_URL;
   }
-  if (!appUrl.startsWith("http://") && !appUrl.startsWith("https://")) {
-    throw new Error(
-      `[Invalid Environment Variable] NEXT_PUBLIC_APP_URL must start with "http://" or "https://". Received: "${appUrl}"`
-    );
+  if (typeof window !== "undefined") {
+    return window.location.origin;
   }
-  return appUrl;
-};
-
+  return "http://localhost:3000";
+}
 
 export const authClient = createAuthClient({
   baseURL: getBaseUrl(),
-});
+});

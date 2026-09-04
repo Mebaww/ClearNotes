@@ -56,7 +56,7 @@ export default function OnboardingPage() {
         <div className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-6 min-h-[160px]">
           <div className="flex items-center gap-2 rounded-lg border border-border bg-muted/30 px-3 py-2">
             <Search className="size-4 text-muted-foreground" />
-            <span className="text-xs text-muted-foreground">Search "revenue growth"...</span>
+            <span className="text-xs text-muted-foreground">Search &ldquo;revenue growth&rdquo;...</span>
           </div>
           <div className="flex gap-2">
             <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">All</span>

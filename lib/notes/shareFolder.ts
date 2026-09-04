@@ -251,14 +251,14 @@ export async function getUserSharedFolders(userId: string) {
   });
 
   const sharedWithMe = accessedEntries
-    .filter((entry: any) => entry.share?.folder && entry.share.folder.userId !== userId)
-    .map((entry: any) => ({
+    .filter((entry) => entry.share?.folder && entry.share.folder.userId !== userId)
+    .map((entry) => ({
       ...entry.share,
       isReceived: true,
     }));
 
   return {
-    owned: ownedShares.map((s: any) => ({ ...s, isReceived: false })),
+    owned: ownedShares.map((s) => ({ ...s, isReceived: false })),
     sharedWithMe,
   };
 }

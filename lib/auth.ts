@@ -14,16 +14,13 @@ export const auth = betterAuth({
     },
   },
   session: {
-    // Session lives for 30 days
-    expiresIn: 60 * 60 * 24 * 30,
-    // Silently extend the session if the user is active within the last 7 days
-    updateAge: 60 * 60 * 24 * 7,
-    // Keep freshAge at 1 day (used for sensitive operations)
-    freshAge: 60 * 60 * 24,
+    expiresIn: 60 * 60 * 24 * 30, // 30 days
+    updateAge: 60 * 60 * 24 * 7,  // 7 days rolling extension
+    freshAge: 60 * 60 * 24,       // 1 day for sensitive operations
   },
   plugins: [
-    dash({
-      apiKey: process.env.BETTER_AUTH_API_KEY,
-    }),
+    ...(process.env.BETTER_AUTH_API_KEY
+      ? [dash({ apiKey: process.env.BETTER_AUTH_API_KEY })]
+      : []),
   ],
 });

@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { AppError } from "../errors";
 import crypto from "crypto";
 
 export function generateShareToken(): string {
@@ -22,7 +23,7 @@ export async function createOrUpdateShareLink(noteId: string, userId: string) {
   });
 
   if (!note) {
-    throw new Error("Note not found or unauthorized");
+    throw new AppError("NOT_FOUND", "Note not found or unauthorized");
   }
 
   if (note.share) {
@@ -51,7 +52,7 @@ export async function revokeShareLink(noteId: string, userId: string) {
   });
 
   if (!note || !note.share) {
-    throw new Error("Note not found or not shared");
+    throw new AppError("NOT_FOUND", "Note not found or not shared");
   }
 
   return await prisma.noteShare.update({
@@ -67,7 +68,7 @@ export async function regenerateShareToken(noteId: string, userId: string) {
   });
 
   if (!note) {
-    throw new Error("Note not found or unauthorized");
+    throw new AppError("NOT_FOUND", "Note not found or unauthorized");
   }
 
   const newToken = generateShareToken();

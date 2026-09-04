@@ -2,7 +2,7 @@ import { getSharedFolderByToken } from "@/lib/notes/shareFolder";
 import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { Folder, Calendar, EyeOff, NotebookPen } from "lucide-react";
+import { Folder, EyeOff, NotebookPen } from "lucide-react";
 import NoteCard from "@/components/workspace/notes/NoteCard";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
@@ -111,12 +111,12 @@ export default async function SharedFolderPage({ params }: Props) {
             <NotebookPen className="mx-auto size-8 text-muted-foreground/40 mb-3" />
             <h3 className="text-base font-semibold">No notes in this folder</h3>
             <p className="text-sm text-muted-foreground max-w-sm mx-auto mt-1">
-              The owner hasn't added any notes to this folder yet.
+              The owner hasn&apos;t added any notes to this folder yet.
             </p>
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {sharedData.notes.map((note: any) => (
+            {sharedData.notes.map((note) => (
               <NoteCard
                 key={note.id}
                 note={note}

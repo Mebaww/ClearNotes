@@ -308,12 +308,8 @@ function NotesPhase({ revealCount }: { revealCount: number }) {
 }
 
 export function HeroAnimation() {
-  const [tick, setTick]       = useState(0);   // ms into current loop
-  const [scanPct, setScanPct] = useState(0);
-  const [uploadProgress, setUploadProgress] = useState(0);
-  const [noteReveal, setNoteReveal] = useState(0);
+  const [tick, setTick] = useState(0);
 
-  // Drive the loop with a 50ms interval
   useEffect(() => {
     const id = setInterval(() => {
       setTick((t) => (t + 50) % TOTAL);
@@ -321,34 +317,35 @@ export function HeroAnimation() {
     return () => clearInterval(id);
   }, []);
 
-  // Derived phase & sub-progress from tick
   const phase: "upload" | "scan" | "notes" =
-    tick < UPLOAD_DURATION               ? "upload"
-    : tick < UPLOAD_DURATION + SCAN_DURATION ? "scan"
-    : "notes";
+    tick < UPLOAD_DURATION
+      ? "upload"
+      : tick < UPLOAD_DURATION + SCAN_DURATION
+      ? "scan"
+      : "notes";
 
-  // Update smooth progress values on tick changes
-  useEffect(() => {
-    if (phase === "upload") {
-      const p = (tick / UPLOAD_DURATION) * 100;
-      setUploadProgress(p);
-      setScanPct(0);
-      setNoteReveal(0);
-    } else if (phase === "scan") {
-      const elapsed = tick - UPLOAD_DURATION;
-      setScanPct((elapsed / SCAN_DURATION) * 100);
-    } else {
-      const elapsed = tick - UPLOAD_DURATION - SCAN_DURATION;
-      const fraction = elapsed / NOTES_DURATION;
-      // Ease-in curve: items appear slowly at first, then faster
-      const eased = fraction * fraction; // quadratic ease-in
-      // Map to reveal count, but reserve the last 20% of time for the "done" state
-      const revealFraction = Math.min(1, fraction / 0.8);
-      const easedReveal = revealFraction * revealFraction;
-      setNoteReveal(Math.floor(easedReveal * (TOTAL_REVEAL + 1)));
-      setScanPct(100);
-    }
-  }, [tick, phase]);
+  let uploadProgress = 100;
+  let scanPct = 0;
+  let noteReveal = 0;
+
+  if (phase === "upload") {
+    uploadProgress = (tick / UPLOAD_DURATION) * 100;
+    scanPct = 0;
+    noteReveal = 0;
+  } else if (phase === "scan") {
+    uploadProgress = 100;
+    const elapsed = tick - UPLOAD_DURATION;
+    scanPct = (elapsed / SCAN_DURATION) * 100;
+    noteReveal = 0;
+  } else {
+    uploadProgress = 100;
+    scanPct = 100;
+    const elapsed = tick - UPLOAD_DURATION - SCAN_DURATION;
+    const fraction = elapsed / NOTES_DURATION;
+    const revealFraction = Math.min(1, fraction / 0.8);
+    const easedReveal = revealFraction * revealFraction;
+    noteReveal = Math.floor(easedReveal * (TOTAL_REVEAL + 1));
+  }
 
   const phaseLabel =
     phase === "upload" ? "Uploading document…"

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
 import axios from "axios";
 import { Copy, Check, Share2, RefreshCw, Eye, ShieldAlert } from "lucide-react";
@@ -36,16 +36,18 @@ export function ShareModal({
   const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  // Synchronize internal share state when initialShare changes or modal opens
-  useEffect(() => {
+  const [prevInitialShare, setPrevInitialShare] = useState(initialShare);
+  if (initialShare !== prevInitialShare) {
+    setPrevInitialShare(initialShare);
     setShare(initialShare || null);
-  }, [initialShare, isOpen]);
+  }
 
   const isEnabled = Boolean(share?.enabled);
 
-  const shareUrl = share?.token
-    ? `${window.location.origin}/share/${share.token}`
-    : "";
+  const shareUrl =
+    typeof window !== "undefined" && share?.token
+      ? `${window.location.origin}/share/${share.token}`
+      : "";
 
   const handleToggleShare = async (checked: boolean) => {
     setLoading(true);

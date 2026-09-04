@@ -1,15 +1,29 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import { GoogleGenerativeAI, GenerativeModel } from "@google/generative-ai";
 import { NOTES_SYSTEM_PROMPT } from "./prompts";
+import { AppError } from "../errors";
 
-const apiKey = process.env.GEMINI_API_KEY;
+let modelInstance: GenerativeModel | null = null;
 
-if (!apiKey) {
-  throw new Error("GEMINI_API_KEY is not set in environment variables");
+export function getGeminiModel(): GenerativeModel {
+  if (modelInstance) {
+    return modelInstance;
+  }
+
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) {
+    throw new AppError(
+      "GENERATION_FAILED",
+      "GEMINI_API_KEY is not set in environment variables."
+    );
+  }
+
+  const genAI = new GoogleGenerativeAI(apiKey);
+  const modelName = process.env.GEMINI_MODEL || "gemini-2.5-flash";
+
+  modelInstance = genAI.getGenerativeModel({
+    model: modelName,
+    systemInstruction: NOTES_SYSTEM_PROMPT,
+  });
+
+  return modelInstance;
 }
-
-const genAI = new GoogleGenerativeAI(apiKey);
-
-export const geminiModel = genAI.getGenerativeModel({
-  model: "gemini-3.1-flash-lite",
-  systemInstruction: NOTES_SYSTEM_PROMPT,
-});

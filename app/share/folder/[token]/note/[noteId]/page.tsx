@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     if (!sharedFolder) {
       return { title: "Note Not Found - ClearNotes", robots: { index: false, follow: false } };
     }
-    const note = sharedFolder.notes.find((n: any) => n.id === noteId);
+    const note = sharedFolder.notes.find((n) => n.id === noteId);
     return {
       title: `${note?.title || "Untitled Note"} - ${sharedFolder.name} | ClearNotes`,
       robots: { index: false, follow: false },
@@ -63,7 +63,7 @@ export default async function SharedFolderNotePage({ params }: Props) {
     );
   }
 
-  const rawNote = sharedFolder.notes.find((n: any) => n.id === noteId);
+  const rawNote = sharedFolder.notes.find((n) => n.id === noteId);
 
   if (!rawNote) {
     return (

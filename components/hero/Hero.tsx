@@ -2,9 +2,6 @@ import {
   BookOpen,
   Clock3,
   GraduationCap,
-
-  Heart,
-
   ShieldCheck,
   Sparkles,
   Upload,

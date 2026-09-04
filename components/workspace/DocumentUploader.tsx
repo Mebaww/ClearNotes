@@ -52,23 +52,23 @@ export function DocumentUploader() {
             "Empty document text could not be extracted. Please upload a file with more content."
           );
         }
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error("Document parsing error:", err);
 
         let title = "Upload failed";
-        if (err.name === "ParseError") {
-          if (err.code === "PAGE_LIMIT_EXCEEDED") title = "Document too long";
-          else if (err.code === "SCANNED_PDF") title = "Scanned PDF detected";
+        const parseError = err as { name?: string; code?: string; message?: string };
+        if (parseError.name === "ParseError") {
+          if (parseError.code === "PAGE_LIMIT_EXCEEDED") title = "Document too long";
+          else if (parseError.code === "SCANNED_PDF") title = "Scanned PDF detected";
         }
 
         sileo.error({
           title,
           description:
-            err.name === "ParseError"
-              ? err.message
+            parseError.name === "ParseError" && parseError.message
+              ? parseError.message
               : "We couldn't read that file. Make sure it's a valid, non-corrupted document.",
         });
-        // Reset loading so spinner doesn't stick on parse failure
         setLoading(false);
         setFile(null);
         return;
@@ -109,7 +109,7 @@ export function DocumentUploader() {
                 if (parts.length >= 2) {
                   description = (
                     <span className="flex flex-col gap-1.5 mt-1">
-                      <span>You've used all your credits for this month.</span>
+                      <span>You&apos;ve used all your credits for this month.</span>
                       <span className="text-[0.8rem] text-muted-foreground">
                         Your limit will reset on{" "}
                         <strong className="inline-flex items-center rounded bg-primary/10 px-1.5 py-0.5 text-xs font-semibold text-primary">

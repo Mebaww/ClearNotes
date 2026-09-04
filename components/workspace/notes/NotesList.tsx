@@ -1,8 +1,8 @@
 "use client";
 
 import axios from "axios";
-import { useState, useEffect } from "react";
-import { NotebookPen, Plus, Trash2, Folder as FolderIcon, Check } from "lucide-react";
+import { useState } from "react";
+import { NotebookPen, Plus, Trash2, Folder as FolderIcon } from "lucide-react";
 import { Note, Folder } from "@/types/note";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -25,7 +25,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { ButtonGroup } from "@/components/ui/button-group";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -79,8 +78,17 @@ export default function NotesList({
   const [bulkSelectedNoteIds, setBulkSelectedNoteIds] = useState<string[]>([]);
   const [bulkDeleteConfirmOpen, setBulkDeleteConfirmOpen] = useState(false);
 
-  useEffect(() => { setNotes(initialNotes); }, [initialNotes]);
-  useEffect(() => { setFolders(initialFolders); }, [initialFolders]);
+  const [prevInitialNotes, setPrevInitialNotes] = useState(initialNotes);
+  if (initialNotes !== prevInitialNotes) {
+    setPrevInitialNotes(initialNotes);
+    setNotes(initialNotes);
+  }
+
+  const [prevInitialFolders, setPrevInitialFolders] = useState(initialFolders);
+  if (initialFolders !== prevInitialFolders) {
+    setPrevInitialFolders(initialFolders);
+    setFolders(initialFolders);
+  }
 
   const handleDialogOpenChange = (open: boolean) => {
     setDialogOpen(open);
@@ -573,7 +581,7 @@ export default function NotesList({
           <AlertDialogHeader>
             <AlertDialogTitle>Delete Folder</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete the folder &ldquo;{deleteFolderData?.name}&rdquo;? Notes inside will not be deleted &mdash; they'll become uncategorized.
+              Are you sure you want to delete the folder &ldquo;{deleteFolderData?.name}&rdquo;? Notes inside will not be deleted &mdash; they&apos;ll become uncategorized.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

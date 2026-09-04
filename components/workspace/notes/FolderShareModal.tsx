@@ -13,7 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
-import { Copy, Check, RefreshCw, Eye, Folder, Link2 } from "lucide-react";
+import { Copy, Check, RefreshCw, Eye, Folder } from "lucide-react";
 import { sileo } from "sileo";
 
 interface FolderShareModalProps {
@@ -38,23 +38,27 @@ export default function FolderShareModal({
   const [copied, setCopied] = useState(false);
   const [regenerating, setRegenerating] = useState(false);
 
-  useEffect(() => {
+  const [prevInitialShare, setPrevInitialShare] = useState(initialShare);
+  if (initialShare !== prevInitialShare) {
+    setPrevInitialShare(initialShare);
     setShare(initialShare);
-  }, [initialShare]);
+  }
 
   useEffect(() => {
+    let ignore = false;
     if (isOpen && folderId) {
-      setLoading(true);
       axios
         .get(`/api/folders/${folderId}/share`)
         .then((res) => {
-          if (res.data.success) {
+          if (!ignore && res.data.success) {
             setShare(res.data.share);
           }
         })
-        .catch((err) => console.error("Failed to fetch folder share status", err))
-        .finally(() => setLoading(false));
+        .catch((err) => console.error("Failed to fetch folder share status", err));
     }
+    return () => {
+      ignore = true;
+    };
   }, [isOpen, folderId]);
 
   const shareUrl =
@@ -119,7 +123,7 @@ export default function FolderShareModal({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-base">
             <Folder className="size-4 text-primary" />
-            Share "{folderName}"
+            Share &ldquo;{folderName}&rdquo;
           </DialogTitle>
           <DialogDescription className="text-xs">
             Anyone with this link will be able to view all notes inside this folder read-only.

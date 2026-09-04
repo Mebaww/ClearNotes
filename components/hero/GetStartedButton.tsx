@@ -3,7 +3,8 @@
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
-import { ArrowRight, Sparkles, LogIn, X, Zap } from "lucide-react";
+import { ArrowRight, X } from "lucide-react";
+import { useIsMounted } from "@/hooks/use-mounted";
 
 interface GetStartedButtonProps {
   label?: string;
@@ -124,12 +125,9 @@ function Modal({ onClose }: { onClose: () => void }) {
 export function GetStartedButton({
   label = "Get Started",
   className = "",
-  size = "default",
 }: GetStartedButtonProps) {
   const [modalOpen, setModalOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => { setMounted(true); }, []);
+  const mounted = useIsMounted();
 
   return (
     <>

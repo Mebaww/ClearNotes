@@ -7,11 +7,23 @@ import { Folder as FolderIcon, NotebookPen, Search, Share2, UserCheck, Link2, Tr
 import { Input } from "@/components/ui/input";
 import { Folder, Note } from "@/types/note";
 
+export interface SharedFolderItem {
+  id: string;
+  token: string;
+  viewCount: number;
+  folder: {
+    id: string;
+    name: string;
+    user?: { name?: string | null };
+    _count?: { notes: number };
+  };
+}
+
 interface SharedViewClientProps {
   ownedNotes: Note[];
   receivedNotes: Note[];
-  ownedFolders: any[];
-  receivedFolders: any[];
+  ownedFolders: SharedFolderItem[];
+  receivedFolders: SharedFolderItem[];
   userFolders: Folder[];
 }
 

@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import NotesList from "@/components/workspace/notes/Notes-List";
+import NotesList from "@/components/workspace/notes/NotesList";
 import { getNotes } from "@/lib/notes/getNotes";
 import { getFolders } from "@/lib/notes/getFolders";
 import { auth } from "@/lib/auth";

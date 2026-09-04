@@ -3,8 +3,8 @@
   <h1>ClearNotes</h1>
   <p><strong>Less Reading. More Understanding.</strong></p>
   <p>Turn documents into clean, structured notes powered by AI</p>
-
- <img alt="Source" src="https://img.shields.io/badge/Source-Proprietary-red?style=flat-square" />
+  <p>
+    <a href="LICENSE"><img alt="License" src="https://img.shields.io/badge/License-MIT-green?style=flat-square" /></a>
     <img alt="Next.js" src="https://img.shields.io/badge/Next.js-16-black?style=flat-square&logo=next.js" />
     <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-5-blue?style=flat-square&logo=typescript" />
     <img alt="Gemini AI" src="https://img.shields.io/badge/Gemini-AI-4285F4?style=flat-square&logo=google" />
@@ -130,9 +130,11 @@ npm install
 
 ### 2. Configure environment variables
 
-Create a `.env` file in the root by copying the example below:
+Copy `.env.example` to `.env` and fill in your credentials:
 
-```env
+```bash
+cp .env.example .env
+```
 # App
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 
@@ -209,12 +211,12 @@ ClearNotes is a fully installable Progressive Web App:
 
 ---
 
+## Contributing
+
+Contributions are welcome! Please check our [Contributing Guide](CONTRIBUTING.md) and [Code of Conduct](CODE_OF_CONDUCT.md) to get started.
+
 ---
 
-## Copyright
+## License
 
-Copyright © 2026 Meba Wondwesen.
-
-All rights reserved.
-
-This repository contains proprietary software. The source code is provided for reference only. No part of this project may be copied, modified, distributed, or used to create derivative works without prior written permission.
+Distributed under the [MIT License](LICENSE). Copyright © 2026 Meba Wondwesen.

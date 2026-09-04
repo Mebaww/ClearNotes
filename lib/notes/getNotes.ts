@@ -1,8 +1,9 @@
 import "server-only";
 import { prisma } from "@/lib/prisma";
+import type { Prisma } from "@/prisma/generated/prisma/client";
 
 export async function getNotes(userId: string, limit = 20, folderId?: string | null) {
-  const where: any = { userId };
+  const where: Prisma.NoteWhereInput = { userId };
 
   if (folderId === "uncategorized") {
     where.folderId = null;
@@ -16,7 +17,6 @@ export async function getNotes(userId: string, limit = 20, folderId?: string | n
       folder: true,
       share: true,
     },
-
     orderBy: { createdAt: "desc" },
     take: limit,
   });

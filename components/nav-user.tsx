@@ -23,10 +23,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar"
 import {
-  BadgeCheckIcon,
-  BellIcon,
   ChevronsUpDownIcon,
-  CreditCardIcon,
   LogOutIcon,
 } from "lucide-react"
 

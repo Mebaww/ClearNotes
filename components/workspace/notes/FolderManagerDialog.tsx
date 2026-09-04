@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Folder as FolderIcon, Check, Search, ArrowRight } from "lucide-react";
 import { Note } from "@/types/note";
 import { Button } from "@/components/ui/button";
@@ -48,13 +48,13 @@ export default function FolderManagerDialog({
   const [noteSearch, setNoteSearch] = useState("");
   const [pickerTab, setPickerTab] = useState<"add" | "current">("add");
 
-  // Reset search and tab on close/open
-  useEffect(() => {
-    if (!open) {
+  const handleOpenChange = (isOpen: boolean) => {
+    if (!isOpen) {
       setNoteSearch("");
       setPickerTab("add");
     }
-  }, [open]);
+    onOpenChange(isOpen);
+  };
 
   const handleNameNext = (e: React.FormEvent) => {
     e.preventDefault();
@@ -83,7 +83,7 @@ export default function FolderManagerDialog({
   });
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-md" showCloseButton>
         {/* ── Step 1: Name ── */}
         {dialogStep === "name" && (
@@ -91,7 +91,7 @@ export default function FolderManagerDialog({
             <DialogHeader>
               <DialogTitle className="text-base">Create a folder</DialogTitle>
               <DialogDescription>
-                Give your folder a name. You'll add notes to it in the next step.
+                Give your folder a name. You&apos;ll add notes to it in the next step.
               </DialogDescription>
             </DialogHeader>
 

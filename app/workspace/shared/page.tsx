@@ -22,7 +22,7 @@ export default async function SharedNotesPage() {
 
   const folders = await getFolders(session.user.id);
 
-  const ownedNotes = ownedNotesData.map((s: any) => ({
+  const ownedNotes = ownedNotesData.map((s) => ({
     ...s.note,
     share: {
       id: s.id,
@@ -35,7 +35,7 @@ export default async function SharedNotesPage() {
     },
   }));
 
-  const receivedNotes = sharedNotesData.map((s: any) => ({
+  const receivedNotes = sharedNotesData.map((s) => ({
     ...s.note,
     share: {
       id: s.id,
