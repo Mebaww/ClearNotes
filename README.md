@@ -16,17 +16,16 @@
 
 ## What is ClearNotes?
 
-ClearNotes is a **document intelligence web app** that transforms dense PDFs, Word documents, and PowerPoint decks into clean, structured Markdown notes using Google's Gemini AI.
+ClearNotes is an **open-source document intelligence web app** that transforms dense PDFs, Word documents, and PowerPoint presentations into clean, structured Markdown notes using Google's Gemini AI.
 
-Instead of reading a 40-page report, you upload it and get the key ideas, definitions, data points, and conclusions — organized and scannable in seconds. It's built for students, researchers, and professionals who need to process a lot of information quickly.
+Instead of reading a 40-page report or slide deck, you upload it and receive key ideas, definitions, data points, and conclusions — organized and scannable in seconds. It is built for students, researchers, and professionals who need to process large volumes of information quickly.
 
-### Core workflow
+### Core Workflow
 
-🌐 **Live:** https://clearnotes.xyz
-
+🌐 **Live Demo:** [clearnotes.xyz](https://clearnotes.xyz)
 
 ```
-Upload document  →  Parse & extract text  →  Gemini AI structures notes  →  Read, review, organize
+Upload document  →  Parse & extract text  →  Gemini AI structures notes  →  Read, review, organize & share
 ```
 
 ---
@@ -35,15 +34,17 @@ Upload document  →  Parse & extract text  →  Gemini AI structures notes  →
 
 | Feature | Details |
 |---|---|
-| **Multi-format support** | PDF, DOCX, DOC, PPTX |
-| **AI note generation** | Powered by Google Gemini — signal-over-noise extraction with LaTeX math support |
-| **Folder organization** | Create and manage folders to group related notes |
-| **Markdown rendering** | Full GFM + KaTeX for equations and formulas |
-| **Google OAuth** | One-click sign-in, no passwords |
-| **Monthly usage tracking** | Per-user credit system with automatic monthly reset |
-| **Dark / light theme** | System-aware, fully styled in both modes |
-| **PWA support** | Installable on desktop, Android, and iOS home screen |
-| **Persistent sessions** | Rolling 30-day sessions — stay logged in |
+| **Multi-format parsing** | Client-side text extraction for PDF, DOCX, and PPTX (with guidance for legacy DOC) |
+| **AI note generation** | Powered by Google Gemini — signal-over-noise extraction with LaTeX math equations |
+| **Note styles** | Choose between Standard, Study Guide, or Research Deep-Dive modes |
+| **Folder organization** | Create and manage custom folders to group related documents |
+| **Sharing & access** | Generate share links for individual notes or entire folders with view tracking |
+| **Markdown rendering** | Full GitHub Flavored Markdown (GFM) + KaTeX for mathematical notation |
+| **Google OAuth** | Fast and secure one-click sign-in via better-auth |
+| **Monthly usage credits** | Fair per-user credit allocation with automatic monthly reset |
+| **Dark / light mode** | System-aware theme with persistent preferences |
+| **PWA support** | Installable on desktop, Android, and iOS home screens with offline caching |
+| **Persistent sessions** | 30-day rolling sessions with automatic silent refresh |
 
 ---
 
@@ -51,27 +52,26 @@ Upload document  →  Parse & extract text  →  Gemini AI structures notes  →
 
 ### Frontend
 - **[Next.js 16](https://nextjs.org/)** (App Router, Turbopack) — full-stack React framework
-- **[React 19](https://react.dev/)** — concurrent rendering
+- **[React 19](https://react.dev/)** — modern hooks, server components, and concurrent rendering
 - **[Tailwind CSS v4](https://tailwindcss.com/)** — utility-first styling
-- **[shadcn/ui](https://ui.shadcn.com/)** + **[Radix UI](https://www.radix-ui.com/)** — accessible, composable components
-- **[Lucide React](https://lucide.dev/)** — icon library
-- **[next-themes](https://github.com/pacocoursey/next-themes)** — dark mode
+- **[shadcn/ui](https://ui.shadcn.com/)** + **[Radix UI](https://www.radix-ui.com/)** — accessible, composable UI primitives
+- **[Lucide React](https://lucide.dev/)** — icon system
+- **[next-themes](https://github.com/pacocoursey/next-themes)** — dark and light theme management
 
 ### Backend & Data
-- **[PostgreSQL](https://www.postgresql.org/)** — primary database
-- **[Prisma ORM](https://www.prisma.io/)** — type-safe database client with migrations
+- **[PostgreSQL](https://www.postgresql.org/)** — relational database
+- **[Prisma ORM 7](https://www.prisma.io/)** — type-safe schema modeling, connection pooling, and migrations
 - **[better-auth](https://www.better-auth.com/)** — authentication with Google OAuth and session management
 
 ### AI & Document Processing
-- **[Google Gemini](https://ai.google.dev/)** (`@google/generative-ai`) — note generation model
-- **[pdfjs-dist](https://github.com/mozilla/pdf.js)** — client-side PDF text extraction
-- **[mammoth](https://github.com/mwilliamson/mammoth.js)** — DOCX / DOC parsing
-- **[jszip](https://stuk.github.io/jszip/)** — PPTX slide extraction
+- **[Google Gemini](https://ai.google.dev/)** (`@google/generative-ai`) — structured note generation
+- **[pdfjs-dist](https://github.com/mozilla/pdf.js)** — PDF text extraction
+- **[mammoth](https://github.com/mwilliamson/mammoth.js)** — Word document (.docx) parsing
+- **[jszip](https://stuk.github.io/jszip/)** — PowerPoint presentation (.pptx) extraction
 
-### Infrastructure
-- **[better-auth/infra](https://www.better-auth.com/)** — analytics & auth dashboard
-- **[@next/third-parties](https://nextjs.org/docs/app/building-your-application/optimizing/third-party-libraries)** — Google Analytics
-- **Service Worker** — custom caching strategy + PWA offline support
+### Infrastructure & PWA
+- **Service Worker** (`/sw.js`) — network-first strategy for dynamic content, cache-first for static assets
+- **[@next/third-parties](https://nextjs.org/docs/app/building-your-application/optimizing/third-party-libraries)** — optional Google Analytics integration
 
 ---
 
@@ -80,33 +80,44 @@ Upload document  →  Parse & extract text  →  Gemini AI structures notes  →
 ```
 clearnotes/
 ├── app/
-│   ├── api/               # API routes (notes, folders, auth, stats, waitlist)
-│   ├── auth/              # Auth callback pages
-│   ├── onboarding/        # New user onboarding flow
-│   ├── workspace/         # Main app (notes list, note viewer, settings)
-│   ├── layout.tsx          # Root layout with metadata, theme, SW registration
-│   ├── manifest.ts         # PWA web app manifest
-│   └── page.tsx            # Landing page
+│   ├── api/                 # REST API routes (notes, folders, auth, stats, waitlist)
+│   ├── auth/                # Sign-in and OAuth callback pages
+│   ├── onboarding/          # Interactive user onboarding flow
+│   ├── share/               # Public and shared note/folder viewer routes
+│   ├── workspace/           # Main application (dashboard, notes list, viewer, settings)
+│   ├── layout.tsx           # Root layout with metadata, theme, and PWA registration
+│   ├── manifest.ts          # PWA web app manifest
+│   └── page.tsx             # Landing page
 │
 ├── components/
-│   ├── hero/              # Landing page hero, animation, CTA
-│   ├── workspace/         # DocumentUploader, NoteCard, NoteViewer, FolderManager
-│   └── ui/                # shadcn/ui base components
+│   ├── hero/                # Landing page hero, interactive animation, and navbar
+│   ├── workspace/           # DocumentUploader, NoteCard, NoteViewer, FolderManager
+│   └── ui/                  # shadcn/ui reusable component library
+│
+├── hooks/
+│   ├── use-mobile.ts        # Responsive breakpoint detection via useSyncExternalStore
+│   └── use-mounted.ts       # Hydration-safe client mount hook
 │
 ├── lib/
-│   ├── ai/                # Gemini client, note generation, prompts
-│   ├── parse/             # Document parsers (PDF, DOCX, PPTX)
-│   ├── auth.ts             # better-auth configuration
-│   └── prisma.ts           # Prisma client singleton
+│   ├── ai/                  # Gemini client, note generation pipelines, prompts
+│   ├── notes/               # Database operations for notes, folders, and shares
+│   ├── parse/               # Document parsers (PDF, DOCX, PPTX)
+│   ├── usage/               # Credit tracking and monthly quota enforcement
+│   ├── auth.ts              # Server-side better-auth configuration
+│   ├── auth-client.ts       # Client-side authentication helpers
+│   ├── env.ts               # Environment variable validation schema
+│   ├── errors.ts            # Typed AppError classes and HTTP status mapping
+│   └── prisma.ts            # Prisma client singleton with connection pooling
 │
 ├── prisma/
-│   └── schema.prisma       # Database schema (User, Note, Folder, Session…)
+│   ├── schema.prisma        # Database schema (User, Note, Folder, Shares…)
+│   └── migrations/          # Version-controlled database migrations
 │
 └── public/
-    ├── logo.png            # Transparent app logo
-    ├── icon-192x192.png    # PWA icon
-    ├── icon-512x512.png    # PWA icon
-    └── sw.js               # Service worker
+    ├── logo.png             # Application logo
+    ├── icon-192x192.png     # PWA icon
+    ├── icon-512x512.png     # PWA icon
+    └── sw.js                # Service worker script
 ```
 
 ---
@@ -116,9 +127,9 @@ clearnotes/
 ### Prerequisites
 
 - **Node.js** 20+
-- **PostgreSQL** database (local or hosted, e.g. Neon, Supabase, Railway)
-- **Google OAuth** credentials — [create here](https://console.cloud.google.com/)
-- **Google Gemini API key** — [get here](https://ai.google.dev/)
+- **PostgreSQL** database (local instance or hosted via Neon, Supabase, Railway, etc.)
+- **Google OAuth credentials** — [Google Cloud Console](https://console.cloud.google.com/)
+- **Google Gemini API key** — [Google AI Studio](https://aistudio.google.com/app/apikey)
 
 ### 1. Clone the repository
 
@@ -130,15 +141,19 @@ npm install
 
 ### 2. Configure environment variables
 
-Copy `.env.example` to `.env` and fill in your credentials:
+Copy `.env.example` to `.env`:
 
 ```bash
 cp .env.example .env
 ```
-# App
+
+Open `.env` and fill in your values:
+
+```env
+# Application URL
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 
-# Database
+# PostgreSQL Database
 DATABASE_URL=postgresql://user:password@localhost:5432/clearnotes
 
 # Authentication (better-auth)
@@ -151,13 +166,16 @@ GOOGLE_CLIENT_SECRET=your-google-client-secret
 
 # Google Gemini AI
 GEMINI_API_KEY=your-gemini-api-key
+GEMINI_MODEL=gemini-2.5-flash
 
 # Optional
-NEXT_PUBLIC_GA_ID=G-XXXXXXXXXX
-BETTER_AUTH_API_KEY=your-better-auth-infra-key
+# NEXT_PUBLIC_GA_ID=G-XXXXXXXXXX
+# BETTER_AUTH_API_KEY=your-better-auth-dash-api-key
 ```
 
 ### 3. Set up the database
+
+Run migrations to create the database tables and generate the Prisma client:
 
 ```bash
 npx prisma migrate deploy
@@ -176,26 +194,29 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## How the AI Works
 
-ClearNotes uses a carefully engineered **high-fidelity extraction prompt** to guide Gemini:
+ClearNotes uses a specialized **high-fidelity extraction prompt** to guide Gemini:
 
-- **Signal** (always preserved): thesis statements, definitions, quantitative data, formulas, methodologies, key examples
-- **Noise** (safely removed): filler text, repetition, rhetorical questions, OCR artifacts, transitional sentences
+- **Signal** (always preserved): thesis statements, definitions, quantitative data, formulas, methodologies, and key examples
+- **Noise** (safely removed): filler text, repetition, rhetorical questions, OCR artifacts, and transitional sentences
 - **Output format**: strict Markdown with H1 → H2 → H3 hierarchy, bullet points, and LaTeX for math (`$inline$` / `$$block$$`)
-
-The model is explicitly instructed **never to hallucinate** — it only works with what's in the document.
+- **No hallucination**: The model is instructed to strictly work with the source document content.
 
 ---
 
 ## Database Schema
 
 ```
-User          — id, name, email, monthlyCreditsUsed, usageResetAt
-Note          — id, title, sourceText, generated (Markdown), status, userId, folderId
-Folder        — id, name, userId
-Session       — id, token, expiresAt, userId
-Account       — OAuth account linkage
-Verification  — Email verification tokens
-Waitlist      — Pre-launch waitlist with invite tracking
+User             — id, name, email, monthlyCreditsUsed, usageResetAt
+Note             — id, title, sourceText, generated (Markdown), status, userId, folderId
+NoteShare        — id, noteId, token, enabled, passwordHash, expiresAt, viewCount
+UserNoteAccess   — id, userId, shareId, accessedAt
+Folder           — id, name, userId
+FolderShare      — id, folderId, token, enabled, passwordHash, expiresAt, viewCount
+UserFolderAccess — id, userId, shareId, accessedAt
+Session          — id, token, expiresAt, userId
+Account          — OAuth provider account linkage
+Verification     — Email verification tokens
+Waitlist         — Pre-launch waitlist with invite tracking
 ```
 
 ---
@@ -207,7 +228,7 @@ ClearNotes is a fully installable Progressive Web App:
 - **Web App Manifest** (`/manifest.webmanifest`) — name, icons, theme color, display mode
 - **Service Worker** (`/sw.js`) — network-first for pages/API, cache-first for static assets
 - **iOS support** — `apple-touch-icon`, `apple-mobile-web-app-capable`, translucent status bar
-- **Theme color** — `#C49A3C` (amber/gold matching the brand)
+- **Theme color** — `#C49A3C` (brand gold)
 
 ---
 
