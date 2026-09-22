@@ -9,6 +9,8 @@ const envSchema = z
     NEXT_PUBLIC_GA_ID: z.string().optional(),
 
     DATABASE_URL: z.string().optional(),
+    MAIN_DB_URL: z.string().optional(),
+    DEV_DB_URL: z.string().optional(),
     DB_URL_MAIN: z.string().optional(),
     DB_URL_DEV: z.string().optional(),
 
@@ -22,7 +24,14 @@ const envSchema = z
     GEMINI_MODEL: z.string().default("gemini-2.5-flash"),
   })
   .refine(
-    (data) => Boolean(data.DATABASE_URL || data.DB_URL_MAIN || data.DB_URL_DEV),
+    (data) =>
+      Boolean(
+        data.DATABASE_URL ||
+          data.MAIN_DB_URL ||
+          data.DEV_DB_URL ||
+          data.DB_URL_MAIN ||
+          data.DB_URL_DEV
+      ),
     {
       message:
         "Database connection URL is missing. Please set DATABASE_URL in your .env file.",
@@ -35,6 +44,8 @@ export function validateEnv() {
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
     NEXT_PUBLIC_GA_ID: process.env.NEXT_PUBLIC_GA_ID,
     DATABASE_URL: process.env.DATABASE_URL,
+    MAIN_DB_URL: process.env.MAIN_DB_URL,
+    DEV_DB_URL: process.env.DEV_DB_URL,
     DB_URL_MAIN: process.env.DB_URL_MAIN,
     DB_URL_DEV: process.env.DB_URL_DEV,
     BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET,
@@ -54,6 +65,8 @@ export function validateEnv() {
   }
 
   const activeDatabaseUrl =
+    result.data.MAIN_DB_URL ||
+    result.data.DEV_DB_URL ||
     result.data.DATABASE_URL ||
     result.data.DB_URL_MAIN ||
     result.data.DB_URL_DEV!;

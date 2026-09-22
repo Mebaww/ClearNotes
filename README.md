@@ -16,9 +16,12 @@
 
 ## What is ClearNotes?
 
-ClearNotes is an **open-source document intelligence web app** that transforms dense PDFs, Word documents, and PowerPoint presentations into clean, structured Markdown notes using Google's Gemini AI.
+ClearNotes is an open-source document intelligence web app that turns PDFs, Word documents, and PowerPoint presentations into clean Markdown notes using Google’s Gemini AI.
 
-Instead of reading a 40-page report or slide deck, you upload it and receive key ideas, definitions, data points, and conclusions, organized and scannable in seconds. It is built for students, researchers, and professionals who need to process large volumes of information quickly.
+You just upload a document, and ClearNotes creates notes for you, pulling out important ideas, definitions, data points, and conclusions in a clear, scannable format.
+
+It’s built for students, researchers, and professionals who work with large amounts of information and want a better way to turn documents into useful notes.
+
 
 ### Core Workflow
 
@@ -32,19 +35,19 @@ Upload document  →  Parse & extract text  →  Gemini AI structures notes  →
 
 ## Features
 
-| Feature | Details |
-|---|---|
-| **Multi-format parsing** | Client-side text extraction for PDF, DOCX, and PPTX (with guidance for legacy DOC) |
-| **AI note generation** | Powered by Google Gemini for signal-over-noise extraction with LaTeX math equations |
-| **Note styles** | Choose between Standard, Study Guide, or Research Deep-Dive modes |
-| **Folder organization** | Create and manage custom folders to group related documents |
-| **Sharing & access** | Generate share links for individual notes or entire folders with view tracking |
-| **Markdown rendering** | Full GitHub Flavored Markdown (GFM) + KaTeX for mathematical notation |
-| **Google OAuth** | Fast and secure one-click sign-in via better-auth |
-| **Monthly usage credits** | Fair per-user credit allocation with automatic monthly reset |
-| **Dark / light mode** | System-aware theme with persistent preferences |
-| **PWA support** | Installable on desktop, Android, and iOS home screens with offline caching |
-| **Persistent sessions** | 30-day rolling sessions with automatic silent refresh |
+| Feature                   | Details                                                                             |
+| ---------------------------| -------------------------------------------------------------------------------------|
+| **Multi-format parsing**  | Client side text extraction for PDF, DOCX, and PPTX (with guidance for legacy DOC)  |
+| **AI note generation**    | Powered by Google Gemini for signal-over-noise extraction with LaTeX math equations |
+| **Note styles**           | Choose between Standard, Study Guide, or Research Deep-Dive modes                   |
+| **Folder organization**   | Create and manage custom folders to group related documents                         |
+| **Sharing & access**      | Generate share links for individual notes or entire folders with view tracking      |
+| **Markdown rendering**    | Full GitHub Flavored Markdown (GFM) + KaTeX for mathematical notation               |
+| **Google OAuth**          | Fast and secure one-click sign-in via better-auth                                   |
+| **Monthly usage credits** | Fair per-user credit allocation with automatic monthly reset                        |
+| **Dark / light mode**     | System-aware theme with persistent preferences                                      |
+| **PWA support**           | Installable on desktop, Android, and iOS home screens with offline caching          |
+| **Persistent sessions**   | 30-day rolling sessions with automatic silent refresh                               |
 
 ---
 

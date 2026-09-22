@@ -4,7 +4,8 @@ import { Pool } from "pg";
 
 const databaseUrl =
   process.env.MAIN_DB_URL ||
-  process.env.DEV_DB_URL;
+  process.env.DEV_DB_URL ||
+  process.env.DATABASE_URL;
 
 if (!databaseUrl) {
   throw new Error(

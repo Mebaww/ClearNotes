@@ -17,6 +17,7 @@ jobs:
 
     env:
       DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/clearnotes"
+      MAIN_DB_URL: "postgresql://postgres:postgres@localhost:5432/clearnotes"
       BETTER_AUTH_SECRET: "ci-secret-at-least-32-characters-long-abcdef"
       BETTER_AUTH_URL: "http://localhost:3000"
       NEXT_PUBLIC_APP_URL: "http://localhost:3000"
