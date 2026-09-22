@@ -46,7 +46,6 @@ export async function PATCH(
       return apiErr("INVALID_REQUEST", "Folder name cannot be empty.");
     }
 
-    // Verify folder ownership
     const folder = await prisma.folder.findFirst({
       where: { id, userId: session.user.id },
     });
@@ -55,7 +54,6 @@ export async function PATCH(
       return apiErr("INVALID_REQUEST", "Folder not found.");
     }
 
-    // Check if name is already taken (case-insensitive)
     const existing = await prisma.folder.findFirst({
       where: {
         userId: session.user.id,

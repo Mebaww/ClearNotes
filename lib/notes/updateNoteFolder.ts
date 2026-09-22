@@ -7,7 +7,6 @@ export async function updateNoteFolder(
   folderId: string | null,
   userId: string
 ) {
-  // Verify ownership of the note
   const note = await prisma.note.findFirst({
     where: { id: noteId, userId },
   });
@@ -16,7 +15,6 @@ export async function updateNoteFolder(
     throw new AppError("INVALID_REQUEST", "Note not found.");
   }
 
-  // If folderId is provided, verify ownership of folder
   if (folderId) {
     const folder = await prisma.folder.findFirst({
       where: { id: folderId, userId },

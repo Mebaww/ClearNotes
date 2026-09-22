@@ -85,7 +85,6 @@ export default function FolderManagerDialog({
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-md" showCloseButton>
-        {/* ── Step 1: Name ── */}
         {dialogStep === "name" && (
           <>
             <DialogHeader>
@@ -132,7 +131,6 @@ export default function FolderManagerDialog({
           </>
         )}
 
-        {/* ── Step 2: Pick notes ── */}
         {dialogStep === "select-notes" && (
           <>
             <DialogHeader>
@@ -157,7 +155,6 @@ export default function FolderManagerDialog({
             </DialogHeader>
 
             <div className="space-y-4 mt-2">
-              {/* Search */}
               <div className="relative group">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground/60 transition-colors group-focus-within:text-primary" />
                 <Input
@@ -168,7 +165,6 @@ export default function FolderManagerDialog({
                 />
               </div>
 
-              {/* Tabs for Add-Notes Mode */}
               {dialogMode === "add-notes" && (
                 <div className="flex border-b border-border/40">
                   <button
@@ -196,7 +192,6 @@ export default function FolderManagerDialog({
                 </div>
               )}
 
-              {/* Note list */}
               <div className="max-h-[320px] overflow-y-auto -mx-1 px-1 space-y-1.5 pr-2 scrollbar-none">
                 {pickableNotes.length === 0 ? (
                   <p className="py-10 text-center text-sm text-muted-foreground bg-muted/10 rounded-xl border border-dashed border-border/60">
@@ -216,7 +211,6 @@ export default function FolderManagerDialog({
                             : "border-border/40 bg-card hover:bg-muted/40 hover:border-border/80"
                         }`}
                       >
-                        {/* Checkbox */}
                         <div
                           className={`mt-0.5 flex size-4.5 shrink-0 items-center justify-center rounded-[5px] border transition-colors ${
                             isSelected

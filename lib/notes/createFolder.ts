@@ -12,7 +12,6 @@ export async function createFolder(name: string, userId: string) {
     throw new AppError("INVALID_REQUEST", "Folder name must be under 50 characters");
   }
 
-  // Check if a folder with the same name (case-insensitive) already exists for this user
   const existingFolder = await prisma.folder.findFirst({
     where: {
       userId,

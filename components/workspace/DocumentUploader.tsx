@@ -21,7 +21,6 @@ export function DocumentUploader() {
   const [noteStyle, setNoteStyle] = useState<NoteStyle>("standard");
 
   const processFile = async (selectedFile: File) => {
-    // Validate file type against the supported formats registry
     if (!isSupportedFile(selectedFile)) {
       sileo.error({
         title: "Unsupported file type",
@@ -74,7 +73,6 @@ export function DocumentUploader() {
         return;
       }
 
-      // Send extracted text to the API
       const data = await sileo.promise(
         axios.post("/api/notes", { text: extractedText, style: noteStyle }).then((r) => r.data),
         {
@@ -211,7 +209,6 @@ export function DocumentUploader() {
 
   return (
     <section className="flex h-full min-w-0 flex-col rounded-xl border border-border/80 bg-card overflow-hidden transition-shadow">
-      {/* Header */}
       <div className="flex flex-col gap-3 border-b border-border/60 px-5 py-4">
         <div className="flex items-center justify-between">
           <h2 className="text-sm font-semibold text-foreground">
@@ -219,7 +216,6 @@ export function DocumentUploader() {
           </h2>
         </div>
 
-        {/* Note Style Selector Pills */}
         <div className="grid grid-cols-3 gap-1 rounded-xl bg-muted/60 p-1">
           {stylesList.map((s) => {
             const Icon = s.icon;
@@ -243,14 +239,12 @@ export function DocumentUploader() {
           })}
         </div>
 
-        {/* Selected style scenario hint */}
         <p className="text-[11px] text-muted-foreground leading-snug">
           <span className="font-medium text-foreground">{selectedStyle.label}:</span>{" "}
           {selectedStyle.scenario}
         </p>
       </div>
 
-      {/* Upload Drop Zone */}
       <div className="p-4 flex-1 flex flex-col">
         <label
           htmlFor="workspace-upload"

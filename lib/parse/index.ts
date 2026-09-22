@@ -1,4 +1,3 @@
-
 import { detectFormat } from "./supportedFormats";
 import type { ParsedDocument, DocumentFormat } from "./types";
 import { ParseError } from "./formats/pdf/parser";
@@ -7,8 +6,6 @@ export { ParseError } from "./formats/pdf/parser";
 export type { ParseErrorCode } from "./formats/pdf/parser";
 export type { ParsedDocument, ParsedPage, DocumentFormat } from "./types";
 
-// Parses any supported file into a standard document format.
-// It automatically detects the file type and routes it to the right parser.
 export async function parseDocument(
   fileBuffer: ArrayBuffer,
   fileName: string,
@@ -35,8 +32,7 @@ export async function parseDocument(
     }
 
     case "doc": {
-      // Old .doc binary format cannot be parsed in the browser. 
-      // Ask the user to convert it first.
+      // Legacy binary .doc is unsupported in browser runtime; requires OOXML (.docx) or PDF
       throw new ParseError(
         "PARSE_FAILED",
         "Legacy .doc files can't be parsed directly. Please re-save your file as .docx or export it as a PDF and upload again."
@@ -47,12 +43,10 @@ export async function parseDocument(
       const { parsePptxDocument } = await import("./formats/pptx");
       return parsePptxDocument(fileBuffer);
     }
-    
+
     default: {
       const _exhaustive: never = format;
       throw new ParseError("PARSE_FAILED", `No parser found for format: ${_exhaustive}`);
     }
   }
 }
-
-

@@ -1,0 +1,30 @@
+name: Documentation Improvement
+description: Suggest an improvement, fix a typo, or request new documentation for ClearNotes
+title: "[Docs]: "
+labels: ["documentation"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for helping keep ClearNotes documentation accurate and helpful!
+  - type: textarea
+    id: description
+    attributes:
+      label: Documentation Issue or Request
+      description: What part of the documentation needs improvement or is missing?
+      placeholder: The setup instructions in CONTRIBUTING.md could explain [...]
+    validations:
+      required: true
+  - type: textarea
+    id: suggested-change
+    attributes:
+      label: Suggested Changes
+      description: How should the documentation be updated? (Markdown snippets welcome)
+    validations:
+      required: false
+  - type: input
+    id: affected-url
+    attributes:
+      label: Affected File or Page URL
+      description: Link to the file or docs section needing attention.
+      placeholder: CONTRIBUTING.md or README.md

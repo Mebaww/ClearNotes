@@ -23,7 +23,6 @@ export default function FolderPillsBar({
     <div className="flex flex-col gap-3">
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-2 overflow-x-auto scrollbar-none pb-1 flex-1 min-w-0">
-          {/* All Notes pill */}
           <button
             onClick={() => onSelectFolder(null)}
             className={`inline-flex h-7 shrink-0 cursor-pointer items-center rounded-full border px-3 text-xs font-medium transition-colors ${
@@ -35,7 +34,6 @@ export default function FolderPillsBar({
             All Notes
           </button>
 
-          {/* Folder pills */}
           {folders.map((folder) => (
             <div key={folder.id} className="group relative inline-flex shrink-0">
               <button
@@ -54,7 +52,6 @@ export default function FolderPillsBar({
                   </span>
                 )}
               </button>
-              {/* Delete × on hover */}
               <button
                 onClick={(e) => onDeleteFolder(folder.id, folder.name, e)}
                 title="Delete folder"
@@ -66,7 +63,6 @@ export default function FolderPillsBar({
           ))}
         </div>
 
-        {/* New Folder button */}
         <Button
           size="sm"
           variant="outline"

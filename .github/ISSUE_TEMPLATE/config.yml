@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 📖 Contribution Guide
+    url: https://github.com/Mebaww/ClearNotes/blob/main/CONTRIBUTING.md
+    about: Read our guide on how to setup ClearNotes and start contributing.
+  - name: 🛡️ Security Vulnerability Report
+    url: https://github.com/Mebaww/ClearNotes/blob/main/SECURITY.md
+    about: Please report security vulnerabilities privately according to our security policy.
+  - name: 💬 General Questions & Discussions
+    url: https://github.com/Mebaww/ClearNotes/discussions
+    about: Ask questions, share ideas, and connect with the community.

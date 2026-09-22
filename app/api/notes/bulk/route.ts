@@ -18,7 +18,6 @@ export async function PATCH(request: Request) {
       return apiErr("INVALID_REQUEST", "Missing or invalid noteIds array.");
     }
 
-    // If folderId is provided, verify it exists and is owned by the user
     if (folderId) {
       const folder = await prisma.folder.findFirst({
         where: { id: folderId, userId: session.user.id },
@@ -29,7 +28,6 @@ export async function PATCH(request: Request) {
       }
     }
 
-    // Perform bulk update
     await prisma.note.updateMany({
       where: {
         id: { in: noteIds },
@@ -62,7 +60,6 @@ export async function DELETE(request: Request) {
       return apiErr("INVALID_REQUEST", "Missing or invalid noteIds array.");
     }
 
-    // Perform bulk delete
     await prisma.note.deleteMany({
       where: {
         id: { in: noteIds },

@@ -123,7 +123,6 @@ export default function SharedViewClient({
         </div>
       ) : (
         <div className="space-y-10">
-          {/* Shared with Me - Folders */}
           {filteredReceivedFolders.length > 0 && (
             <section className="space-y-4">
               <div className="flex items-center gap-2 border-b border-border/40 pb-2">
@@ -169,7 +168,6 @@ export default function SharedViewClient({
             </section>
           )}
 
-          {/* Shared with Me - Notes */}
           {filteredReceivedNotes.length > 0 && (
             <section className="space-y-4">
               <div className="flex items-center gap-2 border-b border-border/40 pb-2">
@@ -195,7 +193,6 @@ export default function SharedViewClient({
             </section>
           )}
 
-          {/* Shared by Me - Folders */}
           {filteredOwnedFolders.length > 0 && (
             <section className="space-y-4">
               <div className="flex items-center gap-2 border-b border-border/40 pb-2">
@@ -228,7 +225,6 @@ export default function SharedViewClient({
             </section>
           )}
 
-          {/* Shared by Me - Notes */}
           {filteredOwnedNotes.length > 0 && (
             <section className="space-y-4">
               <div className="flex items-center gap-2 border-b border-border/40 pb-2">

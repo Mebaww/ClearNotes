@@ -1,7 +1,5 @@
 import type { ParsedDocument } from "../../types";
-// Import ParseError from the pdf parser directly to avoid circular imports.
 import { ParseError } from "../pdf/parser";
-
 
 export async function parseDocxDocument(
   fileBuffer: ArrayBuffer
@@ -16,7 +14,6 @@ export async function parseDocxDocument(
       "This Word document appears to be empty or could not be read. Please try uploading a different file."
     );
   }
-
 
   return {
     format: "docx",

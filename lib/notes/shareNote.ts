@@ -27,14 +27,12 @@ export async function createOrUpdateShareLink(noteId: string, userId: string) {
   }
 
   if (note.share) {
-    // If share record exists, enable it
     return await prisma.noteShare.update({
       where: { id: note.share.id },
       data: { enabled: true },
     });
   }
 
-  // Create new share link with unguessable token
   const token = generateShareToken();
   return await prisma.noteShare.create({
     data: {
@@ -194,7 +192,6 @@ export async function getUserSharedNotesCount(userId: string): Promise<number> {
 }
 
 export async function getUserSharedNotes(userId: string) {
-  // Owned shared notes
   const ownedShares = await prisma.noteShare.findMany({
     where: {
       enabled: true,
@@ -210,7 +207,6 @@ export async function getUserSharedNotes(userId: string) {
     },
   });
 
-  // Shared with me (accessed by user & still enabled)
   const accessedEntries = await prisma.userNoteAccess.findMany({
     where: {
       userId,

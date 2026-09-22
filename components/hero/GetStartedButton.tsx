@@ -25,17 +25,19 @@ function Modal({ onClose }: { onClose: () => void }) {
     router.push("/auth");
   };
 
-  // Close on Escape
   useEffect(() => {
-    const handler = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
   }, [onClose]);
 
-  // Lock body scroll
   useEffect(() => {
     document.body.style.overflow = "hidden";
-    return () => { document.body.style.overflow = ""; };
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, []);
 
   return (
@@ -43,10 +45,8 @@ function Modal({ onClose }: { onClose: () => void }) {
       className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
       onClick={onClose}
     >
-      {/* Backdrop */}
       <div className="absolute inset-0 bg-black/75 backdrop-blur-md" />
 
-      {/* Dialog */}
       <div
         className="relative z-10 w-full max-w-md"
         style={{ animation: "modal-in 0.18s cubic-bezier(0.16,1,0.3,1) both" }}
@@ -54,7 +54,6 @@ function Modal({ onClose }: { onClose: () => void }) {
       >
         <div className="relative overflow-hidden rounded-2xl border border-border bg-card shadow-xl shadow-black/10">
           <div className="p-7">
-            {/* Close */}
             <button
               onClick={onClose}
               className="absolute right-4 top-4 flex size-7 items-center justify-center rounded-full text-muted-foreground/60 transition-all hover:bg-muted hover:text-foreground cursor-pointer"
@@ -62,9 +61,7 @@ function Modal({ onClose }: { onClose: () => void }) {
               <X className="size-3.5" />
             </button>
 
-            {/* Header */}
             <div className="mb-7">
-          
               <h2 className="text-2xl font-semibold tracking-tight text-foreground">
                 Welcome to ClearNotes
               </h2>
@@ -73,9 +70,7 @@ function Modal({ onClose }: { onClose: () => void }) {
               </p>
             </div>
 
-            {/* Options */}
             <div className="flex flex-col gap-2.5">
-             
               <button
                 onClick={handleNew}
                 className="group relative flex items-center justify-between gap-4 overflow-hidden rounded-xl border border-primary/20 bg-primary/5 px-5 py-4 text-left transition-all duration-200 hover:border-primary/40 hover:bg-primary/10 cursor-pointer"
@@ -89,7 +84,6 @@ function Modal({ onClose }: { onClose: () => void }) {
                 <ArrowRight className="size-4 shrink-0 text-primary/60 transition-transform duration-150 group-hover:translate-x-1 group-hover:text-primary" />
               </button>
 
-              {/* Returning user — secondary */}
               <button
                 onClick={handleReturning}
                 className="group flex items-center justify-between gap-4 rounded-xl border border-border bg-muted/30 px-5 py-4 text-left transition-all duration-200 hover:bg-muted/60 hover:border-border/80 cursor-pointer"
@@ -104,7 +98,6 @@ function Modal({ onClose }: { onClose: () => void }) {
               </button>
             </div>
 
-            {/* Footer note */}
             <p className="mt-5 text-center text-[11px] text-muted-foreground/60">
               Free to use &mdash; no credit card required
             </p>
@@ -135,12 +128,12 @@ export function GetStartedButton({
         {label}
       </button>
 
-      {mounted && modalOpen &&
+      {mounted &&
+        modalOpen &&
         createPortal(
           <Modal onClose={() => setModalOpen(false)} />,
           document.body
-        )
-      }
+        )}
     </>
   );
 }

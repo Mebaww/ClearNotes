@@ -59,7 +59,6 @@ export default function NotesList({
   const [notes, setNotes] = useState<Note[]>(initialNotes);
   const [folders, setFolders] = useState<Folder[]>(initialFolders);
 
-  // Dialog and Folder Management States
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogMode, setDialogMode] = useState<"create" | "add-notes">("create");
   const [dialogStep, setDialogStep] = useState<DialogStep>("name");
@@ -67,14 +66,12 @@ export default function NotesList({
   const [selectedNoteIds, setSelectedNoteIds] = useState<string[]>([]);
   const [isCreating, setIsCreating] = useState(false);
 
-  // Rename & Delete Dialog States
   const [renameDialogOpen, setRenameDialogOpen] = useState(false);
   const [renameFolderName, setRenameFolderName] = useState("");
   const [isRenaming, setIsRenaming] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deleteFolderData, setDeleteFolderData] = useState<{ id: string; name: string } | null>(null);
 
-  // Bulk Notes Actions States
   const [bulkSelectedNoteIds, setBulkSelectedNoteIds] = useState<string[]>([]);
   const [isSelectionMode, setIsSelectionMode] = useState(false);
   const [bulkDeleteConfirmOpen, setBulkDeleteConfirmOpen] = useState(false);
@@ -109,7 +106,6 @@ export default function NotesList({
     setNewFolderName(activeFolderName);
     setDialogStep("select-notes");
 
-    // Pre-select notes that are already in this folder
     const currentNoteIds = notes
       .filter((n) => n.folderId === selectedFolderId)
       .map((n) => n.id);
@@ -144,7 +140,6 @@ export default function NotesList({
           });
         }
 
-        // Update local state notes
         const targetFolder = folders.find((f) => f.id === selectedFolderId) || null;
         setNotes((prev) =>
           prev.map((note) => {
@@ -158,7 +153,6 @@ export default function NotesList({
           })
         );
 
-        // Update folder counts
         setFolders((prev) =>
           prev.map((f) => {
             if (f.id === selectedFolderId) {
@@ -212,7 +206,7 @@ export default function NotesList({
       }
 
       handleDialogOpenChange(false);
-      setBulkSelectedNoteIds([]); // Clear bulk actions selection if any
+      setBulkSelectedNoteIds([]);
       sileo.success({ title: `"${name}" folder created!` });
       router.refresh();
       router.push(`/workspace/notes?folderId=${created.id}`);
@@ -344,7 +338,6 @@ export default function NotesList({
     const previousNotes = [...notes];
     const targetFolder = folders.find((f) => f.id === folderId) || null;
 
-    // Optimistically update notes local state
     setNotes((prev) =>
       prev.map((n) =>
         bulkSelectedNoteIds.includes(n.id)
@@ -359,7 +352,6 @@ export default function NotesList({
         folderId,
       });
 
-      // Update folder counts local state
       setFolders((prev) =>
         prev.map((f) => {
           let countDiff = 0;
@@ -406,7 +398,6 @@ export default function NotesList({
 
     const previousNotes = [...notes];
 
-    // Optimistically update notes state
     setNotes((prev) => prev.filter((n) => !bulkSelectedNoteIds.includes(n.id)));
 
     const deletePromise = axios
@@ -435,7 +426,7 @@ export default function NotesList({
   };
 
   const handleSelectFolder = (folderId: string | null) => {
-    setBulkSelectedNoteIds([]); // Clear selection when switching folders
+    setBulkSelectedNoteIds([]);
     setIsSelectionMode(false);
     if (folderId) {
       router.push(`/workspace/notes?folderId=${folderId}`);
@@ -444,7 +435,6 @@ export default function NotesList({
     }
   };
 
-  // Filter notes client-side dynamically
   const displayedNotes = notes.filter((note) => {
     if (selectedFolderId === "uncategorized") return note.folderId === null;
     if (selectedFolderId) return note.folderId === selectedFolderId;
@@ -457,13 +447,11 @@ export default function NotesList({
     : activeFolder ? activeFolder.name
     : "All Notes";
 
-  // Folder Share Modal State
   const [folderShareModalOpen, setFolderShareModalOpen] = useState(false);
   const activeFolderShare = activeFolder?.share || null;
 
   return (
     <div className="mt-6 space-y-6">
-      {/* ── Filter bar ─────────────────────────────────────── */}
       <FolderPillsBar
         folders={folders}
         selectedFolderId={selectedFolderId}
@@ -475,7 +463,6 @@ export default function NotesList({
         }}
       />
 
-      {/* ── Folder title & actions ─────────────────────────── */}
       <FolderHeaderActions
         selectedFolderId={selectedFolderId}
         activeFolderName={activeFolderName}
@@ -505,7 +492,6 @@ export default function NotesList({
         }
       />
 
-      {/* ── Notes Grid / Empty State ───────────────────────── */}
       {displayedNotes.length === 0 ? (
         <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-border/80 bg-card px-6 py-16 text-center">
           <div className="flex size-10 items-center justify-center rounded-full bg-muted text-muted-foreground">
@@ -546,7 +532,6 @@ export default function NotesList({
         </div>
       )}
 
-      {/* ── Folder Manager Dialog ────────────────────────────── */}
       <FolderManagerDialog
         open={dialogOpen}
         onOpenChange={handleDialogOpenChange}
@@ -563,7 +548,6 @@ export default function NotesList({
         onSave={handleCreateFolder}
       />
 
-      {/* ── Rename Folder Dialog ────────────────────────────── */}
       <Dialog open={renameDialogOpen} onOpenChange={setRenameDialogOpen}>
         <DialogContent className="sm:max-w-md" showCloseButton>
           <DialogHeader>
@@ -609,7 +593,6 @@ export default function NotesList({
         </DialogContent>
       </Dialog>
 
-      {/* ── Delete Folder AlertDialog ───────────────────────── */}
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent size="default">
           <AlertDialogHeader>
@@ -633,7 +616,6 @@ export default function NotesList({
         </AlertDialogContent>
       </AlertDialog>
 
-      {/* ── Bulk Actions Floating Toolbar ────────────────────── */}
       {bulkSelectedNoteIds.length > 0 && (
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 flex flex-wrap items-center justify-center gap-2 sm:gap-3 rounded-[2rem] border border-border/80 bg-background/90 backdrop-blur-md px-4 py-2.5 shadow-lg animate-in fade-in slide-in-from-bottom-4 duration-200 w-[95%] sm:w-auto max-w-sm sm:max-w-none">
           <span className="text-xs font-semibold text-foreground px-1 pl-2 whitespace-nowrap">
@@ -705,7 +687,6 @@ export default function NotesList({
         </div>
       )}
 
-      {/* ── Bulk Delete AlertDialog ─────────────────────────── */}
       <AlertDialog open={bulkDeleteConfirmOpen} onOpenChange={setBulkDeleteConfirmOpen}>
         <AlertDialogContent size="default">
           <AlertDialogHeader>
@@ -728,8 +709,6 @@ export default function NotesList({
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-
-      {/* ── Folder Share Modal ─────────────────────────────── */}
 
       {selectedFolderId && selectedFolderId !== "uncategorized" && (
         <FolderShareModal

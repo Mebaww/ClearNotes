@@ -5,7 +5,6 @@ import { USAGE } from "../../../usage/config";
 
 export type ParseErrorCode = "SCANNED_PDF" | "PARSE_FAILED" | "PAGE_LIMIT_EXCEEDED";
 
-// Define ParseError here to avoid circular imports. The main index file will re-export it.
 export class ParseError extends Error {
   readonly code: ParseErrorCode;
 
@@ -16,14 +15,11 @@ export class ParseError extends Error {
   }
 }
 
-
-// Setup the pdfjs worker in the browser
 if (typeof window !== "undefined") {
   import("pdfjs-dist").then((lib) => {
     lib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${lib.version}/build/pdf.worker.min.mjs`;
   });
 }
-
 
 export async function parsePDFDocument(
   fileBuffer: ArrayBuffer
@@ -55,4 +51,4 @@ export async function parsePDFDocument(
     pageCount: pdfDocument.numPages,
     pages,
   };
-}
+}

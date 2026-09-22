@@ -1,10 +1,8 @@
 import type { ParsedDocument, ParsedPage } from "../../types";
-// Import ParseError from the pdf parser directly to avoid circular imports.
 import { ParseError } from "../pdf/parser";
 
-// PowerPoint slides map naturally to pages, so each slide becomes a ParsedPage.
-// We use JSZip to decompress the .pptx archive (it's just a zip file internally),
-// then use the browser's built-in DOMParser to read the slide XML and pull out the text.
+const DRAWING_NS = "http://schemas.openxmlformats.org/drawingml/2006/main";
+
 export async function parsePptxDocument(
   fileBuffer: ArrayBuffer
 ): Promise<ParsedDocument> {
@@ -20,21 +18,17 @@ export async function parsePptxDocument(
     );
   }
 
-  // All text elements in a .pptx slide live under this XML namespace
-  const DRAWING_NS = "http://schemas.openxmlformats.org/drawingml/2006/main";
   const parser = new DOMParser();
   const pages: ParsedPage[] = [];
   let slideIndex = 1;
 
   while (true) {
     const slideFile = zip.file(`ppt/slides/slide${slideIndex}.xml`);
-    if (!slideFile) break; // no more slides
+    if (!slideFile) break;
 
     const xmlText = await slideFile.async("text");
     const xmlDoc = parser.parseFromString(xmlText, "application/xml");
 
-    // Each <a:p> is a paragraph on the slide. We collect the text from all
-    // its <a:t> (text run) children and combine them into one paragraph string.
     const paragraphs = xmlDoc.getElementsByTagNameNS(DRAWING_NS, "p");
     const slideLines: string[] = [];
 

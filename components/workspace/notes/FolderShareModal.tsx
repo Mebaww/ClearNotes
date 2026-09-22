@@ -131,7 +131,6 @@ export default function FolderShareModal({
         </DialogHeader>
 
         <div className="space-y-5 py-2">
-          {/* Enable Toggle */}
           <div className="flex items-center justify-between rounded-lg border bg-muted/30 p-3.5">
             <div className="space-y-0.5">
               <label className="text-xs font-medium cursor-pointer">
@@ -148,7 +147,6 @@ export default function FolderShareModal({
             />
           </div>
 
-          {/* Share Link Controls */}
           {share?.enabled && (
             <div className="space-y-3">
               <div className="flex items-center gap-2">

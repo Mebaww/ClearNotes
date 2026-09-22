@@ -18,7 +18,7 @@
 
 ClearNotes is an **open-source document intelligence web app** that transforms dense PDFs, Word documents, and PowerPoint presentations into clean, structured Markdown notes using Google's Gemini AI.
 
-Instead of reading a 40-page report or slide deck, you upload it and receive key ideas, definitions, data points, and conclusions — organized and scannable in seconds. It is built for students, researchers, and professionals who need to process large volumes of information quickly.
+Instead of reading a 40-page report or slide deck, you upload it and receive key ideas, definitions, data points, and conclusions, organized and scannable in seconds. It is built for students, researchers, and professionals who need to process large volumes of information quickly.
 
 ### Core Workflow
 
@@ -35,7 +35,7 @@ Upload document  →  Parse & extract text  →  Gemini AI structures notes  →
 | Feature | Details |
 |---|---|
 | **Multi-format parsing** | Client-side text extraction for PDF, DOCX, and PPTX (with guidance for legacy DOC) |
-| **AI note generation** | Powered by Google Gemini — signal-over-noise extraction with LaTeX math equations |
+| **AI note generation** | Powered by Google Gemini for signal-over-noise extraction with LaTeX math equations |
 | **Note styles** | Choose between Standard, Study Guide, or Research Deep-Dive modes |
 | **Folder organization** | Create and manage custom folders to group related documents |
 | **Sharing & access** | Generate share links for individual notes or entire folders with view tracking |
@@ -51,27 +51,27 @@ Upload document  →  Parse & extract text  →  Gemini AI structures notes  →
 ## Tech Stack
 
 ### Frontend
-- **[Next.js 16](https://nextjs.org/)** (App Router, Turbopack) — full-stack React framework
-- **[React 19](https://react.dev/)** — modern hooks, server components, and concurrent rendering
-- **[Tailwind CSS v4](https://tailwindcss.com/)** — utility-first styling
-- **[shadcn/ui](https://ui.shadcn.com/)** + **[Radix UI](https://www.radix-ui.com/)** — accessible, composable UI primitives
-- **[Lucide React](https://lucide.dev/)** — icon system
-- **[next-themes](https://github.com/pacocoursey/next-themes)** — dark and light theme management
+- **[Next.js 16](https://nextjs.org/)** (App Router, Turbopack): full-stack React framework
+- **[React 19](https://react.dev/)**: modern hooks, server components, and concurrent rendering
+- **[Tailwind CSS v4](https://tailwindcss.com/)**: utility-first styling
+- **[shadcn/ui](https://ui.shadcn.com/)** + **[Radix UI](https://www.radix-ui.com/)**: accessible, composable UI primitives
+- **[Lucide React](https://lucide.dev/)**: icon system
+- **[next-themes](https://github.com/pacocoursey/next-themes)**: dark and light theme management
 
 ### Backend & Data
-- **[PostgreSQL](https://www.postgresql.org/)** — relational database
-- **[Prisma ORM 7](https://www.prisma.io/)** — type-safe schema modeling, connection pooling, and migrations
-- **[better-auth](https://www.better-auth.com/)** — authentication with Google OAuth and session management
+- **[PostgreSQL](https://www.postgresql.org/)**: relational database
+- **[Prisma ORM 7](https://www.prisma.io/)**: type-safe schema modeling, connection pooling, and migrations
+- **[better-auth](https://www.better-auth.com/)**: authentication with Google OAuth and session management
 
 ### AI & Document Processing
-- **[Google Gemini](https://ai.google.dev/)** (`@google/generative-ai`) — structured note generation
-- **[pdfjs-dist](https://github.com/mozilla/pdf.js)** — PDF text extraction
-- **[mammoth](https://github.com/mwilliamson/mammoth.js)** — Word document (.docx) parsing
-- **[jszip](https://stuk.github.io/jszip/)** — PowerPoint presentation (.pptx) extraction
+- **[Google Gemini](https://ai.google.dev/)** (`@google/generative-ai`): structured note generation
+- **[pdfjs-dist](https://github.com/mozilla/pdf.js)**: PDF text extraction
+- **[mammoth](https://github.com/mwilliamson/mammoth.js)**: Word document (.docx) parsing
+- **[jszip](https://stuk.github.io/jszip/)**: PowerPoint presentation (.pptx) extraction
 
 ### Infrastructure & PWA
-- **Service Worker** (`/sw.js`) — network-first strategy for dynamic content, cache-first for static assets
-- **[@next/third-parties](https://nextjs.org/docs/app/building-your-application/optimizing/third-party-libraries)** — optional Google Analytics integration
+- **Service Worker** (`/sw.js`): network-first strategy for dynamic content, cache-first for static assets
+- **[@next/third-parties](https://nextjs.org/docs/app/building-your-application/optimizing/third-party-libraries)**: optional Google Analytics integration
 
 ---
 
@@ -128,8 +128,8 @@ clearnotes/
 
 - **Node.js** 20+
 - **PostgreSQL** database (local instance or hosted via Neon, Supabase, Railway, etc.)
-- **Google OAuth credentials** — [Google Cloud Console](https://console.cloud.google.com/)
-- **Google Gemini API key** — [Google AI Studio](https://aistudio.google.com/app/apikey)
+- **Google OAuth credentials**: [Google Cloud Console](https://console.cloud.google.com/)
+- **Google Gemini API key**: [Google AI Studio](https://aistudio.google.com/app/apikey)
 
 ### 1. Clone the repository
 
@@ -150,13 +150,12 @@ cp .env.example .env
 Open `.env` and fill in your values:
 
 ```env
-# Application URL
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 
-# PostgreSQL Database
+# Database
 DATABASE_URL=postgresql://user:password@localhost:5432/clearnotes
 
-# Authentication (better-auth)
+# Authentication (Better Auth)
 BETTER_AUTH_SECRET=your-random-secret-at-least-32-chars
 BETTER_AUTH_URL=http://localhost:3000
 
@@ -167,10 +166,6 @@ GOOGLE_CLIENT_SECRET=your-google-client-secret
 # Google Gemini AI
 GEMINI_API_KEY=your-gemini-api-key
 GEMINI_MODEL=gemini-2.5-flash
-
-# Optional
-# NEXT_PUBLIC_GA_ID=G-XXXXXXXXXX
-# BETTER_AUTH_API_KEY=your-better-auth-dash-api-key
 ```
 
 ### 3. Set up the database
@@ -206,17 +201,17 @@ ClearNotes uses a specialized **high-fidelity extraction prompt** to guide Gemin
 ## Database Schema
 
 ```
-User             — id, name, email, monthlyCreditsUsed, usageResetAt
-Note             — id, title, sourceText, generated (Markdown), status, userId, folderId
-NoteShare        — id, noteId, token, enabled, passwordHash, expiresAt, viewCount
-UserNoteAccess   — id, userId, shareId, accessedAt
-Folder           — id, name, userId
-FolderShare      — id, folderId, token, enabled, passwordHash, expiresAt, viewCount
-UserFolderAccess — id, userId, shareId, accessedAt
-Session          — id, token, expiresAt, userId
-Account          — OAuth provider account linkage
-Verification     — Email verification tokens
-Waitlist         — Pre-launch waitlist with invite tracking
+User             : id, name, email, monthlyCreditsUsed, usageResetAt
+Note             : id, title, sourceText, generated (Markdown), status, userId, folderId
+NoteShare        : id, noteId, token, enabled, passwordHash, expiresAt, viewCount
+UserNoteAccess   : id, userId, shareId, accessedAt
+Folder           : id, name, userId
+FolderShare      : id, folderId, token, enabled, passwordHash, expiresAt, viewCount
+UserFolderAccess : id, userId, shareId, accessedAt
+Session          : id, token, expiresAt, userId
+Account          : OAuth provider account linkage
+Verification     : Email verification tokens
+Waitlist         : Pre-launch waitlist with invite tracking
 ```
 
 ---
@@ -225,16 +220,21 @@ Waitlist         — Pre-launch waitlist with invite tracking
 
 ClearNotes is a fully installable Progressive Web App:
 
-- **Web App Manifest** (`/manifest.webmanifest`) — name, icons, theme color, display mode
-- **Service Worker** (`/sw.js`) — network-first for pages/API, cache-first for static assets
-- **iOS support** — `apple-touch-icon`, `apple-mobile-web-app-capable`, translucent status bar
-- **Theme color** — `#C49A3C` (brand gold)
+- **Web App Manifest** (`/manifest.webmanifest`): name, icons, theme color, display mode
+- **Service Worker** (`/sw.js`): network-first for pages/API, cache-first for static assets
+- **iOS support**: `apple-touch-icon`, `apple-mobile-web-app-capable`, translucent status bar
+- **Theme color**: `#C49A3C` (brand gold)
 
 ---
 
 ## Contributing
 
-Contributions are welcome! Please check our [Contributing Guide](CONTRIBUTING.md) and [Code of Conduct](CODE_OF_CONDUCT.md) to get started.
+Contributions are welcome! Whether you are fixing bugs, adding new document parsers, enhancing the UI, or improving documentation, we would love your help:
+
+- 📖 **[Contributing Guide](CONTRIBUTING.md)**: Getting started, local setup, code standards, and PR process.
+- 🔍 **[PR Review Guidelines](REVIEWING.md)**: Guide for maintainers and reviewers on triaging, testing, and merging PRs.
+- 🤝 **[Code of Conduct](CODE_OF_CONDUCT.md)**: Our community standards and expectations.
+- 🛡️ **[Security Policy](SECURITY.md)**: How to report security vulnerabilities responsibly.
 
 ---
 

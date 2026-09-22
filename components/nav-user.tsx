@@ -1,49 +1,48 @@
-"use client"
+"use client";
 
-import { useRouter } from "next/navigation"
-import { authClient } from "@/lib/auth-client"
+import { useRouter } from "next/navigation";
+import { authClient } from "@/lib/auth-client";
 import {
   Avatar,
   AvatarFallback,
   AvatarImage,
-} from "@/components/ui/avatar"
+} from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
 import {
   ChevronsUpDownIcon,
   LogOutIcon,
-} from "lucide-react"
+} from "lucide-react";
 
 export function NavUser({
   user,
 }: {
   user: {
-    name: string
-    email: string
-    avatar: string
-  }
+    name: string;
+    email: string;
+    avatar: string;
+  };
 }) {
-  const { isMobile } = useSidebar()
-  const router = useRouter()
+  const { isMobile } = useSidebar();
+  const router = useRouter();
   const initials = user.name
     .split(" ")
     .map((part) => part[0])
     .join("")
     .slice(0, 2)
-    .toUpperCase()
+    .toUpperCase();
 
   return (
     <SidebarMenu>
@@ -96,21 +95,6 @@ export function NavUser({
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              {/* <DropdownMenuItem>
-                <BadgeCheckIcon />
-                Account
-              </DropdownMenuItem> */}
-              {/* <DropdownMenuItem>
-                <CreditCardIcon />
-                Billing
-              </DropdownMenuItem> */}
-              {/* <DropdownMenuItem>
-                <BellIcon />
-                Notifications
-              </DropdownMenuItem> */}
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
             <DropdownMenuItem onClick={async () => {
               await authClient.signOut({
                 fetchOptions: {
@@ -127,5 +111,5 @@ export function NavUser({
         </DropdownMenu>
       </SidebarMenuItem>
     </SidebarMenu>
-  )
+  );
 }

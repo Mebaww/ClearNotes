@@ -3,63 +3,58 @@
 import { useEffect, useState } from "react";
 import { FileText, CheckCircle2, Sparkles, UploadCloud } from "lucide-react";
 
-// Phase durations in ms
-const UPLOAD_DURATION   = 3000;
-const SCAN_DURATION     = 4000;
-const NOTES_DURATION    = 6500;
-const TOTAL             = UPLOAD_DURATION + SCAN_DURATION + NOTES_DURATION;
+const UPLOAD_DURATION = 3000;
+const SCAN_DURATION = 4000;
+const NOTES_DURATION = 6500;
+const TOTAL = UPLOAD_DURATION + SCAN_DURATION + NOTES_DURATION;
 
-// Raw document lines — some are "signal", some are "noise"
 const DOC_LINES = [
-  { text: "Enterprise expansion grew 14% this quarter,", signal: true  },
-  { text: "driven largely by adoption of automated", signal: true  },
-  { text: "compliance tools across EMEA markets.", signal: true  },
+  { text: "Enterprise expansion grew 14% this quarter,", signal: true },
+  { text: "driven largely by adoption of automated", signal: true },
+  { text: "compliance tools across EMEA markets.", signal: true },
   { text: "Total headcount as of September 30th is", signal: false },
   { text: "4,821 employees across 22 global offices.", signal: false },
-  { text: "Three open risk items flagged by leadership", signal: true  },
-  { text: "ahead of the Q4 planning cycle.", signal: true  },
+  { text: "Three open risk items flagged by leadership", signal: true },
+  { text: "ahead of the Q4 planning cycle.", signal: true },
   { text: "Catering budget for Q3 offsite: $14,200.", signal: false },
-  { text: "Product timeline confirmed for Q1 launch.", signal: true  },
+  { text: "Product timeline confirmed for Q1 launch.", signal: true },
 ];
 
-// Note content lines — mimic real NoteViewer markdown output
-// Each line has a type and reveal step
 const NOTE_LINES = [
-  { type: "date",    content: "Sep 30, 2024" },
-  { type: "folder",  content: "Business" },
-  { type: "h2",      content: "Key Takeaways" },
-  { type: "li",      content: "Enterprise expansion grew **14% this quarter**, driven by automated compliance adoption across EMEA." },
-  { type: "li",      content: "Leadership flagged **three open risk items** ahead of the Q4 planning cycle." },
-  { type: "li",      content: "Product timeline **confirmed for Q1 launch** — no blockers reported." },
-  { type: "h2",      content: "Action Items" },
-  { type: "li",      content: "Resolve all 3 risk items before Q4 planning closes." },
-  { type: "li",      content: "Confirm Q1 launch timeline with engineering lead." },
+  { type: "date", content: "Sep 30, 2024" },
+  { type: "folder", content: "Business" },
+  { type: "h2", content: "Key Takeaways" },
+  { type: "li", content: "Enterprise expansion grew **14% this quarter**, driven by automated compliance adoption across EMEA." },
+  { type: "li", content: "Leadership flagged **three open risk items** ahead of the Q4 planning cycle." },
+  { type: "li", content: "Product timeline **confirmed for Q1 launch** — no blockers reported." },
+  { type: "h2", content: "Action Items" },
+  { type: "li", content: "Resolve all 3 risk items before Q4 planning closes." },
+  { type: "li", content: "Confirm Q1 launch timeline with engineering lead." },
 ] as const;
 
-// Steps: header (date+folder), then each content line
 const TOTAL_REVEAL = NOTE_LINES.length;
 
 function renderBold(text: string) {
-  // Split on **bold** markers and render <strong>
   const parts = text.split(/\*\*(.*?)\*\*/g);
   return parts.map((part, i) =>
-    i % 2 === 1
-      ? <strong key={i} className="font-semibold text-foreground">{part}</strong>
-      : <span key={i}>{part}</span>
+    i % 2 === 1 ? (
+      <strong key={i} className="font-semibold text-foreground">
+        {part}
+      </strong>
+    ) : (
+      <span key={i}>{part}</span>
+    )
   );
 }
 
 function UploadPhase({ progress }: { progress: number }) {
   const done = progress >= 100;
-  // Smooth entrance
-  const entryProgress = Math.min(1, progress / 15); // 0→1 over first 15%
+  const entryProgress = Math.min(1, progress / 15);
   const cardOpacity = entryProgress;
   const cardY = (1 - entryProgress) * 16;
 
   return (
     <div className="relative flex flex-col items-center justify-center h-full gap-6 px-6 animate-in fade-in duration-500">
-
-      {/* Soft radial glow behind everything */}
       <div
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none rounded-full transition-all duration-1000"
         style={{
@@ -71,7 +66,6 @@ function UploadPhase({ progress }: { progress: number }) {
         }}
       />
 
-      {/* Upload icon — breathes gently */}
       <div
         className="relative z-10 flex items-center justify-center transition-all duration-700"
         style={{
@@ -79,11 +73,12 @@ function UploadPhase({ progress }: { progress: number }) {
           transform: `translateY(${cardY}px)`,
         }}
       >
-        <div className={`flex size-12 items-center justify-center rounded-2xl transition-all duration-700 ${
-          done
-            ? "bg-emerald-500/10 text-emerald-500"
-            : "bg-primary/8 text-primary"
-        }`}
+        <div
+          className={`flex size-12 items-center justify-center rounded-2xl transition-all duration-700 ${
+            done
+              ? "bg-emerald-500/10 text-emerald-500"
+              : "bg-primary/8 text-primary"
+          }`}
           style={{
             animation: done ? "none" : "breathe 3s ease-in-out infinite",
           }}
@@ -96,7 +91,6 @@ function UploadPhase({ progress }: { progress: number }) {
         </div>
       </div>
 
-      {/* File card */}
       <div
         className="relative z-10 w-full max-w-[260px] transition-all duration-500"
         style={{
@@ -104,14 +98,18 @@ function UploadPhase({ progress }: { progress: number }) {
           transform: `translateY(${cardY * 0.6}px)`,
         }}
       >
-        <div className={`flex items-center gap-3 rounded-xl border px-4 py-3 shadow-sm transition-all duration-500 ${
-          done
-            ? "border-emerald-500/20 bg-emerald-500/[0.03]"
-            : "border-border bg-card"
-        }`}>
-          <div className={`flex size-9 shrink-0 items-center justify-center rounded-lg transition-all duration-500 ${
-            done ? "bg-emerald-500/10 text-emerald-500" : "bg-muted text-muted-foreground"
-          }`}>
+        <div
+          className={`flex items-center gap-3 rounded-xl border px-4 py-3 shadow-sm transition-all duration-500 ${
+            done
+              ? "border-emerald-500/20 bg-emerald-500/[0.03]"
+              : "border-border bg-card"
+          }`}
+        >
+          <div
+            className={`flex size-9 shrink-0 items-center justify-center rounded-lg transition-all duration-500 ${
+              done ? "bg-emerald-500/10 text-emerald-500" : "bg-muted text-muted-foreground"
+            }`}
+          >
             <FileText className="size-4" />
           </div>
           <div className="min-w-0 flex-1">
@@ -120,22 +118,21 @@ function UploadPhase({ progress }: { progress: number }) {
               {done ? "Ready" : "2.4 MB"}
             </p>
           </div>
-          <span className={`text-[11px] font-semibold tabular-nums transition-colors duration-300 ${
-            done ? "text-emerald-500" : "text-muted-foreground"
-          }`}>
+          <span
+            className={`text-[11px] font-semibold tabular-nums transition-colors duration-300 ${
+              done ? "text-emerald-500" : "text-muted-foreground"
+            }`}
+          >
             {done ? "✓" : `${Math.min(100, Math.round(progress))}%`}
           </span>
         </div>
 
-        {/* Progress bar — thin and elegant */}
         <div className="mt-3 h-[3px] w-full overflow-hidden rounded-full bg-muted/50">
           <div
             className="h-full rounded-full transition-all duration-200 ease-out"
             style={{
               width: `${Math.min(100, progress)}%`,
-              background: done
-                ? "#22c55e"
-                : "var(--primary)",
+              background: done ? "#22c55e" : "var(--primary)",
               boxShadow: done
                 ? "0 0 6px rgba(34,197,94,0.4)"
                 : "0 0 6px rgba(184,134,59,0.3)",
@@ -143,15 +140,15 @@ function UploadPhase({ progress }: { progress: number }) {
           />
         </div>
 
-        {/* Status text */}
-        <p className={`mt-2.5 text-center text-[11px] font-medium transition-colors duration-500 ${
-          done ? "text-emerald-500" : "text-muted-foreground"
-        }`}>
+        <p
+          className={`mt-2.5 text-center text-[11px] font-medium transition-colors duration-500 ${
+            done ? "text-emerald-500" : "text-muted-foreground"
+          }`}
+        >
           {done ? "Upload complete" : "Uploading…"}
         </p>
       </div>
 
-      {/* Keyframe for the breathing effect */}
       <style jsx>{`
         @keyframes breathe {
           0%, 100% { transform: scale(1); opacity: 0.9; }
@@ -165,7 +162,6 @@ function UploadPhase({ progress }: { progress: number }) {
 function ScanPhase({ scanPct }: { scanPct: number }) {
   return (
     <div className="flex flex-col h-full px-4 py-3 gap-2 animate-in fade-in duration-300">
-      {/* Header bar */}
       <div className="flex items-center justify-between pb-2 border-b border-border/40">
         <div className="flex items-center gap-1.5">
           <FileText className="size-3 text-muted-foreground" />
@@ -177,9 +173,7 @@ function ScanPhase({ scanPct }: { scanPct: number }) {
         </div>
       </div>
 
-      {/* Lines */}
       <div className="relative flex-1 space-y-1 overflow-hidden">
-        {/* Laser */}
         {scanPct > 0 && scanPct < 98 && (
           <div
             className="absolute left-0 right-0 h-[1px] z-10 pointer-events-none"
@@ -222,14 +216,12 @@ function ScanPhase({ scanPct }: { scanPct: number }) {
 
 function NotesPhase({ revealCount }: { revealCount: number }) {
   const done = revealCount >= TOTAL_REVEAL;
-  const dateVisible    = revealCount > 0;
-  const folderVisible  = revealCount > 1;
+  const dateVisible = revealCount > 0;
+  const folderVisible = revealCount > 1;
 
   return (
     <div className="flex flex-col h-full animate-in fade-in duration-300">
-      {/* Note card — mimics the real rounded-xl border bg-card p-8 wrapper */}
       <div className="flex-1 overflow-y-auto scrollbar-none px-5 py-4 pb-8">
-        {/* Date + folder row — matches NoteViewer header */}
         <div
           className="mb-3 flex items-center justify-between border-b border-border/40 pb-3 transition-all duration-400"
           style={{ opacity: dateVisible ? 1 : 0 }}
@@ -252,10 +244,9 @@ function NotesPhase({ revealCount }: { revealCount: number }) {
           </div>
         </div>
 
-        {/* Markdown-style body — matches NoteViewer article rendering */}
         <div className="space-y-0">
           {NOTE_LINES.slice(2).map((line, i) => {
-            const step = i + 2; // offset past date+folder
+            const step = i + 2;
             const visible = revealCount > step;
             const transStyle = {
               opacity: visible ? 1 : 0,
@@ -294,7 +285,6 @@ function NotesPhase({ revealCount }: { revealCount: number }) {
           })}
         </div>
 
-        {/* "Done" indicator at bottom */}
         {done && (
           <div className="mt-3 flex justify-center">
             <span className="text-[9px] font-semibold text-emerald-500 bg-emerald-500/8 px-2.5 py-0.5 rounded-full border border-emerald-500/15 animate-in fade-in duration-300">
@@ -356,7 +346,6 @@ export function HeroAnimation() {
 
   return (
     <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-[0_30px_60px_-15px_rgba(0,0,0,0.12)] backdrop-blur-2xl dark:bg-card/80 dark:shadow-[0_30px_60px_-15px_rgba(0,0,0,0.5)]">
-      {/* Title bar */}
       <div className="flex items-center gap-2 border-b border-border bg-muted/30 px-4 py-3 dark:bg-card/40">
         <div className="flex gap-1.5">
           <span className="h-3 w-3 rounded-full bg-[#FF5F57]" />
@@ -366,7 +355,6 @@ export function HeroAnimation() {
         <p className="flex-1 text-center text-xs font-medium text-muted-foreground">ClearNotes</p>
       </div>
 
-      {/* Phase pills */}
       <div className="flex items-center gap-1.5 border-b border-border/40 px-4 py-2.5 bg-muted/10">
         {["Upload", "Scan", "Notes"].map((label, i) => (
           <div
@@ -390,11 +378,10 @@ export function HeroAnimation() {
         <div className="ml-auto text-[9px] text-muted-foreground">{phaseLabel}</div>
       </div>
 
-      {/* Content area — fixed height */}
       <div className="h-[300px]">
         {phase === "upload" && <UploadPhase progress={uploadProgress} />}
-        {phase === "scan"   && <ScanPhase scanPct={scanPct} />}
-        {phase === "notes"  && <NotesPhase revealCount={noteReveal} />}
+        {phase === "scan" && <ScanPhase scanPct={scanPct} />}
+        {phase === "notes" && <NotesPhase revealCount={noteReveal} />}
       </div>
     </div>
   );

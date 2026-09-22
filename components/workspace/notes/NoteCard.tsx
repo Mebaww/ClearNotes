@@ -112,7 +112,6 @@ export default function NoteCard({
           : "border-border/60 hover:border-border"
       }`}
     >
-      {/* Checkbox for selection */}
       {onToggleSelect && (
         <div
           onClick={(e) => {
@@ -138,7 +137,6 @@ export default function NoteCard({
         </div>
       )}
 
-      {/* Card top */}
       <div className="space-y-2">
         <div className="flex items-start justify-between gap-3">
           <h3
@@ -149,10 +147,8 @@ export default function NoteCard({
             {note.title || "Untitled Document"}
           </h3>
 
-          {/* Actions */}
           {(onMoveNote || onDeleteNote || onToggleSelect) && (
             <div className="flex items-center gap-1 shrink-0">
-              {/* Mobile action menu (3-dots) - always visible on touch/sm screens */}
               <div className="sm:hidden">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -229,7 +225,6 @@ export default function NoteCard({
                 </DropdownMenu>
               </div>
 
-              {/* Desktop hover actions */}
               <div className="hidden sm:flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                 {onMoveNote && (
                   <DropdownMenu>
@@ -296,9 +291,7 @@ export default function NoteCard({
         </p>
       </div>
 
-      {/* Card footer */}
       <div className="mt-5 flex flex-col gap-2 border-t border-border/40 pt-3">
-        {/* Folder / Share tags */}
         <div className="flex items-center gap-1.5 flex-wrap">
           {note.folder && (
             <div className="inline-flex self-start items-center gap-1 rounded-full bg-primary/8 px-2 py-0.5 text-[9px] font-medium text-primary/80">

@@ -307,7 +307,6 @@ export default function NoteViewer({ note, isReadOnly = false, onBack, backHref 
         />
       )}
 
-      {/* In-app Create Folder Dialog */}
       <Dialog open={createFolderOpen} onOpenChange={setCreateFolderOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
@@ -345,7 +344,6 @@ export default function NoteViewer({ note, isReadOnly = false, onBack, backHref 
         </DialogContent>
       </Dialog>
 
-      {/* In-app Delete Confirmation Dialog */}
       <AlertDialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
         <AlertDialogContent size="default">
           <AlertDialogHeader>
