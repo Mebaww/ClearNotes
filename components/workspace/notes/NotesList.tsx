@@ -76,6 +76,7 @@ export default function NotesList({
 
   // Bulk Notes Actions States
   const [bulkSelectedNoteIds, setBulkSelectedNoteIds] = useState<string[]>([]);
+  const [isSelectionMode, setIsSelectionMode] = useState(false);
   const [bulkDeleteConfirmOpen, setBulkDeleteConfirmOpen] = useState(false);
 
   const [prevInitialNotes, setPrevInitialNotes] = useState(initialNotes);
@@ -317,9 +318,24 @@ export default function NotesList({
   };
 
   const handleToggleSelectNote = (noteId: string) => {
-    setBulkSelectedNoteIds((prev) =>
-      prev.includes(noteId) ? prev.filter((id) => id !== noteId) : [...prev, noteId]
-    );
+    setBulkSelectedNoteIds((prev) => {
+      const next = prev.includes(noteId) ? prev.filter((id) => id !== noteId) : [...prev, noteId];
+      if (next.length > 0) {
+        setIsSelectionMode(true);
+      }
+      return next;
+    });
+  };
+
+  const handleSelectAll = () => {
+    const displayedIds = displayedNotes.map((n) => n.id);
+    const allSelected = displayedIds.length > 0 && displayedIds.every((id) => bulkSelectedNoteIds.includes(id));
+    if (allSelected) {
+      setBulkSelectedNoteIds((prev) => prev.filter((id) => !displayedIds.includes(id)));
+    } else {
+      setBulkSelectedNoteIds((prev) => Array.from(new Set([...prev, ...displayedIds])));
+      setIsSelectionMode(true);
+    }
   };
 
   const handleBulkMove = async (folderId: string | null) => {
@@ -368,6 +384,7 @@ export default function NotesList({
 
       sileo.success({ title: `${bulkSelectedNoteIds.length} notes moved successfully.` });
       setBulkSelectedNoteIds([]);
+      setIsSelectionMode(false);
       router.refresh();
     } catch (err) {
       console.error(err);
@@ -400,6 +417,7 @@ export default function NotesList({
       })
       .then(() => {
         setBulkSelectedNoteIds([]);
+        setIsSelectionMode(false);
         router.refresh();
       })
       .catch((err) => {
@@ -418,6 +436,7 @@ export default function NotesList({
 
   const handleSelectFolder = (folderId: string | null) => {
     setBulkSelectedNoteIds([]); // Clear selection when switching folders
+    setIsSelectionMode(false);
     if (folderId) {
       router.push(`/workspace/notes?folderId=${folderId}`);
     } else {
@@ -470,6 +489,20 @@ export default function NotesList({
           }
         }}
         onShareFolder={() => setFolderShareModalOpen(true)}
+        isSelectionMode={isSelectionMode || bulkSelectedNoteIds.length > 0}
+        onToggleSelectionMode={() => {
+          if (isSelectionMode || bulkSelectedNoteIds.length > 0) {
+            setIsSelectionMode(false);
+            setBulkSelectedNoteIds([]);
+          } else {
+            setIsSelectionMode(true);
+          }
+        }}
+        onSelectAll={handleSelectAll}
+        isAllSelected={
+          displayedNotes.length > 0 &&
+          displayedNotes.every((n) => bulkSelectedNoteIds.includes(n.id))
+        }
       />
 
       {/* ── Notes Grid / Empty State ───────────────────────── */}
@@ -507,6 +540,7 @@ export default function NotesList({
               onDeleteNote={handleDeleteNote}
               isSelected={bulkSelectedNoteIds.includes(note.id)}
               onToggleSelect={handleToggleSelectNote}
+              isSelectionMode={isSelectionMode || bulkSelectedNoteIds.length > 0}
             />
           ))}
         </div>
@@ -659,7 +693,10 @@ export default function NotesList({
             <Button
               variant="outline"
               size="xs"
-              onClick={() => setBulkSelectedNoteIds([])}
+              onClick={() => {
+                setBulkSelectedNoteIds([]);
+                setIsSelectionMode(false);
+              }}
               className="h-7 text-xs cursor-pointer text-muted-foreground shadow-xs"
             >
               Deselect

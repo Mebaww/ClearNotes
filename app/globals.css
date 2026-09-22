@@ -171,3 +171,12 @@ body {
   z-index: 9999 !important;
 }
 
+/* Responsive KaTeX and math containers */
+.katex-display {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.5rem 0;
+  -webkit-overflow-scrolling: touch;
+}
+

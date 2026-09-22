@@ -37,14 +37,15 @@ export function SiteHeader() {
 
     {/* Right */}
     <div className="flex items-center gap-1.5">
-      <Button
+      {/* TODO: Notification feature to be implemented in the future */}
+      {/* <Button
         variant="ghost"
         size="icon"
         className="h-8 w-8 text-muted-foreground"
       >
         <Bell className="size-4" />
         <span className="sr-only">Notifications</span>
-      </Button>
+      </Button> */}
       <ModeToggle />
     </div>
   </div>

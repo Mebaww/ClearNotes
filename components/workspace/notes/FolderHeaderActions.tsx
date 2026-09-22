@@ -1,10 +1,9 @@
 "use client";
 
-import { Folder as FolderIcon, Plus, Edit3, Share2 } from "lucide-react";
+import { Folder as FolderIcon, Plus, Edit3, Share2, CheckSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface FolderHeaderActionsProps {
-
   selectedFolderId: string | null;
   activeFolderName: string;
   notesCount: number;
@@ -13,6 +12,10 @@ interface FolderHeaderActionsProps {
   onRenameFolder: () => void;
   onDeleteFolder: (e: React.MouseEvent) => void;
   onShareFolder?: () => void;
+  isSelectionMode?: boolean;
+  onToggleSelectionMode?: () => void;
+  onSelectAll?: () => void;
+  isAllSelected?: boolean;
 }
 
 export default function FolderHeaderActions({
@@ -24,6 +27,10 @@ export default function FolderHeaderActions({
   onRenameFolder,
   onDeleteFolder,
   onShareFolder,
+  isSelectionMode = false,
+  onToggleSelectionMode,
+  onSelectAll,
+  isAllSelected = false,
 }: FolderHeaderActionsProps) {
   const isCustomFolder = selectedFolderId && selectedFolderId !== "uncategorized";
 
@@ -42,47 +49,73 @@ export default function FolderHeaderActions({
         )}
       </div>
 
-      {isCustomFolder && (
-        <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 shrink-0">
-          {onShareFolder && (
+      <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 shrink-0">
+        {notesCount > 0 && onToggleSelectionMode && (
+          <>
+            {isSelectionMode && onSelectAll && (
+              <Button
+                variant="ghost"
+                size="xs"
+                onClick={onSelectAll}
+                className="h-7 text-xs cursor-pointer text-muted-foreground hover:text-foreground"
+              >
+                {isAllSelected ? "Deselect All" : "Select All"}
+              </Button>
+            )}
             <Button
-              variant={isShared ? "default" : "outline"}
+              variant={isSelectionMode ? "default" : "outline"}
               size="xs"
-              onClick={onShareFolder}
+              onClick={onToggleSelectionMode}
               className="h-7 gap-1 text-xs cursor-pointer shadow-xs"
             >
-              <Share2 className="size-3" />
-              {isShared ? "Shared" : "Share"}
+              <CheckSquare className="size-3" />
+              <span>{isSelectionMode ? "Done" : "Select"}</span>
             </Button>
-          )}
-          <Button
-            variant="outline"
-            size="xs"
-            onClick={onOpenAddNotesDialog}
-            className="h-7 gap-1 text-xs cursor-pointer shadow-xs"
-          >
-            <Plus className="size-3" />
-            Add/Remove Notes
-          </Button>
-          <Button
-            variant="outline"
-            size="xs"
-            onClick={onRenameFolder}
-            className="h-7 gap-1 text-xs cursor-pointer shadow-xs"
-          >
-            <Edit3 className="size-3 text-muted-foreground" />
-            Rename
-          </Button>
-          <Button
-            variant="outline"
-            size="xs"
-            onClick={onDeleteFolder}
-            className="h-7 text-xs cursor-pointer hover:bg-destructive/10 hover:text-destructive hover:border-destructive/30 text-muted-foreground shadow-xs"
-          >
-            Delete Folder
-          </Button>
-        </div>
-      )}
+          </>
+        )}
+
+        {isCustomFolder && (
+          <>
+            {onShareFolder && (
+              <Button
+                variant={isShared ? "default" : "outline"}
+                size="xs"
+                onClick={onShareFolder}
+                className="h-7 gap-1 text-xs cursor-pointer shadow-xs"
+              >
+                <Share2 className="size-3" />
+                {isShared ? "Shared" : "Share"}
+              </Button>
+            )}
+            <Button
+              variant="outline"
+              size="xs"
+              onClick={onOpenAddNotesDialog}
+              className="h-7 gap-1 text-xs cursor-pointer shadow-xs"
+            >
+              <Plus className="size-3" />
+              Add/Remove Notes
+            </Button>
+            <Button
+              variant="outline"
+              size="xs"
+              onClick={onRenameFolder}
+              className="h-7 gap-1 text-xs cursor-pointer shadow-xs"
+            >
+              <Edit3 className="size-3 text-muted-foreground" />
+              Rename
+            </Button>
+            <Button
+              variant="outline"
+              size="xs"
+              onClick={onDeleteFolder}
+              className="h-7 text-xs cursor-pointer hover:bg-destructive/10 hover:text-destructive hover:border-destructive/30 text-muted-foreground shadow-xs"
+            >
+              Delete Folder
+            </Button>
+          </>
+        )}
+      </div>
     </div>
   );
 }

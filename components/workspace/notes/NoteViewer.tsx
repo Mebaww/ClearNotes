@@ -181,25 +181,25 @@ export default function NoteViewer({ note, isReadOnly = false, onBack, backHref 
   };
 
   return (
-    <main className="mx-auto max-w-4xl px-4 py-8 md:px-8 md:py-10">
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
+    <main className="mx-auto w-full min-w-0 max-w-4xl px-3 py-6 sm:px-6 sm:py-8 md:px-8 md:py-10">
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-3 sm:gap-4">
         <Button
           variant="outline"
           size="sm"
           onClick={handleBack}
-          className="gap-2 cursor-pointer"
+          className="gap-2 cursor-pointer shrink-0"
         >
           <ArrowLeft className="size-4" />
           Back
         </Button>
 
         {!isReadOnly && (
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
             <Button
               variant={shareInfo?.enabled ? "secondary" : "outline"}
               size="sm"
               onClick={() => setIsShareModalOpen(true)}
-              className="gap-1.5 cursor-pointer relative"
+              className="gap-1.5 cursor-pointer relative shrink-0"
             >
               <Share2 className="size-3.5" />
               <span>{shareInfo?.enabled ? "Shared" : "Share"}</span>
@@ -213,7 +213,7 @@ export default function NoteViewer({ note, isReadOnly = false, onBack, backHref 
                 <Button
                   variant="outline"
                   size="sm"
-                  className="gap-1.5 cursor-pointer max-w-[160px] truncate"
+                  className="gap-1.5 cursor-pointer max-w-[130px] sm:max-w-[160px] truncate shrink-0"
                 >
                   <FolderIcon className="size-3.5 text-muted-foreground shrink-0" />
                   <span className="truncate">
@@ -267,7 +267,7 @@ export default function NoteViewer({ note, isReadOnly = false, onBack, backHref 
               size="sm"
               onClick={() => setDeleteConfirmOpen(true)}
               title="Delete Note"
-              className="h-8 w-8 p-0 sm:w-auto sm:px-3 text-muted-foreground hover:text-destructive hover:bg-destructive/10 cursor-pointer"
+              className="h-8 w-8 p-0 sm:w-auto sm:px-3 text-muted-foreground hover:text-destructive hover:bg-destructive/10 cursor-pointer shrink-0"
             >
               <Trash2 className="size-3.5 shrink-0" />
               <span className="hidden sm:inline ml-1 text-xs">Delete</span>
@@ -276,7 +276,7 @@ export default function NoteViewer({ note, isReadOnly = false, onBack, backHref 
         )}
       </div>
 
-      <div className="rounded-xl border bg-card p-4 sm:p-8">
+      <div className="w-full min-w-0 max-w-full rounded-xl border bg-card p-4 sm:p-8">
         <div className="mb-6 flex flex-wrap items-center justify-between gap-4 border-b border-border/40 pb-5">
           <p className="text-xs text-muted-foreground">
             {new Date(note.createdAt).toLocaleDateString()}
