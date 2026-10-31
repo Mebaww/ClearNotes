@@ -168,7 +168,7 @@ GOOGLE_CLIENT_SECRET=your-google-client-secret
 
 # Google Gemini AI
 GEMINI_API_KEY=your-gemini-api-key
-GEMINI_MODEL=gemini-2.5-flash
+GEMINI_MODEL=gemini-3.5-flash-lite
 ```
 
 ### 3. Set up the database

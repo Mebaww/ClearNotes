@@ -114,7 +114,7 @@ Your `.env` file should contain the following settings:
 | `GOOGLE_CLIENT_ID` | OAuth Client ID from Google Cloud Console | `...apps.googleusercontent.com` |
 | `GOOGLE_CLIENT_SECRET` | OAuth Client Secret from Google Cloud Console | Google OAuth client secret |
 | `GEMINI_API_KEY` | API Key from Google AI Studio | Personal key for testing note generation |
-| `GEMINI_MODEL` | Gemini model version | Default: `gemini-2.5-flash` |
+| `GEMINI_MODEL` | Gemini model version | Default: `gemini-3.5-flash-lite` |
 
 > [!TIP]
 > When setting up Google OAuth in Google Cloud Console, register `http://localhost:3000/api/auth/callback/google` under **Authorized redirect URIs**.
