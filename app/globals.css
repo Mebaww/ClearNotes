@@ -180,3 +180,137 @@ body {
   -webkit-overflow-scrolling: touch;
 }
 
+/* Print styles */
+@media print {
+  @page {
+    size: auto;
+    margin: 15mm;
+  }
+
+  /* Force light theme on print */
+  :root,
+  .dark {
+    --background: #ffffff !important;
+    --foreground: #111827 !important;
+    --card: #ffffff !important;
+    --card-foreground: #111827 !important;
+    --muted: #f3f4f6 !important;
+    --muted-foreground: #4b5563 !important;
+    --border: #e5e7eb !important;
+    --primary: #111827 !important;
+  }
+
+  html,
+  body {
+    background: #ffffff !important;
+    color: #111827 !important;
+    font-size: 11pt !important;
+    line-height: 1.6 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    overflow: visible !important;
+    height: auto !important;
+    min-height: 0 !important;
+  }
+
+  /* Prevent ancestor clipping on multi-page print */
+  div,
+  main,
+  article,
+  section {
+    overflow: visible !important;
+    height: auto !important;
+    max-height: none !important;
+  }
+
+  /* Hide app chrome, sidebars, and toasts */
+  header,
+  nav,
+  aside,
+  footer,
+  [data-sidebar],
+  [data-sileo-viewport],
+  .no-print,
+  .print\:hidden {
+    display: none !important;
+  }
+
+  .note-print-container {
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: transparent !important;
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    color: #111827 !important;
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+
+  p, li, blockquote {
+    color: #1f2937 !important;
+    orphans: 3;
+    widows: 3;
+  }
+
+  pre,
+  code,
+  table,
+  blockquote,
+  .katex-display {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  pre {
+    white-space: pre-wrap !important;
+    word-break: break-word !important;
+    background-color: #f8fafc !important;
+    border: 1px solid #e2e8f0 !important;
+    color: #0f172a !important;
+  }
+
+  code {
+    background-color: #f1f5f9 !important;
+    color: #0f172a !important;
+  }
+
+  table {
+    border-collapse: collapse !important;
+    width: 100% !important;
+  }
+
+  th,
+  td {
+    border: 1px solid #e2e8f0 !important;
+    padding: 6px 10px !important;
+    color: #1f2937 !important;
+  }
+
+  thead {
+    background-color: #f8fafc !important;
+    display: table-header-group;
+  }
+
+  tr {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .katex-display {
+    overflow-x: visible !important;
+    overflow-y: visible !important;
+    padding: 0.5rem 0 !important;
+  }
+
+  a {
+    color: #111827 !important;
+    text-decoration: underline !important;
+  }
+}
+
+

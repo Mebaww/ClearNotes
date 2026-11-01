@@ -12,7 +12,12 @@ import {
   Share2,
   MoreVertical,
   CheckSquare,
+  FileText,
+  FileDown,
 } from "lucide-react";
+import { NoteExportMenu } from "./NoteExportMenu";
+import { downloadMarkdownFile } from "@/lib/export/exportNote";
+import { sileo } from "sileo";
 
 import {
   DropdownMenu,
@@ -100,6 +105,32 @@ export default function NoteCard({
     }
   };
 
+  const handleExportPdf = () => {
+    if (folderShareToken) {
+      router.push(`/share/folder/${folderShareToken}/note/${note.id}?export=pdf`);
+    } else if (isSharedWithMe && note.share?.token) {
+      router.push(`/share/${note.share.token}?export=pdf`);
+    } else {
+      router.push(`/workspace/notes/${note.id}?export=pdf`);
+    }
+  };
+
+  const handleExportMarkdown = (e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    const success = downloadMarkdownFile(note.title, note.generated);
+    if (success) {
+      sileo.success({
+        title: "Markdown downloaded",
+        description: `Saved as ${note.title || "note"}.md`,
+      });
+    } else {
+      sileo.error({
+        title: "Cannot download note",
+        description: "This note has no generated content.",
+      });
+    }
+  };
+
   return (
     <div
       onClick={handleOpen}
@@ -179,6 +210,27 @@ export default function NoteCard({
                       </>
                     )}
 
+                    <DropdownMenuItem
+                      className="text-xs cursor-pointer"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleExportPdf();
+                      }}
+                    >
+                      <FileText className="size-3.5 mr-2" />
+                      <span>Download as PDF</span>
+                    </DropdownMenuItem>
+
+                    <DropdownMenuItem
+                      className="text-xs cursor-pointer"
+                      onClick={handleExportMarkdown}
+                    >
+                      <FileDown className="size-3.5 mr-2" />
+                      <span>Download Markdown (.md)</span>
+                    </DropdownMenuItem>
+
+                    <DropdownMenuSeparator />
+
                     {onMoveNote && (
                       <>
                         <DropdownMenuLabel className="text-[10px] uppercase text-muted-foreground font-semibold">
@@ -226,6 +278,12 @@ export default function NoteCard({
               </div>
 
               <div className="hidden sm:flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <NoteExportMenu
+                  note={note}
+                  variant="card"
+                  onExportPdf={handleExportPdf}
+                />
+
                 {onMoveNote && (
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
