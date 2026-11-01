@@ -108,7 +108,7 @@ export default async function SharedNotePage({ params }: Props) {
     <div className="min-h-screen bg-background text-foreground flex flex-col">
       {/* Slim public header — only shown for non-owners / guests */}
       {!isOwner && (
-        <header className="border-b border-border/60 bg-background/80 backdrop-blur-md sticky top-0 z-10 px-6 py-3 flex items-center justify-between">
+        <header className="border-b border-border/60 bg-background/80 backdrop-blur-md sticky top-0 z-10 px-6 py-3 flex items-center justify-between no-print">
           <Link href={session?.user ? "/workspace" : "/"} className="flex items-center gap-2.5">
             <Image src="/logo.png" alt="ClearNotes" width={22} height={22} />
             <span className="text-sm font-semibold tracking-tight">ClearNotes</span>
@@ -126,7 +126,7 @@ export default async function SharedNotePage({ params }: Props) {
 
       {/* Footer for non-owner guests */}
       {!isOwner && (
-        <footer className="border-t border-border/40 py-5 text-center text-xs text-muted-foreground">
+        <footer className="border-t border-border/40 py-5 text-center text-xs text-muted-foreground no-print">
           Generated and shared with{" "}
           <Link href="/" className="font-medium text-foreground underline hover:opacity-80">
             ClearNotes

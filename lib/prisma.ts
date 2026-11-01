@@ -3,8 +3,9 @@ import { PrismaPg } from "@prisma/adapter-pg";
 import { Pool } from "pg";
 
 const databaseUrl =
-  process.env.MAIN_DB_URL ||
+  process.env.DB_URL_PREVIEW ||
   process.env.DEV_DB_URL ||
+  process.env.MAIN_DB_URL ||
   process.env.DATABASE_URL;
 
 if (!databaseUrl) {

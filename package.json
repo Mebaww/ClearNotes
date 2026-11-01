@@ -19,6 +19,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "dotenv": "^17.4.2",
+    "html2pdf.js": "^0.14.0",
     "jszip": "^3.10.1",
     "lucide-react": "^1.21.0",
     "mammoth": "^1.12.0",
@@ -41,6 +42,7 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@types/html2pdf.js": "^0.10.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

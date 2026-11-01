@@ -3,7 +3,7 @@
 import axios from "axios";
 import { ArrowLeft, Trash2, Folder as FolderIcon, Plus, Check, Share2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Note, Folder, NoteShare } from "@/types/note";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -36,6 +36,8 @@ import {
 import { sileo } from "sileo";
 import { MarkdownContent } from "./MarkdownContent";
 import { ShareModal } from "./ShareModal";
+import { NoteExportMenu } from "./NoteExportMenu";
+import { downloadNoteAsPdf } from "@/lib/export/exportNote";
 
 interface Props {
   note: Note;
@@ -46,6 +48,7 @@ interface Props {
 
 export default function NoteViewer({ note, isReadOnly = false, onBack, backHref }: Props) {
   const router = useRouter();
+  const noteContentRef = useRef<HTMLDivElement>(null);
   const [folders, setFolders] = useState<Folder[]>([]);
   const [activeFolder, setActiveFolder] = useState<Folder | null>(note.folder || null);
   const [shareInfo, setShareInfo] = useState<NoteShare | null>(note.share || null);
@@ -86,6 +89,43 @@ export default function NoteViewer({ note, isReadOnly = false, onBack, backHref 
     }
     loadShareInfo();
   }, [note.id, isReadOnly]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("export") === "pdf" || params.get("print") === "true") {
+      const newUrl = window.location.pathname;
+      window.history.replaceState({}, "", newUrl);
+
+      const timer = setTimeout(() => {
+        const el =
+          noteContentRef.current ||
+          document.getElementById("clearnotes-rendered-note");
+
+        const promise = downloadNoteAsPdf({
+          title: note.title,
+          date: note.createdAt,
+          element: el,
+        });
+
+        sileo.promise(promise, {
+          loading: {
+            title: "Generating PDF...",
+            description: "Converting note to PDF",
+          },
+          success: {
+            title: "PDF downloaded!",
+            description: `${note.title || "Note"}.pdf saved to your downloads`,
+          },
+          error: {
+            title: "Failed to generate PDF",
+            description: "An unexpected error occurred. Please try again.",
+          },
+        });
+      }, 400);
+      return () => clearTimeout(timer);
+    }
+  }, [note.title, note.createdAt]);
 
   const handleSelectFolder = async (folderId: string | null) => {
     const prevFolder = activeFolder;
@@ -182,7 +222,7 @@ export default function NoteViewer({ note, isReadOnly = false, onBack, backHref 
 
   return (
     <main className="mx-auto w-full min-w-0 max-w-4xl px-3 py-6 sm:px-6 sm:py-8 md:px-8 md:py-10">
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-3 sm:gap-4">
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-3 sm:gap-4 no-print">
         <Button
           variant="outline"
           size="sm"
@@ -193,90 +233,94 @@ export default function NoteViewer({ note, isReadOnly = false, onBack, backHref 
           Back
         </Button>
 
-        {!isReadOnly && (
-          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
-            <Button
-              variant={shareInfo?.enabled ? "secondary" : "outline"}
-              size="sm"
-              onClick={() => setIsShareModalOpen(true)}
-              className="gap-1.5 cursor-pointer relative shrink-0"
-            >
-              <Share2 className="size-3.5" />
-              <span>{shareInfo?.enabled ? "Shared" : "Share"}</span>
-              {shareInfo?.enabled && (
-                <span className="size-1.5 rounded-full bg-primary absolute -top-0.5 -right-0.5 ring-2 ring-background" />
-              )}
-            </Button>
+        <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+          <NoteExportMenu note={note} targetRef={noteContentRef} />
 
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="gap-1.5 cursor-pointer max-w-[130px] sm:max-w-[160px] truncate shrink-0"
-                >
-                  <FolderIcon className="size-3.5 text-muted-foreground shrink-0" />
-                  <span className="truncate">
-                    {activeFolder ? activeFolder.name : "Organise"}
-                  </span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuLabel className="text-xs font-medium text-muted-foreground">
-                  Move to folder
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator />
+          {!isReadOnly && (
+            <>
+              <Button
+                variant={shareInfo?.enabled ? "secondary" : "outline"}
+                size="sm"
+                onClick={() => setIsShareModalOpen(true)}
+                className="gap-1.5 cursor-pointer relative shrink-0"
+              >
+                <Share2 className="size-3.5" />
+                <span>{shareInfo?.enabled ? "Shared" : "Share"}</span>
+                {shareInfo?.enabled && (
+                  <span className="size-1.5 rounded-full bg-primary absolute -top-0.5 -right-0.5 ring-2 ring-background" />
+                )}
+              </Button>
 
-                <DropdownMenuItem
-                  onClick={() => handleSelectFolder(null)}
-                  className="flex items-center justify-between cursor-pointer text-xs"
-                >
-                  <span className="text-muted-foreground">None (Uncategorized)</span>
-                  {activeFolder === null && <Check className="size-3 text-primary" />}
-                </DropdownMenuItem>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="gap-1.5 cursor-pointer max-w-[130px] sm:max-w-[160px] truncate shrink-0"
+                  >
+                    <FolderIcon className="size-3.5 text-muted-foreground shrink-0" />
+                    <span className="truncate">
+                      {activeFolder ? activeFolder.name : "Organise"}
+                    </span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuLabel className="text-xs font-medium text-muted-foreground">
+                    Move to folder
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
 
-                {folders.map((folder) => (
                   <DropdownMenuItem
-                    key={folder.id}
-                    onClick={() => handleSelectFolder(folder.id)}
+                    onClick={() => handleSelectFolder(null)}
                     className="flex items-center justify-between cursor-pointer text-xs"
                   >
-                    <span className="truncate">{folder.name}</span>
-                    {activeFolder?.id === folder.id && (
-                      <Check className="size-3 text-primary shrink-0" />
-                    )}
+                    <span className="text-muted-foreground">None (Uncategorized)</span>
+                    {activeFolder === null && <Check className="size-3 text-primary" />}
                   </DropdownMenuItem>
-                ))}
 
-                <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  onClick={() => {
-                    setNewFolderName("");
-                    setCreateFolderOpen(true);
-                  }}
-                  className="flex items-center gap-2 cursor-pointer text-xs text-primary font-medium"
-                >
-                  <Plus className="size-3.5" />
-                  <span>New folder...</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+                  {folders.map((folder) => (
+                    <DropdownMenuItem
+                      key={folder.id}
+                      onClick={() => handleSelectFolder(folder.id)}
+                      className="flex items-center justify-between cursor-pointer text-xs"
+                    >
+                      <span className="truncate">{folder.name}</span>
+                      {activeFolder?.id === folder.id && (
+                        <Check className="size-3 text-primary shrink-0" />
+                      )}
+                    </DropdownMenuItem>
+                  ))}
 
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setDeleteConfirmOpen(true)}
-              title="Delete Note"
-              className="h-8 w-8 p-0 sm:w-auto sm:px-3 text-muted-foreground hover:text-destructive hover:bg-destructive/10 cursor-pointer shrink-0"
-            >
-              <Trash2 className="size-3.5 shrink-0" />
-              <span className="hidden sm:inline ml-1 text-xs">Delete</span>
-            </Button>
-          </div>
-        )}
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={() => {
+                      setNewFolderName("");
+                      setCreateFolderOpen(true);
+                    }}
+                    className="flex items-center gap-2 cursor-pointer text-xs text-primary font-medium"
+                  >
+                    <Plus className="size-3.5" />
+                    <span>New folder...</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setDeleteConfirmOpen(true)}
+                title="Delete Note"
+                className="h-8 w-8 p-0 sm:w-auto sm:px-3 text-muted-foreground hover:text-destructive hover:bg-destructive/10 cursor-pointer shrink-0"
+              >
+                <Trash2 className="size-3.5 shrink-0" />
+                <span className="hidden sm:inline ml-1 text-xs">Delete</span>
+              </Button>
+            </>
+          )}
+        </div>
       </div>
 
-      <div className="w-full min-w-0 max-w-full rounded-xl border bg-card p-4 sm:p-8">
+      <div className="note-print-container w-full min-w-0 max-w-full rounded-xl border bg-card p-4 sm:p-8">
         <div className="mb-6 flex flex-wrap items-center justify-between gap-4 border-b border-border/40 pb-5">
           <p className="text-xs text-muted-foreground">
             {new Date(note.createdAt).toLocaleDateString()}
@@ -290,7 +334,9 @@ export default function NoteViewer({ note, isReadOnly = false, onBack, backHref 
           )}
         </div>
 
-        <MarkdownContent content={note.generated ?? ""} />
+        <div ref={noteContentRef} id="clearnotes-rendered-note" className="w-full">
+          <MarkdownContent content={note.generated ?? ""} />
+        </div>
       </div>
 
       {!isReadOnly && (
