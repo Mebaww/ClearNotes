@@ -1,10 +1,10 @@
-name: CI
+name: CI/CD
 
 on:
   push:
-    branches: [main]
+    branches: [main, staging]
   pull_request:
-    branches: [main]
+    branches: [main, staging]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -49,3 +49,22 @@ jobs:
 
       - name: Build Next.js app
         run: npm run build
+
+  deploy-staging:
+    name: Deploy to Staging VPS
+    runs-on: ubuntu-latest
+    needs: validate
+    # Deploys ONLY when code is pushed to staging, NEVER on main or pull requests
+    if: github.ref == 'refs/heads/staging' && github.event_name == 'push'
+
+    steps:
+      - name: Deploy to VPS via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            cd ~/projects/ClearNotes
+            ./deploy.sh
