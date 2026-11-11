@@ -188,6 +188,32 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
+### 5. Run with Docker (optional)
+
+The `Dockerfile` builds two targets: `runner` (Next.js standalone server, runs as a non-root user) and `migrator` (Prisma CLI, used once to apply migrations). `DATABASE_URL` is the runtime connection string and `DIRECT_URL` is the optional direct/session-mode connection used by migrations.
+
+**With a self-hosted Postgres container:**
+
+```bash
+docker compose -f compose.yaml -f compose.db.yaml up -d --build
+docker compose -f compose.yaml -f compose.db.yaml run --rm migrate
+```
+
+**With a managed Postgres (Neon, Supabase, Railway, …)** — set `DATABASE_URL` and `DIRECT_URL` in `.env`, then:
+
+```bash
+docker compose up -d --build
+docker compose run --rm migrate
+```
+
+`NEXT_PUBLIC_APP_URL` and `NEXT_PUBLIC_GA_ID` are inlined into the client bundle at build time, so changing them requires a rebuild:
+
+```bash
+NEXT_PUBLIC_APP_URL=https://notes.example.com docker compose -f compose.yaml -f compose.db.yaml up -d --build
+```
+
+When Caddy or nginx runs on the host and proxies to the container, bind the port to loopback with `APP_BIND=127.0.0.1`.
+
 ---
 
 ## How the AI Works

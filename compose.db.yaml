@@ -1,0 +1,43 @@
+# Self-hosted Postgres. Layer it on top of compose.yaml:
+#
+#   docker compose -f compose.yaml -f compose.db.yaml up -d --build
+#   docker compose -f compose.yaml -f compose.db.yaml run --rm migrate
+#
+# The database is only reachable on the compose network (no published port).
+# Inspect it with: docker compose exec db psql -U postgres -d clearnotes
+
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      POSTGRES_DB: ${POSTGRES_DB:-clearnotes}
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-clearnotes}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  app:
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      # Overrides the values from .env: inside the stack the database is `db`.
+      DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-clearnotes}
+      DIRECT_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-clearnotes}
+
+  migrate:
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-clearnotes}
+      DIRECT_URL: postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-clearnotes}
+
+volumes:
+  db-data:

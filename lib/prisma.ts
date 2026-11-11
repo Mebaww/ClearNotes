@@ -2,15 +2,11 @@ import { PrismaClient } from "@/prisma/generated/prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { Pool } from "pg";
 
-const databaseUrl =
-  process.env.DB_URL_PREVIEW ||
-  process.env.DEV_DB_URL ||
-  process.env.MAIN_DB_URL ||
-  process.env.DATABASE_URL;
+const databaseUrl = process.env.DATABASE_URL;
 
 if (!databaseUrl) {
   throw new Error(
-    "Database connection URL is missing. Please set DATABASE_URL in your .env file."
+    "DATABASE_URL is not set. Add it to your environment (see .env.example)."
   );
 }
 

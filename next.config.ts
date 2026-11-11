@@ -1,6 +1,9 @@
+
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  output: "standalone",
+
   serverExternalPackages: ["pdfjs-dist"],
 
   async headers() {
@@ -23,9 +26,10 @@ const nextConfig: NextConfig = {
           },
         ],
       },
-      // Service worker — must never be cached so users always get the latest
+
+      // Service worker headers
       {
-        source: "/sw.js",
+        source: "/sw\\.js",
         headers: [
           {
             key: "Content-Type",

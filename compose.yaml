@@ -1,0 +1,50 @@
+name: clearnotes
+
+# Base stack: the application plus a one-shot migration service.
+# The database connection comes from DATABASE_URL (runtime) and DIRECT_URL
+# (migrations, optional) in .env — so this works against any managed Postgres.
+#
+#   docker compose build
+#   docker compose run --rm migrate
+#   docker compose up -d
+#
+# For a self-hosted Postgres container (VPS or local), layer compose.db.yaml:
+#   docker compose -f compose.yaml -f compose.db.yaml up -d --build
+
+services:
+  app:
+    build:
+      context: .
+      target: runner
+      args:
+        # NEXT_PUBLIC_* is compiled into the client bundle at build time.
+        # Compose resolves these from .env, not from the container runtime.
+        NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-http://localhost:3000}
+        NEXT_PUBLIC_GA_ID: ${NEXT_PUBLIC_GA_ID:-}
+    image: clearnotes-app:latest
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: production
+      PORT: "3000"
+      HOSTNAME: 0.0.0.0
+      NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-http://localhost:3000}
+      NEXT_PUBLIC_GA_ID: ${NEXT_PUBLIC_GA_ID:-}
+    ports:
+      # Bind to loopback on the VPS (APP_BIND=127.0.0.1) when Caddy/nginx runs on
+      # the host and proxies to this port.
+      - "${APP_BIND:-0.0.0.0}:${APP_PORT:-3000}:3000"
+    restart: unless-stopped
+    init: true
+
+  # Opt-in: never started by `up`, run explicitly after building.
+  migrate:
+    build:
+      context: .
+      target: migrator
+    image: clearnotes-migrator:latest
+    env_file:
+      - .env
+    profiles: ["tools"]
+    restart: "no"
+    command: ["npx", "prisma", "migrate", "deploy"]

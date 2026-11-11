@@ -1,53 +1,31 @@
 import { z } from "zod";
 
-const envSchema = z
-  .object({
-    NEXT_PUBLIC_APP_URL: z
-      .string()
-      .url()
-      .default("http://localhost:3000"),
-    NEXT_PUBLIC_GA_ID: z.string().optional(),
+const envSchema = z.object({
+  NEXT_PUBLIC_APP_URL: z
+    .string()
+    .url()
+    .default("http://localhost:3000"),
+  NEXT_PUBLIC_GA_ID: z.string().optional(),
 
-    DATABASE_URL: z.string().optional(),
-    MAIN_DB_URL: z.string().optional(),
-    DEV_DB_URL: z.string().optional(),
-    DB_URL_MAIN: z.string().optional(),
-    DB_URL_DEV: z.string().optional(),
+  DATABASE_URL: z
+    .string()
+    .min(1, "DATABASE_URL is required (Postgres connection string)"),
 
-    BETTER_AUTH_SECRET: z.string().optional(),
-    BETTER_AUTH_URL: z.string().optional(),
-    BETTER_AUTH_API_KEY: z.string().optional(),
-    GOOGLE_CLIENT_ID: z.string().optional(),
-    GOOGLE_CLIENT_SECRET: z.string().optional(),
+  BETTER_AUTH_SECRET: z.string().optional(),
+  BETTER_AUTH_URL: z.string().optional(),
+  BETTER_AUTH_API_KEY: z.string().optional(),
+  GOOGLE_CLIENT_ID: z.string().optional(),
+  GOOGLE_CLIENT_SECRET: z.string().optional(),
 
-    GEMINI_API_KEY: z.string().optional(),
-    GEMINI_MODEL: z.string().default("gemini-3.5-flash-lite"),
-  })
-  .refine(
-    (data) =>
-      Boolean(
-        data.DATABASE_URL ||
-          data.MAIN_DB_URL ||
-          data.DEV_DB_URL ||
-          data.DB_URL_MAIN ||
-          data.DB_URL_DEV
-      ),
-    {
-      message:
-        "Database connection URL is missing. Please set DATABASE_URL in your .env file.",
-      path: ["DATABASE_URL"],
-    }
-  );
+  GEMINI_API_KEY: z.string().optional(),
+  GEMINI_MODEL: z.string().default("gemini-3.5-flash-lite"),
+});
 
 export function validateEnv() {
   const result = envSchema.safeParse({
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
     NEXT_PUBLIC_GA_ID: process.env.NEXT_PUBLIC_GA_ID,
     DATABASE_URL: process.env.DATABASE_URL,
-    MAIN_DB_URL: process.env.MAIN_DB_URL,
-    DEV_DB_URL: process.env.DEV_DB_URL,
-    DB_URL_MAIN: process.env.DB_URL_MAIN,
-    DB_URL_DEV: process.env.DB_URL_DEV,
     BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET,
     BETTER_AUTH_URL: process.env.BETTER_AUTH_URL,
     BETTER_AUTH_API_KEY: process.env.BETTER_AUTH_API_KEY,
@@ -64,15 +42,5 @@ export function validateEnv() {
     throw new Error(`Environment Variable Validation Error: ${details}`);
   }
 
-  const activeDatabaseUrl =
-    result.data.MAIN_DB_URL ||
-    result.data.DEV_DB_URL ||
-    result.data.DATABASE_URL ||
-    result.data.DB_URL_MAIN ||
-    result.data.DB_URL_DEV!;
-
-  return {
-    ...result.data,
-    activeDatabaseUrl,
-  };
+  return result.data;
 }

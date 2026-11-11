@@ -8,7 +8,8 @@ on:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  # Never cancel a running deploy (it may be mid-migration); only superseded PR checks.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   validate:
@@ -17,7 +18,6 @@ jobs:
 
     env:
       DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/clearnotes"
-      MAIN_DB_URL: "postgresql://postgres:postgres@localhost:5432/clearnotes"
       BETTER_AUTH_SECRET: "ci-secret-at-least-32-characters-long-abcdef"
       BETTER_AUTH_URL: "http://localhost:3000"
       NEXT_PUBLIC_APP_URL: "http://localhost:3000"
@@ -32,7 +32,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: "npm"
 
       - name: Install dependencies
@@ -56,6 +56,7 @@ jobs:
     needs: validate
     # Deploys ONLY when code is pushed to staging, NEVER on main or pull requests
     if: github.ref == 'refs/heads/staging' && github.event_name == 'push'
+    timeout-minutes: 20
 
     steps:
       - name: Deploy to VPS via SSH
@@ -72,4 +73,6 @@ jobs:
           mkdir -p ~/.ssh
           echo "$SSH_KEY" | sed 's/^[ \t]*//' > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
-          ssh -o StrictHostKeyChecking=accept-new -i ~/.ssh/deploy_key "$VPS_USER@$VPS_HOST" "cd ~/projects/ClearNotes && ./deploy.sh"
+          ssh -o StrictHostKeyChecking=accept-new -o ConnectTimeout=15 \
+            -i ~/.ssh/deploy_key "$VPS_USER@$VPS_HOST" \
+            "cd ~/projects/ClearNotes && bash ./deploy.sh"

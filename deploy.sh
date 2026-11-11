@@ -1,23 +1,29 @@
 #!/bin/bash
-set -e
+set -euo pipefail
 
-echo "🚀 Starting Staging Deployment on VPS..."
+COMPOSE="docker compose -f compose.yaml -f compose.db.yaml"
 
-# 1. Fetch latest changes from staging
+echo "🚀 Starting Docker Staging Deployment..."
+
+# 1. Fetch latest changes
 git fetch origin staging
 git reset --hard origin/staging
 
-# 2. Install any new dependencies
-npm install --prefer-offline --no-audit
+if [ ! -f .env ]; then
+  echo "❌ .env is missing on this host. Create it before deploying."
+  exit 1
+fi
 
-# 3. Generate Prisma client & apply database migrations
-npx prisma generate
-npx prisma migrate deploy
+# 2. Build the runtime and migration images
+$COMPOSE --profile tools build
 
-# 4. Build the Next.js production bundle
-npm run build
+# 3. Apply database migrations (one-shot container)
+$COMPOSE --profile tools run --rm migrate
 
-# 5. Reload PM2 with zero downtime
-pm2 reload clearnotes --update-env
+# 4. Start/refresh the stack and wait until it is healthy
+$COMPOSE up -d --wait --remove-orphans
+
+# 5. Reclaim space from the previous image versions
+docker image prune -f >/dev/null
 
 echo "✅ Staging Deployment Successful!"
